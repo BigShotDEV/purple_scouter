@@ -1,0 +1,24 @@
+.radio-box {
+    border-width: 3px;
+    border-style: dotted;
+    border-left-style: none;
+    border-right-style: none;
+
+    padding-bottom: 30px;
+}
+
+.radio-box .title {
+    text-align: center;
+    font-size: 2em;
+}
+
+.radio-box .option {
+    margin: auto;
+
+    font-size: 1.5em;
+    padding-left: 10%;
+}
+
+.radio-box label {
+    padding-left: 10px;
+}
