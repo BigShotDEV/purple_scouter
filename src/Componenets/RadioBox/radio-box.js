@@ -25,7 +25,7 @@ export default class RadioBox extends React.Component {
         return this.props.keys.map(key => {
             return (
             <div className="option">
-                <input type="radio" id={key} name={this.id} value={key}/>
+                <input type="radio" onClick={this.props.onClick} id={key} name={this.id} value={key}/>
                 <label for={key}>{key}</label>
             </div>
             );
