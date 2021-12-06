@@ -1,0 +1,20 @@
+.text-box {
+    border-width: 3px;
+    border-style: dotted;
+    border-left-style: none;
+    border-right-style: none;
+
+    padding-bottom: 30px;
+}
+
+.text-box .title {
+    text-align: center;
+    font-size: 2em;
+}
+
+.text-box .text {
+    margin-left: 10%;
+    width: 80%;
+    height: 23px;  
+    
+}
