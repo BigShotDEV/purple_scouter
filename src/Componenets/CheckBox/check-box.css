@@ -1,0 +1,24 @@
+.check-box {
+    border-width: 3px;
+    border-style: dotted;
+    border-left-style: none;
+    border-right-style: none;
+
+    padding-bottom: 30px;
+}
+
+.check-box .title {
+    text-align: center;
+    font-size: 2em;
+}
+
+.check-box .option {
+    margin: auto;
+
+    font-size: 1.5em;
+    padding-left: 10%;
+}
+
+.check-box label {
+    padding-left: 10px;
+}
