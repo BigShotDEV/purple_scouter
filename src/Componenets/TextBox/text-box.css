@@ -1,20 +1,32 @@
 .text-box {
     border-width: 3px;
-    border-style: dotted;
+    border-style: solid;
+    border-top-style: none;
     border-left-style: none;
     border-right-style: none;
+    
+    color: rgb(75, 37, 87);
 
     padding-bottom: 30px;
 }
 
 .text-box .title {
     text-align: center;
-    font-size: 2em;
+    font-size: 1.8em;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700;
+    color: rgb(211, 216, 204);
 }
 
 .text-box .text {
     margin-left: 10%;
     width: 80%;
-    height: 23px;  
+    height: 28px;  
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: rgba(231, 231, 231, 0.4);
+    color: black;
     
 }

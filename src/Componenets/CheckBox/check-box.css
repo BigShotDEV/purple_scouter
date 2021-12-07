@@ -1,21 +1,29 @@
 .check-box {
     border-width: 3px;
-    border-style: dotted;
+    border-style: solid;
+    border-top-style: none;
     border-left-style: none;
     border-right-style: none;
+
+    color: rgb(75, 37, 87);
 
     padding-bottom: 30px;
 }
 
 .check-box .title {
     text-align: center;
-    font-size: 2em;
+    font-size: 1.8em;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700;
+    color: rgb(211, 216, 204);
 }
 
 .check-box .option {
     margin: auto;
 
     font-size: 1.5em;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: rgb(177, 166, 179);
     padding-left: 10%;
 }
 
