@@ -1,33 +1,33 @@
-#Characterization
+# Characterization
 This README is all about the characterization of the purplescouter project.
 
-##The Purpose of the project
+## The Purpose of the project
 The purpose of the project is to create some application that will help the team to gather data about other teams in competition. The project should be comptible with android, iphone, windows/linux. It should be easy to access the team's stats and to set them fast during the match (super important, it will reduce mistakes).
 
-##The project's features
+## The project's features
 + Support cross platform.
 + Support users, give them an option to login (only admin can register).
 + Support some creation and modification of forms (with or without a gui).
 + Supoprt users sending some game data.
 + Support two different stats view, the first which is to see 6 teams at each time (for game purposes), the second is to view stats about only team (for alliance selection).
 
-#####Could be nice but will be done only if the time will be enough.
+##### Could be nice but will be done only if the time will be enough.
 Be friendly to the user, accept low network traffic (sometimes in compotitions the network traffic is super slow). maybe some caching will be nice.
 
 Get game data from the "The Blue Alliance" in order to improve the user interface.
 
-##The project's frameworks
+## The project's frameworks
 + The project will be a web project (the most easy way to be cross platform). 
 + The project's database will be mongodb.
 + The project's backend will be written in fastapi (python3)
 + The project's frontend will be written in ReactJS.
 + The project's backend will be REST api.
-##MongoDB
+## MongoDB
 The MongoDB will be setup locally (or on a remote server).
 
 The MongoDB Server will have three collections: *Users*, *Games*, *Forms*.
 
-####*Users* 
+#### *Users* 
 The *Users* collection stores all of the users informtion.
 
 The User document format:
@@ -41,7 +41,7 @@ The User document format:
 }
 ```
 
-####*Games*
+#### *Games*
 The *Games* collection stores all of the games stats.
 
 The Game document format:
@@ -58,7 +58,7 @@ The Game document format:
 }
 ```
 
-####*Forms*
+#### *Forms*
 In the *Forms* collection the form data will be stored.
 
 ```
@@ -80,7 +80,7 @@ In the *Forms* collection the form data will be stored.
 ```
 
 
-##The API
+## The API
 
 | Operation   | Path        |  Parameters | Cookie    | Description | 
 | ----------- | ----------- | -----------------|-----------|-------------|
