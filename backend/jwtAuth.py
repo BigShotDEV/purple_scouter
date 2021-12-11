@@ -1,12 +1,14 @@
 import jwt
 
 from Models.user import User
+from Models.jwtUser import JWTUser
 
 class JWT:
     ALGORITHM = "HS256"
     SECRET = "UaFCEf0AGjvpcVnjIVo6xQGZbaC0xeiM2hLPPtFCxeg0TtyE8yHOgcLwMc6W871"
 
-    def encode(self, user: User):
+    @staticmethod
+    def encode(user: User):
         """Encodes User to jwt.
 
         Args:
@@ -15,9 +17,10 @@ class JWT:
         Returns:
             str: jwt. 
         """
-        return jwt.encode(user.dict(), self.SECRET, self.ALGORITHM)
+        return jwt.encode({"user_name": user.user_name}, JWT.SECRET, JWT.ALGORITHM)
 
-    def decode(self, token):
+    @staticmethod
+    def decode(token):
         """Decode a jwt.
 
         Args:
@@ -26,4 +29,11 @@ class JWT:
         Returns:
             dict: decoded jwt.
         """
-        return jwt.decode(token, self.SECRET, self.ALGORITHM)
+        return jwt.decode(token, JWT.SECRET, JWT.ALGORITHM)
+
+    @staticmethod
+    def validate_jwt(jwt):
+        try:
+            return JWTUser(JWT.decode(jwt))
+        except Exception as e:
+            return None
