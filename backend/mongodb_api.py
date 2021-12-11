@@ -81,7 +81,7 @@ class MongoDB:
         Returns:
             list: list of results.
         """
-        return [result for result in self.db["games"].find({"game_number": game_number})]
+        return [result for result in self.db["games"].find({"game_number": game_number}, {"_id": 0})]
 
 
     def get_team_stats(self, team_number: int):
@@ -93,7 +93,10 @@ class MongoDB:
         Returns:
             list: list of results.
         """
-        return  [result for result in self.db["games"].find({"team_number": team_number})] 
+        try:
+            return  [result for result in self.db["games"].find({"team_number": team_number}, {"_id": 0})] 
+        except Exception as e:
+            print(e)
 
     def is_user_match(self, user: User):
         """Checks if user exists in the database.
