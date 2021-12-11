@@ -1,10 +1,8 @@
 import pymongo
-from pymongo import mongo_client
 from pymongo.errors import ConnectionFailure
+
 from Models.user import User
 from Models.game import GameStats
-import random
-
 
 class MongoDB:
     """The MongoDB client.
