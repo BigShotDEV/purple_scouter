@@ -19,6 +19,13 @@ def read_root():
 def read_login():
     return {"login": "login"}
 
+@app.get("/stats/")
+def read_stats(response: Response, jwt: Optional[bytes] = Cookie(None)):
+    user = JWT.validate_admin_jwt(jwt)
+    if not user:
+        response.set_cookie(key="jwt", value=JWT.encode(user))
+    return {"stats": "stats"}
+
 @app.post("/login/", status_code=200)
 def login(user: User, response: Response):
     if mongodb.is_user_match(user):
@@ -30,7 +37,7 @@ def login(user: User, response: Response):
 
 @app.post("/api/game/")
 def insert_game(game: GameStats, response: Response, jwt: Optional[bytes] = Cookie(None)):
-    user = JWT.validate_jwt(jwt)
+    user = JWT.validate_user_jwt(jwt)
     if not user:
         response.status_code = status.HTTP_401_UNAUTHORIZED
         return "Unauthorized 401."
@@ -39,7 +46,7 @@ def insert_game(game: GameStats, response: Response, jwt: Optional[bytes] = Cook
 
 @app.get("/api/teams/{team_number}/")
 def get_team_stats(team_number: int, response: Response, jwt: Optional[bytes] = Cookie(None)):
-    user = JWT.validate_jwt(jwt)
+    user = JWT.validate_admin_jwt(jwt)
     if not user:
         response.status_code = status.HTTP_401_UNAUTHORIZED
         return "Unauthorized 401."
@@ -48,7 +55,7 @@ def get_team_stats(team_number: int, response: Response, jwt: Optional[bytes] = 
 
 @app.get("/api/games/{game_number}/")
 def get_game(game_number: int, response: Response, jwt: Optional[bytes] = Cookie(None)):
-    user = JWT.validate_jwt(jwt)
+    user = JWT.validate_admin_jwt(jwt)
     if not user:
         response.status_code = status.HTTP_401_UNAUTHORIZED
         return "Unauthorized 401."
@@ -60,5 +67,5 @@ def get_game(game_number: int, response: Response, jwt: Optional[bytes] = Cookie
 def logout(response: Response):
     response.delete_cookie("jwt")
 
-    return "Loged out"
+    return "Logged out"
     
