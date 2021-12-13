@@ -1,11 +1,16 @@
+from _typeshed import Self
 import jwt
 
 from Models.user import User
 from Models.jwtUser import JWTUser
+from backend.mongodb_api import MongoDB
 
 class JWT:
     ALGORITHM = "HS256"
     SECRET = "UaFCEf0AGjvpcVnjIVo6xQGZbaC0xeiM2hLPPtFCxeg0TtyE8yHOgcLwMc6W871"
+
+    def __init__(self, mongodb: MongoDB):
+        self.mongodb = mongodb
 
     @staticmethod
     def encode(user: User):
@@ -31,9 +36,22 @@ class JWT:
         """
         return jwt.decode(token, JWT.SECRET, JWT.ALGORITHM)
 
-    @staticmethod
-    def validate_jwt(jwt):
+    def validate_user_jwt(self, jwt):
         try:
-            return JWTUser(JWT.decode(jwt))
+            user = JWTUser(JWT.decode(jwt))
+            if self.mongodb.is_user_match(user):
+                return user
+            else:
+                return None
+        except Exception as e:
+            return None
+
+    def validate_admin_jwt(self, jwt):
+        try:
+            user = JWTUser(JWT.decode(jwt))
+            if self.mongodb.is_admin_match(user):
+                return user
+            else:
+                return None
         except Exception as e:
             return None
