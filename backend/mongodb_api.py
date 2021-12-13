@@ -57,7 +57,7 @@ class MongoDB:
         Returns:
             bool: return true if the registeration was successfull otherwise false.
         """
-        if not self.is_user_match(user):
+        if not self.db["users"].find({"user_name": user.user_name}, {"_id": 0}):
             self.db["users"].insert_one(user.dict())
             return True
         else:
@@ -101,12 +101,35 @@ class MongoDB:
     def is_user_match(self, user: User):
         """Checks if user exists in the database.
 
+        !Notice! An admin is considered to be an extended user (if the user match a admin but not a user true will be returned)
+
+
         Args:
             user (User): The User to check if exists.
 
         Returns:
             bool: true if the user exists.
         """
-        return len([result for result in self.db["users"].find(user.dict())]) == 1
 
-    
+        val_user = self.db["users"].find(user.dict())
+        if val_user and val_user == user.password and val_user.user_name == user.user_name:
+            return True
+        elif self.is_admin_match(user):
+            return True
+        else:
+            return False
+
+    def is_admin_match(self, user: User):
+        """Checks if admins exists in the database,
+        
+        Args:
+            user (User): The user that should be check if he his an admin. 
+
+        Returns:
+            bool: True if the user is an admin.
+        """
+        admin_user = self.db["admin"].find(user.dict())
+        if admin_user == user.password and admin_user.user_name == user.user_name:
+            return True
+        else:
+            return False
