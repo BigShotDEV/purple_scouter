@@ -57,7 +57,7 @@ class MongoDB:
         Returns:
             bool: return true if the registeration was successfull otherwise false.
         """
-        if not self.is_user_match(user):
+        if not self.db["users"].find({"user_name": user.user_name}, {"_id": 0}):
             self.db["users"].insert_one(user.dict())
             return True
         else:
