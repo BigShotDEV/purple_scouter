@@ -1,9 +1,8 @@
-from _typeshed import Self
 import jwt
 
 from Models.user import User
 from Models.jwtUser import JWTUser
-from backend.mongodb_api import MongoDB
+from mongodb_api import MongoDB
 
 class JWT:
     ALGORITHM = "HS256"
