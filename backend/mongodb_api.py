@@ -101,17 +101,6 @@ class MongoDB:
     def is_user_match(self, user: User):
         """Checks if user exists in the database.
 
-        Args:
-            user (User): The User to check if exists.
-
-        Returns:
-            bool: true if the user exists.
-        """
-        return len([result for result in self.db["users"].find(user.dict())]) == 1
-
-    def is_user_match(self, user: User):
-        """Checks if user exists in the database.
-
         !Notice! An admin is considered to be an extended user (if the user match a admin but not a user true will be returned)
 
 
