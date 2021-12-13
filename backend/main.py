@@ -26,14 +26,14 @@ def login(user: User, response: Response):
         return "Loged in successfully"
 
     response.status_code = status.HTTP_406_NOT_ACCEPTABLE
-    return "Wrong user name or password"
+    return "Unauthorized 401."
 
 @app.post("/api/game/")
 def insert_game(game: GameStats, response: Response, jwt: Optional[bytes] = Cookie(None)):
     user = JWT.validate_jwt(jwt)
     if not user:
         response.status_code = status.HTTP_401_UNAUTHORIZED
-        return {}
+        return "Unauthorized 401."
 
     mongodb.insert_game_stats(game)
 
@@ -42,7 +42,7 @@ def get_team_stats(team_number: int, response: Response, jwt: Optional[bytes] = 
     user = JWT.validate_jwt(jwt)
     if not user:
         response.status_code = status.HTTP_401_UNAUTHORIZED
-        return {}
+        return "Unauthorized 401."
 
     return mongodb.get_team_stats(team_number)
 
@@ -51,7 +51,7 @@ def get_game(game_number: int, response: Response, jwt: Optional[bytes] = Cookie
     user = JWT.validate_jwt(jwt)
     if not user:
         response.status_code = status.HTTP_401_UNAUTHORIZED
-        return {}
+        return "Unauthorized 401."
 
     return mongodb.get_game(game_number)
 
@@ -60,5 +60,5 @@ def get_game(game_number: int, response: Response, jwt: Optional[bytes] = Cookie
 def logout(response: Response):
     response.delete_cookie("jwt")
 
-    return ""
+    return "Loged out"
     
