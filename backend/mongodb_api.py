@@ -18,7 +18,7 @@ class MongoDB:
             Connects to the server, at HOST and PORT.
         """
         self.client = self.connect() 
-        self.ping() # make sure that the server is up.
+        # self.ping() # make sure that the server is up.
 
         self.db = self.client["purple_scouter"]
 
