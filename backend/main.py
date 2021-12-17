@@ -24,16 +24,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-
-# @app.get("/")
-# def read_root():
-#     return {"root": "root"}
-
-@app.get("/login/")
-def read_login():
-    return {"login": "login"}
-
 @app.get("/stats/")
 def read_stats(response: Response, jwt: Optional[bytes] = Cookie(None)):
     user = JWT.validate_admin_jwt(jwt)
@@ -78,7 +68,7 @@ def get_game(game_number: int, response: Response, jwt: Optional[bytes] = Cookie
     return mongodb.get_game(game_number)
 
 
-@app.get("/logout")
+@app.post("/logout")
 def logout(response: Response):
     response.delete_cookie("jwt")
 
