@@ -8,4 +8,3 @@ class User(BaseModel):
     password is the password (md5_hashed).
     """
     user_name: str
-    password: str

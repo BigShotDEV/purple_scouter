@@ -1,7 +1,7 @@
 import jwt
 
 from Models.user import User
-from Models.jwtUser import JWTUser
+from Models.jwtUser import UserInDB
 from mongodb_api import MongoDB
 
 class JWT:
@@ -37,17 +37,19 @@ class JWT:
 
     def validate_user_jwt(self, jwt):
         try:
-            user = JWTUser(JWT.decode(jwt))
+            print(JWT.decode(jwt))
+            user = User(**JWT.decode(jwt))
             if self.mongodb.is_user_match(user):
                 return user
             else:
                 return None
         except Exception as e:
+            print(e)
             return None
 
     def validate_admin_jwt(self, jwt):
         try:
-            user = JWTUser(JWT.decode(jwt))
+            user = UserInDB(JWT.decode(jwt))
             if self.mongodb.is_admin_match(user):
                 return user
             else:
