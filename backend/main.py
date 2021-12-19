@@ -18,7 +18,6 @@ mongodb = MongoDB()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-
 origins = [
     "http://localhost:3000",
     "http://localhost:8080",
@@ -31,9 +30,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/token")
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    if not mongodb.validate_user(UserInDB(user_name=form_data.username, password=form_data.password)):
+@app.post("/token") # see more in the fastapi security documention.
+async def login(form_data: OAuth2PasswordRequestForm = Depends()): # The login page.
+    user = UserInDB(user_name=form_data.username, password=form_data.password)
+    db_user = mongodb.get_user(user) if not mongodb.get_user(user) == None else mongodb.get_admin(user)
+
+    if not db_user.user_name == user.user_name or not db_user.password == user.password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
     return {"access_token": generate_jwt_token(User(user_name=form_data.username)), "token_type": "bearer"}
@@ -47,21 +49,14 @@ def read_stats(current_user: User = Depends(get_current_admin)):
     return {"stats": "stats"}
 
 @app.post("/api/game/")
-def insert_game(game: GameStats, response: Response, current_user: User = Depends(get_current_user)):
+def insert_game(game: GameStats, current_user: User = Depends(get_current_user)):
     mongodb.insert_game_stats(game)
 
 @app.get("/api/teams/{team_number}/")
-def get_team_stats(team_number: int, response: Response, current_user: User = Depends(get_current_user)):
+def get_team_stats(team_number: int, current_user: User = Depends(get_current_user)):
     return mongodb.get_team_stats(team_number)
 
 @app.get("/api/games/{game_number}/")
-def get_game(game_number: int, response: Response, current_user: User = Depends(get_current_user)):
+def get_game(game_number: int, current_user: User = Depends(get_current_user)):
     return mongodb.get_game(game_number)
-
-
-# @app.post("/logout")
-# def logout(response: Response):
-#     response.delete_cookie("jwt")
-
-#     return "Logged out"
     

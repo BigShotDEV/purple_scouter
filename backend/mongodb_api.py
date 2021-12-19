@@ -100,8 +100,8 @@ class MongoDB:
         except Exception as e:
             print(e)
 
-    def is_user_match(self, user: User):
-        """Checks if the username matches in the db, doesn't check the password.
+    def get_user(self, user: User):
+        """Gets a similar user from the db.
 
         Args:
             user (User): The User
@@ -112,66 +112,23 @@ class MongoDB:
         db_users = self.db["users"].find(user.dict())
         for db_user in db_users:
             if db_user and db_user['user_name'] == user.user_name:
-                return True
+                return UserInDB(**db_user)
 
-        return False
+        return None
 
-    def validate_user(self, user: UserInDB):
-        """Checks if user exists in the database.
-
-        !Notice! An admin is considered to be an extended user (if the user match a admin but not a user true will be returned)
-
+    def get_admin(self, admin: User):
+        """Gets a similar admin from the db.
 
         Args:
-            user (User): The User to check if exists.
+            admin (User): [description]
 
         Returns:
-            bool: true if the user exists.
+            User: The user that found.
         """
-
-        db_users = self.db["users"].find(user.dict())
+        db_users = self.db["admins"].find(admin.dict())
         for db_user in db_users:
-            if db_user and db_user['password'] == user.password and db_user['user_name'] == user.user_name:
-                return True
+            if db_user and db_user['user_name'] == admin.user_name:
+                return UserInDB(**db_user)
 
-        if self.validate_admin(user):
-            return True
-
-        return False
-        
-    def is_admin_match(self, user: User):
-        """Checks if the username matches in the db, doesn't check the password.
-
-        Args:
-            user (User): The User
-
-        Returns:
-            bool: true if it matches the db.
-        """
-        db_users = self.db["admin"].find(user.dict())
-        for db_user in db_users:
-            print(db_user)
-            if db_user and db_user['user_name'] == user.user_name:
-                return True
-
-        return False
-
-
-    def validate_admin(self, user: User):
-        """Checks if admins exists in the database,
-        
-        Args:
-            user (User): The user that should be check if he his an admin. 
-
-        Returns:
-            bool: True if the user is an admin.
-        """
-        db_users = self.db["admin"].find(user.dict())
-
-        for db_user in db_users:
-            if db_user and db_user['password'] == user.password and db_user['user_name'] == user.user_name:
-                return True
-       
-        return False
-
+        return None
 

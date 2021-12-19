@@ -36,23 +36,42 @@ class JWT:
         return jwt.decode(token, JWT.SECRET, JWT.ALGORITHM)
 
     def validate_user_jwt(self, jwt):
+        """Validates a user jwt in the db.
+
+        Args:
+            jwt (str): the jwt.
+
+        Returns:
+            bool: The valid user
+        """
         try:
-            print(JWT.decode(jwt))
             user = User(**JWT.decode(jwt))
-            if self.mongodb.is_user_match(user):
+            db_user = self.mongodb.get_user(user) if not self.mongodb.get_user(user) == None else self.mongodb.get_admin(user)
+
+            if db_user.user_name == user.user_name:
+                return user
+            else:
+                return None
+        except Exception as e:
+            return None
+
+    def validate_admin_jwt(self, jwt):
+        """Validates an admin jwt in the db.
+
+        Args:
+            jwt (str): the jwt token.
+
+        Returns:
+            User: The valid admin.
+        """
+
+        try:
+            user = User(**JWT.decode(jwt))
+            db_user = self.mongodb.get_admin(user)
+            if db_user.user_name == user.user_name:
                 return user
             else:
                 return None
         except Exception as e:
             print(e)
-            return None
-
-    def validate_admin_jwt(self, jwt):
-        try:
-            user = UserInDB(JWT.decode(jwt))
-            if self.mongodb.is_admin_match(user):
-                return user
-            else:
-                return None
-        except Exception as e:
             return None
