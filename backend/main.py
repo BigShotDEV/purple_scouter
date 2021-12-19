@@ -14,7 +14,7 @@ from auth import *
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-mongodb = MongoDB()
+mongodb = MongoDB(build_db=False)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 

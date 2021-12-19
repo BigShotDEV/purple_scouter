@@ -1,5 +1,6 @@
 import pymongo
 from pymongo.errors import ConnectionFailure
+import hashlib
 
 from Models.user import User
 from Models.game import GameStats
@@ -15,15 +16,24 @@ class MongoDB:
     HOST = "192.168.1.74"
     PORT = 27017
 
-    def __init__(self):
+    DB_NAME = "purple_scouter"
+
+    DEFAULT_ADMIN_USERNAME = "admin" # During the season replace this to be more secure.
+    DEFAULT_ADMIN_PASSWORD = hashlib.md5(b"admin").hexdigest() # Dureing the season replace this to be more secure.
+
+    def __init__(self, build_db=False):
         """
             Connects to the server, at HOST and PORT.
         """
         self.client = self.connect() 
         # self.ping() # make sure that the server is up.
+        
+        if build_db:
+            self.create_db()
+        else:
+            self.db = self.client[self.DB_NAME]
 
-        self.db = self.client["purple_scouter"]
-
+        
 
     def generate_url(self):
         """Formates the url in the mongodb://HOST:PORT/ format.
@@ -50,7 +60,7 @@ class MongoDB:
         except ConnectionFailure:
             raise(Exception("The MongoDB Server isn't up!"))
 
-    def register_user(self, user: User):
+    def register_user(self, user: UserInDB):
         """Registers a new user to the database.
 
         Args:
@@ -61,6 +71,21 @@ class MongoDB:
         """
         if not self.db["users"].find({"user_name": user.user_name}, {"_id": 0}):
             self.db["users"].insert_one(user.dict())
+            return True
+        else:
+            return False
+
+    def register_admin(self, admin: UserInDB):
+        """Registers a new user to the database.
+
+        Args:
+            user (User): A User BaseModel.
+
+        Returns:
+            bool: return true if the registeration was successfull otherwise false.
+        """
+        if not self.db["admins"].find({"user_name": admin.user_name}, {"_id": 0}):
+            self.db["admin"].insert_one(admin.dict())
             return True
         else:
             return False
@@ -132,3 +157,21 @@ class MongoDB:
 
         return None
 
+    def create_db(self):
+        """Creates a blank db suits for the app.
+        !NOTICE! if the db already exists it will remove it and all of it data.
+        """
+        self.client.drop_database(self.DB_NAME)
+        self.db = self.client[self.DB_NAME]
+        
+        self.db.admins.insert_one({"test": 'test'})
+        self.db.admins.delete_one({"test": 'test'})
+
+        self.db.users.insert_one({"test": 'test'})
+        self.db.users.delete_one({"test": 'test'})
+
+        self.db.forms.insert_one({"test": 'test'})
+        self.db.forms.delete_one({"test": 'test'})
+
+        self.db.games.insert_one({"test": 'test'})
+        self.db.games.delete_one({"test": 'test'})
