@@ -19,7 +19,7 @@ export default class CheckBox extends React.Component {
         return this.props.keys.map(key => {
             return <div key={key} className="option">
                 <input type="checkbox" onClick={() => {this.props.onClick(key)}} id={key} name={key}/>
-                <label for={key}>{key}</label>
+                <label htmlFor={key}>{key}</label>
             </div>
         })
     }

@@ -1,0 +1,18 @@
+.input-field {
+    border-width: 3px;
+    border-style: none;
+    color: rgb(177, 166, 179);
+    size: 10%;
+    padding-bottom: 5px;
+}
+
+.input-field .input {
+    height: 22px;  
+    /* width: 60%; */
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: rgba(231, 231, 231, 0.4);
+    color: black;
+}

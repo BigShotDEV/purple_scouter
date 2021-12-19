@@ -1,8 +1,8 @@
 import React from 'react';
-import CheckBox from '../CheckBox/check-box';
-import RadioBox from '../RadioBox/radio-box';
-import SubmitButton from '../SubmitButton/submit-button';
-import TextBox from '../TextBox/text-box';
+import CheckBox from './CheckBox/check-box';
+import RadioBox from './RadioBox/radio-box';
+import SubmitButton from './SubmitButton/submit-button';
+import TextBox from './TextBox/text-box';
 
 /**
  * This Componenet handles all about the form.
@@ -13,9 +13,10 @@ export default class Form extends React.Component {
         return (
             <div className="form">
                 <CheckBox keys={["whoami", "The coolest man on earth", "whoareyou", "who are we"]}>This is the checkbox test.</CheckBox>
+                <CheckBox keys={["whoami", "The coolest man on earth", "whoareyou", "who are we", "joe"]}>This is another checkbox test.</CheckBox>
                 <RadioBox keys={["whoami", "The coolest man on earth", "whoareyou", "who are we"]}>This is the radiobox test.</RadioBox>
                 <TextBox>This is the Textbox test.</TextBox>
-                <SubmitButton>Submit Button</SubmitButton>
+                <SubmitButton>Submit</SubmitButton>
             </div>         
         );
     }

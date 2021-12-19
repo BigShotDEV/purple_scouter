@@ -7,7 +7,7 @@ export default class RootRoute extends React.Component{
     render() {
         return (
         <>
-        <Form></Form>
+        <Form/>
         </>)
         ;
     }
