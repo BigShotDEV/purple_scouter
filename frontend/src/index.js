@@ -6,6 +6,7 @@ import {
   Routes,
   Route
 } from "react-router-dom";import reportWebVitals from './reportWebVitals';
+import auth from "./Utils/authentication"
 
 import './App.css';
 import RootRoute from './routes/root';
