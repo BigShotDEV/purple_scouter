@@ -23,6 +23,25 @@ const API = "http://localhost:8000"
    return "";
  }
 
+export const isAuthenticated = (path) => {
+  const request = (path) => {
+    fetch(`${API}${path}`, {
+      method: "GET",
+      credentials: "include",
+      }
+    ).then(function(res){ return res.json(); })
+    .then(function(data){ console.log(data) })
+    .catch(e => {
+      console.log("error", e)
+    })
+  }
+
+  var access_token = getCookie("access_token");
+  if (access_token === undefined) return false;
+
+  console.log(request(path));
+}
+
 export const authentication = (form) => {
   const request = (form) => {
     console.log(form)
@@ -32,6 +51,7 @@ export const authentication = (form) => {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
+      credentials: "include",
       body: form
       }
     ).then(function(res){ return res.json(); })
