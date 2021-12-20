@@ -30,15 +30,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/token") # see more in the fastapi security documention.
-async def login(form_data: OAuth2PasswordRequestForm = Depends()): # The login page.
+@app.post("/token") # see more  in the fastapi security documention.
+async def login(response: Response, form_data: OAuth2PasswordRequestForm = Depends()): # The login page.
+    print(form_data.username, form_data.password)
     user = UserInDB(user_name=form_data.username, password=form_data.password)
     db_user = mongodb.get_user(user) if not mongodb.get_user(user) == None else mongodb.get_admin(user)
-
-    if not db_user.user_name == user.user_name or not db_user.password == user.password:
+    print(db_user)
+    if not db_user or not db_user.user_name == user.user_name or not db_user.password == user.password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
-    return {"access_token": generate_jwt_token(User(user_name=form_data.username)), "token_type": "bearer"}
+    access_token = generate_jwt_token(User(user_name=form_data.username))
+    response.set_cookie(key="access_token",value=f"Bearer {access_token}", httponly=True)  #set HttpOnly cookie in response
+    return {"access_token": access_token, "token_type": "bearer"}
 
 @app.get("/")
 def reed_root(current_user: User = Depends(get_current_user)):

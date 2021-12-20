@@ -1,4 +1,6 @@
+from typing import Optional
 from fastapi.exceptions import HTTPException
+from fastapi import Cookie
 from fastapi.param_functions import Depends
 from fastapi.security.oauth2 import OAuth2PasswordBearer
 from starlette import status
@@ -60,6 +62,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     Returns:
         User: The User from the token.
     """
+    # print(access_token)
     user = decode_user_token(token)
 
     if not user:
