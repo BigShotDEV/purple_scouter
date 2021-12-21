@@ -2,6 +2,7 @@ import pymongo
 from pymongo.errors import ConnectionFailure
 import hashlib
 
+from Models.form import Form
 from Models.user import User
 from Models.game import GameStats
 from Models.jwtUser import UserInDB
@@ -89,6 +90,34 @@ class MongoDB:
             return True
         else:
             return False
+
+    def insert_form(self, form: Form):
+        """Inserts a form into the db.
+
+        Args:
+            form (Form): The form to insert.
+
+        Returns:
+            bool: returns true if the form was inserted successfully otherwise false.
+        """
+        if not self.db["forms"].find({"id": form.id}, {"_id": 0}):
+            self.db["forms"].insert_one(form.dict())
+            return True
+        else:
+            return True
+
+    def get_form(self, id: str):
+        """Finds a from by a id.
+
+        Args:
+            id (str): The form id.
+
+        Returns:
+            Form: The form that was found in the db.
+        """
+        form = self.db["forms"].find_one({"id": id}, {"_id": 0})
+        return form
+        
 
     def insert_game_stats(self, game_stat: GameStats):
         """Insert new game stats to the db.
