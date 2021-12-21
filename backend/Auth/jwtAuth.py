@@ -6,7 +6,7 @@ from mongodb_api import MongoDB
 
 class JWT:
     ALGORITHM = "HS256"
-    SECRET = "UaFCEf0AGjvpcVnjIVo6xQGZbaC0xeiM2hLPPtFCxeg0TtyE8yHOgcLwMc6W871"
+    SECRET = "a6787d860bcb0fd8d97c61c922aa07c089847ce7067df983c9499d7368fd7c04"
 
     def __init__(self, mongodb: MongoDB):
         self.mongodb = mongodb
@@ -21,7 +21,7 @@ class JWT:
         Returns:
             str: jwt. 
         """
-        return jwt.encode({"user_name": user.user_name}, JWT.SECRET, JWT.ALGORITHM)
+        return jwt.encode({"user_name": user.user_name, "ts": user.ts}, JWT.SECRET, JWT.ALGORITHM)
 
     @staticmethod
     def decode(token):
