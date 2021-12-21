@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { authentication } from '../../Utils/authentication';
+import React from 'react';
 import InputField from './inputField/input-field';
+import { authentication } from '../../Utils/authentication';
 import "./login-page.css"
 
-export default class LoginPage extends React.Component {
+export default class LoginPage extends React.Component {    
     render() {
         return (
             <div className="login-page">    
@@ -17,4 +17,7 @@ export default class LoginPage extends React.Component {
             </div>
         )
     }
+
+
+        
 }

@@ -54,6 +54,41 @@ export const isAuthenticated = (path) => {
   return request(path);
 }
 
+
+export const whoami = () => {
+  const request = () => {
+    return new Promise(resolve => {
+      fetch(`${API}/`, {
+        method: "GET",
+        credentials: "include",
+        }
+      ).then(res => {
+        console.log(res.status);
+        if (res.status == 401) {
+          // if this running means the user tryied to access a page he doesn't allowed.
+          // window.location.replace("/login");
+          resolve({});
+        } else if(res.status == 200) {
+          // means the user can access the page he wants to access.
+          
+          return res.json();
+        }
+    })
+    .then(data => {
+      resolve(data.whoami);
+    })
+    .catch(e => {
+      console.log("error", e)
+    })
+    })
+  }
+
+  var access_token = getCookie("access_token");
+  if (access_token === undefined) return new Promise(resolve => {resolve(false)});
+
+  return request();
+}
+
 export const authentication = (form) => {
   const request = (form) => {
     console.log(form)

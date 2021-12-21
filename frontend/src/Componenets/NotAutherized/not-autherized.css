@@ -1,0 +1,17 @@
+.not-autherized {
+    color: rgb(211, 216, 204);
+    margin: auto;
+    /* width: 50vh;  */
+    /* transform: translate(-50%, 0%); */
+}
+
+.not-autherized>.title { 
+    position: relative;
+    left: 40%;
+    font-size: 3em;
+}
+
+.not-autherized>.content {
+    text-align: left;
+    font-size: 2em;
+}

@@ -1,10 +1,13 @@
 import React from 'react';
 
 import Form from "../Componenets/Form/form";
+import NotAutherizedPage from '../Componenets/NotAutherized/not-autherized';
 import { isAuthenticated } from '../Utils/authentication';
 
 
 export default class RootRoute extends React.Component {
+    PATH = "/"
+    
     constructor(props) {
         super(props);
 
@@ -14,7 +17,7 @@ export default class RootRoute extends React.Component {
     }
 
     componentDidMount() {
-       isAuthenticated("/").then(auth => {
+       isAuthenticated(this.PATH).then(auth => {
         this.setState({"isAuthenticated": auth});
        })
         
@@ -22,7 +25,7 @@ export default class RootRoute extends React.Component {
 
     render() { 
         if (this.state.isAuthenticated === undefined) return<>Loading...</>;
-        if (!this.state.isAuthenticated) return <h>Not Autherized!</h>;
+        if (!this.state.isAuthenticated) return <NotAutherizedPage></NotAutherizedPage>;
 
         return (
         <>
