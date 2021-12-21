@@ -1,3 +1,4 @@
+import time
 from typing import Optional
 from fastapi.exceptions import HTTPException
 from fastapi import Cookie
@@ -62,7 +63,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     Returns:
         User: The User from the token.
     """
-    # print(access_token)
     user = decode_user_token(token)
 
     if not user:
@@ -71,6 +71,14 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
             detail="Invalid authentication credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
+    if user.ts - time.time() >= 60 * 60 * 24: # each token is valid for 1 day
+        raise HTTPException(
+            status_code=status.HTTP_410_GONE,
+            detail="Token exparied",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
     return user
 
 async def get_current_admin(token: str = Depends(oauth2_scheme)):

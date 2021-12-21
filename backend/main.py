@@ -4,6 +4,7 @@ from fastapi import FastAPI, Response, status, Cookie, HTTPException
 from fastapi.param_functions import Depends
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
+import time
 
 from mongodb_api import MongoDB
 
@@ -39,12 +40,12 @@ async def login(response: Response, form_data: OAuth2PasswordRequestForm = Depen
     if not db_user or not db_user.user_name == user.user_name or not db_user.password == user.password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
-    access_token = generate_jwt_token(User(user_name=form_data.username))
+    access_token = generate_jwt_token(User(user_name=form_data.username, ts=time.time()))
     response.set_cookie(key="access_token",value=f"Bearer {access_token}", httponly=True)  #set HttpOnly cookie in response
     return {"access_token": access_token, "token_type": "bearer"}
 
 @app.get("/")
-def reed_root(current_user: User = Depends(get_current_user)):
+def reed_root(access_token: Optional[str] = Cookie(None), current_user: str = Depends(get_current_user)):
     return {"whoami": current_user}
 
 @app.get("/stats/")
