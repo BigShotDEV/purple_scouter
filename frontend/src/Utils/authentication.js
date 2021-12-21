@@ -25,21 +25,33 @@ const API = "http://localhost:8000"
 
 export const isAuthenticated = (path) => {
   const request = (path) => {
-    fetch(`${API}${path}`, {
-      method: "GET",
-      credentials: "include",
-      }
-    ).then(function(res){ return res.json(); })
-    .then(function(data){ console.log(data) })
+    return new Promise(resolve => {
+      fetch(`${API}${path}`, {
+        method: "GET",
+        credentials: "include",
+        }
+      ).then(res => {
+        console.log(res.status);
+        if (res.status == 400) {
+          // if this running means the user tryied to access a page he doesn't allowed.
+          // window.location.replace("/login");
+          resolve(false);
+        } else if(res.status == 200) {
+          // means the user can access the page he wants to access.
+          
+        resolve(true);
+        }
+    })
     .catch(e => {
       console.log("error", e)
+    })
     })
   }
 
   var access_token = getCookie("access_token");
-  if (access_token === undefined) return false;
+  if (access_token === undefined) return new Promise(resolve => {resolve(false)});
 
-  console.log(request(path));
+  return request(path);
 }
 
 export const authentication = (form) => {
@@ -54,8 +66,19 @@ export const authentication = (form) => {
       credentials: "include",
       body: form
       }
-    ).then(function(res){ return res.json(); })
-    .then(function(data){ })
+    )
+    .then(res => {
+        if (res.status == 400) {
+          // if this running means the user's login attempt failed (username or password is wrong).
+          // Dan add here your shit to inform the user in a proper way.
+          alert("Username or Password is wrong.");
+  
+        } else if(res.status == 200) {
+          // if this running means the user's login attempt succeded.
+          
+          window.location.replace("/"); // redirect the user to the home page.
+        }
+    })
     .catch(e => {
       console.log("error", e)
     })
