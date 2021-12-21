@@ -3,17 +3,18 @@ from typing import Optional
 from fastapi.exceptions import HTTPException
 from fastapi import Cookie
 from fastapi.param_functions import Depends
-from fastapi.security.oauth2 import OAuth2PasswordBearer
+# from fastapi.security.oauth2 import OAuth2PasswordBearer
 from starlette import status
 from Models.user import User
 
-from jwtAuth import JWT
+from Auth.jwtAuth import JWT
+from Auth.Oauth2Bearer import OAuth2BearerCustom
 from mongodb_api import MongoDB
 
 
 mongodb = MongoDB()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2BearerCustom(tokenUrl="token")
 
 def decode_user_token(token):
     """Decodes a user token into a user model.
@@ -51,7 +52,7 @@ def generate_jwt_token(user: User):
     """
     return JWT.encode(user)
 
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+async def get_current_user(token: Optional[str] = Depends(oauth2_scheme)):
     """Gets the current user using a token.
 
     Args:

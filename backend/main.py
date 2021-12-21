@@ -11,7 +11,7 @@ from mongodb_api import MongoDB
 from Models.user import User
 from Models.game import GameStats
 from Models.jwtUser import UserInDB
-from auth import *
+from Auth.auth import *
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -33,10 +33,9 @@ app.add_middleware(
 
 @app.post("/token") # see more  in the fastapi security documention.
 async def login(response: Response, form_data: OAuth2PasswordRequestForm = Depends()): # The login page.
-    print(form_data.username, form_data.password)
     user = UserInDB(user_name=form_data.username, password=form_data.password)
     db_user = mongodb.get_user(user) if not mongodb.get_user(user) == None else mongodb.get_admin(user)
-    print(db_user)
+
     if not db_user or not db_user.user_name == user.user_name or not db_user.password == user.password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
@@ -45,7 +44,7 @@ async def login(response: Response, form_data: OAuth2PasswordRequestForm = Depen
     return {"access_token": access_token, "token_type": "bearer"}
 
 @app.get("/")
-def reed_root(access_token: Optional[str] = Cookie(None), current_user: str = Depends(get_current_user)):
+def reed_root(current_user: str = Depends(get_current_user)):
     return {"whoami": current_user}
 
 @app.get("/stats/")

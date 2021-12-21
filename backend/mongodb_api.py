@@ -134,7 +134,7 @@ class MongoDB:
         Returns:
             bool: true if it matches the db.
         """
-        db_users = self.db["users"].find(user.dict())
+        db_users = self.db["users"].find(user.dict(include={"user_name"}))
         for db_user in db_users:
             if db_user and db_user['user_name'] == user.user_name:
                 return UserInDB(**db_user)
@@ -150,7 +150,7 @@ class MongoDB:
         Returns:
             User: The user that found.
         """
-        db_users = self.db["admins"].find(admin.dict())
+        db_users = self.db["admins"].find(admin.dict(include={"user_name"}))
         for db_user in db_users:
             if db_user and db_user['user_name'] == admin.user_name:
                 return UserInDB(**db_user)
