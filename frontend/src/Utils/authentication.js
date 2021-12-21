@@ -32,7 +32,7 @@ export const isAuthenticated = (path) => {
         }
       ).then(res => {
         console.log(res.status);
-        if (res.status == 400) {
+        if (res.status == 401) {
           // if this running means the user tryied to access a page he doesn't allowed.
           // window.location.replace("/login");
           resolve(false);
