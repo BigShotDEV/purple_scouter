@@ -72,8 +72,7 @@ async def get_current_user(token: Optional[str] = Depends(oauth2_scheme)):
             detail="Invalid authentication credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-
-    if user.ts - time.time() >= 60 * 60 * 24: # each token is valid for 1 day
+    if time.time() - user.ts >= 60*60*24: # each token is valid for 1 day
         raise HTTPException(
             status_code=status.HTTP_410_GONE,
             detail="Token exparied",
@@ -103,4 +102,13 @@ async def get_current_admin(token: str = Depends(oauth2_scheme)):
             detail="Invalid authentication credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
+    if time.time() - user.ts >= 60*60*24: # each token is valid for 1 day
+        raise HTTPException(
+            status_code=status.HTTP_307_TEMPORARY_REDIRECT,
+            detail="Token exparied",
+            location="/login",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
     return user
