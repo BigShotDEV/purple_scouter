@@ -1,5 +1,5 @@
 .login-page {
-    padding-top: 25vh;
+    padding-top: 30vh;
     text-align: center;
     background-color: rgba(200, 200, 200, .1);
     height: 75vh;
@@ -54,15 +54,17 @@
         border-width: 3px;
         border-style: solid;
         width: 28vw;
-        height: 25vh;
+        height: max-content;
         text-align: center;
+        
     
         padding: 1%;
         padding-top: 0%;
         padding-bottom: 0.5%;
         
         background-color: rgba(200, 200, 200, .1);
-        transform: translate(33vw,40vh);
+        margin: auto;
+        transform: translate(0,33vh);
     }
 
     .login-page .title{
