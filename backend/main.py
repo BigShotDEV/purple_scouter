@@ -8,6 +8,7 @@ import time
 
 from mongodb_api import MongoDB
 
+from Models.form import Form
 from Models.user import User
 from Models.game import GameStats
 from Models.jwtUser import UserInDB
@@ -56,10 +57,19 @@ def insert_game(game: GameStats, current_user: User = Depends(get_current_user))
     mongodb.insert_game_stats(game)
 
 @app.get("/api/teams/{team_number}/")
-def get_team_stats(team_number: int, current_user: User = Depends(get_current_user)):
+def get_team_stats(team_number: int, current_user: User = Depends(get_current_admin)):
     return mongodb.get_team_stats(team_number)
 
 @app.get("/api/games/{game_number}/")
-def get_game(game_number: int, current_user: User = Depends(get_current_user)):
+def get_game(game_number: int, current_user: User = Depends(get_current_admin)):
     return mongodb.get_game(game_number)
-    
+
+
+@app.get("/api/form/")
+def get_form(current_user: User = Depends(get_current_user)):
+    return mongodb.get_latest_form()
+
+@app.post("/api/form")
+def insert_post(form : Form, current_user: User = Depends(get_current_admin)):
+    return {"Success": mongodb.insert_form(form)}
+
