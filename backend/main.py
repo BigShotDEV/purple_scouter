@@ -70,5 +70,5 @@ def insert_post(form : Form, current_user: User = Depends(get_current_admin)):
 
 
 @app.get("/api/form/{id}/")
-def get_form(form_id: int, current_user: User = Depends(get_current_user)):
-    return mongodb.get_form(form_id).dict()
+def get_form(form_id: str, current_user: User = Depends(get_current_user)):
+    return mongodb.get_form(form_id)

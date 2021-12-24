@@ -100,11 +100,11 @@ class MongoDB:
         Returns:
             bool: returns true if the form was inserted successfully otherwise false.
         """
-        if not self.db["forms"].find({"id": form.id}, {"_id": 0}):
+        if not list(self.db["forms"].find({"id": form.id}, {"_id": 0})):
             self.db["forms"].insert_one(form.dict())
             return True
         else:
-            return True
+            return False
 
     def get_form(self, id: str):
         """Finds a from by a id.
