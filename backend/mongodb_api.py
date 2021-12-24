@@ -22,6 +22,8 @@ class MongoDB:
     DEFAULT_ADMIN_USERNAME = "admin" # During the season replace this to be more secure.
     DEFAULT_ADMIN_PASSWORD = hashlib.md5(b"admin").hexdigest() # Dureing the season replace this to be more secure.
 
+    FORM_ID = -1 # While set to negative one retrieves the latest form if set retrivies the specific form.
+
     def __init__(self, build_db=False):
         """
             Connects to the server, at HOST and PORT.
@@ -100,13 +102,14 @@ class MongoDB:
         Returns:
             bool: returns true if the form was inserted successfully otherwise false.
         """
-        if not list(self.db["forms"].find({"id": form.id}, {"_id": 0})):
+
+        try:
             self.db["forms"].insert_one(form.dict())
             return True
-        else:
+        except Exception:
             return False
 
-    def get_form(self, id: str):
+    def get_latest_form(self):
         """Finds a from by a id.
 
         Args:
@@ -115,10 +118,9 @@ class MongoDB:
         Returns:
             Form: The form that was found in the db.
         """
-        form = self.db["forms"].find_one({"id": id}, {"_id": 0})
+        form = self.db["forms"].find_one({}, {"_id": 0})
         return form
-        
-
+    
     def insert_game_stats(self, game_stat: GameStats):
         """Insert new game stats to the db.
 
