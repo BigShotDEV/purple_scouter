@@ -24,8 +24,8 @@ export default class RootRoute extends React.Component {
     }
 
     render() { 
-        // if (this.state.isAuthenticated === undefined) return<>Loading...</>;
-        // if (!this.state.isAuthenticated) return <NotAutherizedPage></NotAutherizedPage>;
+        if (this.state.isAuthenticated === undefined) return<>Loading...</>;
+        if (!this.state.isAuthenticated) return <NotAutherizedPage></NotAutherizedPage>;
 
         return (
         <>
