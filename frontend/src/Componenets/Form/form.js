@@ -4,6 +4,7 @@ import CheckBox from './CheckBox/check-box';
 import RadioBox from './RadioBox/radio-box';
 import SubmitButton from './SubmitButton/submit-button';
 import TextBox from './TextBox/text-box';
+import './form.css';
 
 /**
  * This Componenet handles all about the form.
@@ -21,13 +22,14 @@ export default class Form extends React.Component {
 
     componentDidMount() {
         this.requestForm().then(form => {
+            console.log(form)
             this.setState({form: form});
         })
     }
     
     requestForm = () => {
         return new Promise((resolve, reject) => {
-            fetch(`${API}/api/form`, {
+            fetch(`${API}/api/form/`, {
                 method: "GET",
                 credentials: "include",
             }
@@ -35,13 +37,13 @@ export default class Form extends React.Component {
                 return res.json();
             }).then(data => {
                 resolve(data);
-            }).catch(e => reject(e))
+            }).catch(e => {console.alert(e); reject(e)})
         })
     }
     
     renderCheckBox = (property) => {
         try {
-            return <CheckBox options={property.options}>{property.title}</CheckBox>;
+            return <CheckBox keys={property.options}>{property.title}</CheckBox>;
         } catch (e) {
             return <></>;
         }
@@ -49,16 +51,18 @@ export default class Form extends React.Component {
 
     renderRadioBox = (property) => {
         try {
-            return <RadioBox options={property.options}>{property.title}</RadioBox>;
+            return <RadioBox keys={property.options}>{property.title}</RadioBox>;
         } catch (e) {
             return <></>;
         }
     }
 
     renderTextBox = (property) => {
+        console.log(property)
         try {
             return <TextBox>{property.title}</TextBox>;
         } catch (e) {
+            console.log(e)
             return <></>;
         }
     }
@@ -68,15 +72,16 @@ export default class Form extends React.Component {
 
         return (
             <div className="form">
-                <h className="title">{this.state.form.title}</h>
+                <div className="title"><h>{this.state.form.title}</h></div>
                 {
                     this.state.form.properties.map(property => {
+                        console.log(property.type)
                         if (property.type == "radio-box") {
-                            this.renderRadioBox(property);
+                            return this.renderRadioBox(property);
                         } else if (property.type === "check-box") {
-                            this.renderCheckBox(property);
+                            return this.renderCheckBox(property);
                         } else if (property.type === "text-box") {
-                            this.renderTextBox(property);
+                            return this.renderTextBox(property);
                         }
                     })
                 }
