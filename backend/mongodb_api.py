@@ -118,7 +118,7 @@ class MongoDB:
         Returns:
             Form: The form that was found in the db.
         """
-        form = self.db["forms"].find_one({}, {"_id": 0})
+        form = self.db["forms"].find_one({}, {"_id": 0}, sort=[( 'id', pymongo.DESCENDING )])
         return form
     
     def insert_game_stats(self, game_stat: GameStats):
