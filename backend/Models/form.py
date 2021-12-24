@@ -1,10 +1,10 @@
-from typing import Dict, List
+from typing import Dict, List, Optional
 from pydantic import BaseModel
 
 
 class Form(BaseModel):
     """The Form basemodel, represents a form.
     """
-    id: str
+    id: Optional[int]
     title: str
-    properties: List[Dict[str, str]]
+    properties: List[Dict]
