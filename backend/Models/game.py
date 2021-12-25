@@ -1,3 +1,4 @@
+from typing import Dict, List
 from pydantic import BaseModel
 
 
@@ -12,4 +13,4 @@ class GameStats(BaseModel):
     user_name: str #
     game_number: int
     team_number: int
-    stats: list
+    stats: Dict[str, List]
