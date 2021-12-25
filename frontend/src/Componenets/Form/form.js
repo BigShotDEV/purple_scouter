@@ -1,5 +1,5 @@
 import React from 'react';
-import { API } from '../../Utils/authentication';
+import { API, whoami } from '../../Utils/authentication';
 import CheckBox from './CheckBox/check-box';
 import RadioBox from './RadioBox/radio-box';
 import SubmitButton from './SubmitButton/submit-button';
@@ -71,11 +71,54 @@ export default class Form extends React.Component {
         this.updateFormData(id, [event.target.value]);
     }
 
-    handleSubmit = () => {
-        deleteCookie(this.COOKIE_NAME);
+     handleSubmit = async () => {
+        let stats = {};
+        let user_name = "";
+        let game_number = 0;
+        let team_number = 0;
+
          
         // the form data in the this.form_data.
         // add a post request for the data.
+        console.log(this.state.form)
+        
+        if (this.state.form.properties.length > Object.keys(this.form_data).length) {
+            // goes here if the user hasn't asnwers all of the form.
+
+            alert("error");
+        } 
+
+        user_name = (await whoami()).user_name; // sets the user_name
+
+        this.state.form.properties.map((property, id) => { // sets the stats
+            stats[property.title] = this.form_data[id];
+        });
+
+        let requestBody = {
+            user_name: user_name,
+            game_number: game_number,
+            team_number: team_number,
+            stats: stats
+        }
+        console.log(JSON.stringify(requestBody));
+
+        fetch(`${API}/api/game/`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },    
+            body: JSON.stringify(requestBody)
+        }).then(res => {
+            return res.json();
+        }) .then(data => {
+            console.log(data)
+        })
+        .catch(e => {
+            alert(e)
+        })
+        deleteCookie(this.COOKIE_NAME);
     }
 
     componentDidMount() {
