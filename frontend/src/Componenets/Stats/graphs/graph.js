@@ -2,48 +2,25 @@ import React, { useState } from 'react';
 import { Chart as ChartJS } from 'chart.js/auto'
 import { Bar } from 'react-chartjs-2'
 
-export default class Graph extends React.Component {
+export default class BarGraph extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             labels: this.props.labels,
             datasets: []
         }
-        this.state.datasets.push({
-                        label: this.props.label,
-                        backgroundColor: 'rgba(75,192,192,1)',
-                        borderColor: 'rgba(0,0,0,1)',
-                        borderWidth: 2,
-                        data: this.props.data
-                    });
-        this.props.values.forEach((item) => {
-            this.state.datasets.push({
-                label: item.label,
-                backgroundColor:'rgba(75,192,192,1)',
-                borderColor : 'rgba(0,0,0,1)',
-                borderWidth : 2,
-                data : item.data
+        
+        if(this.props.values !== undefined && this.props.values !== null && Array.isArray(this.props.values)){
+            this.props.values.forEach((item, index) => {
+                this.state.datasets.push({
+                    label: item.label,
+                    backgroundColor:'rgba(' + (199 + 3*index) +',' + (115 + 15*index) + ',' + (5 + 25*index) + ',1)',
+                    borderColor : 'rgba(0,0,0,1)',
+                    borderWidth : 2,
+                    data : item.data
+                });
             });
-        });
-        // this.state = {
-        //     labels: this.props.labels,
-        //     datasets: [
-        //         {
-        //             label: this.props.label,
-        //             backgroundColor: 'rgba(75,192,192,1)',
-        //             borderColor: 'rgba(0,0,0,1)',
-        //             borderWidth: 2,
-        //             data: this.props.data
-        //         },
-        //         {
-        //             label: "balls",
-        //             backgroundColor: 'rgba(200,40,54,1)',
-        //             borderColor: 'rgba(0,0,0,1)',
-        //             borderWidth: 2,
-        //             data: [10,20,30,40,50]
-        //         }
-        //     ]
-        // }
+        };
     }
     render() {
         return (
