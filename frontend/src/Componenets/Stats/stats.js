@@ -7,15 +7,11 @@ export default class Stats extends React.Component {
     render() {
         return (
             <div className="stats-page">    
-                <BarGraph labels={['3073', '3074', '3075']}
-                       values={[{label: 'joe', data: [95, 95, 101]},
-                                {label: 'mama', data: [110, 115, 10]},
-                                {label: 'who', data: [110, 22, 25]},
-                                {label: 'the', data: [10, 22, 25]},
-                                {label: 'hell', data: [110, 115, 25]},
-                                {label: 'is', data: [110, 10, 25]},
-                                {label: 'steve', data: [115, 22, 25]},
-                                {label: 'jobs', data: [45, 73, 121]}]}/>
+                <BarGraph labels={['game 1', 'game 2', 'game 3']}
+                       values={[{label: 'total', data: [71, 80, 72], stack: "total"},
+                                {label: 'bottom', data: [20, 20, 20], stack: "holes"},
+                                {label: 'top', data: [20, 28, 18], stack: "holes"},
+                                {label: 'inner', data: [30, 3, 25], stack: "holes"}]}/>
             </div>
         )
     }
