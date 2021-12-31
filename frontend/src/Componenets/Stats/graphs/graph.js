@@ -24,8 +24,11 @@ export default class BarGraph extends React.Component {
                 this.state.datasets.push({
                     label: item.label,
                     backgroundColor:'rgb(' + nextColour[0] +',' + nextColour[1] + ',' + nextColour[2] + ')',
-                    borderColor : 'rgba(0,0,0,1)',
+                    hoverBackgroundColor: 'rgb(210, 120, 210)',
+                    borderColor : 'rgba(10,10,10,.9)',
+                    hoverBorderColor : 'rgba(0,0,0,1)',
                     borderWidth : 2,
+                    pointStyle: 'triangle',
                     data : item.data,
                     stack: item.stack === undefined ? "stack " + stackNum : item.stack
                 });
@@ -57,6 +60,19 @@ export default class BarGraph extends React.Component {
                                     color: 'rgb(75, 37, 87)'
                                 },
                                 stacked: true
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    pointStyle: 'circle',
+                                    usePointStyle: true,
+                                    padding: 25,
+                                    boxWidth: 15,
+                                    boxHeight: 15,
+                                    // color: '#cccccc'
+                                }
                             }
                         }
                     }}

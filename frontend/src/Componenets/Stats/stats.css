@@ -2,8 +2,11 @@
     width: 40vw;
     border: 10px;
     border-color: black;
-    margin: auto;
-    
+    margin: auto;    
+}
+p{
+    text-align: center;
+    color: #ccc;
 }
 .stats-page{
     
