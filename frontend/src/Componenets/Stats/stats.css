@@ -4,7 +4,7 @@
     border-color: black;
     margin: auto;    
 }
-p{
+p, h1{
     text-align: center;
     color: #ccc;
 }
