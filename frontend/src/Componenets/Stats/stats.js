@@ -18,15 +18,18 @@ export default class Stats extends React.Component {
                 "game_number": 1,
                 "team_number": 3075,
                 "stats": {
-                    "basic_score": {
+                    "number_stats": {
                         "lower": 12,
                         "upper": 44,
-                        "inner": 8
+                        "inner": 8,
+                        "boaz noz": 2
                     },
-                    "didTryClimb": true,
-                    "didClimb": false,
-                    "gotDefended": false,
-                    "defended": false
+                    "boolean_stats": {
+                        "didTryClimb": true,
+                        "didClimb": false,
+                        "gotDefended": false,
+                        "defended": false
+                    }
                 }
             },
             {
@@ -37,15 +40,40 @@ export default class Stats extends React.Component {
                 "game_number": 2,
                 "team_number": 3075,
                 "stats": {
-                    "basic_score": {
+                    "number_stats": {
                         "lower": 8,
                         "upper": 49,
-                        "inner": 13
+                        "inner": 13,
+                        "boaz noz": 2
                     },
-                    "didTryClimb": true,
-                    "didClimb": true,
-                    "gotDefended": true,
-                    "defended": false
+                    "boolean_stats": {
+                        "didTryClimb": true,
+                        "didClimb": true,
+                        "gotDefended": true,
+                        "defended": false
+                    }
+                }
+            },
+            {
+                "_id": {
+                    "$oid": "61cecd20784c687627c3a10d"
+                },
+                "user_name": "joe",
+                "game_number": 3,
+                "team_number": 3075,
+                "stats": {
+                    "number_stats": {
+                        "lower": 8,
+                        "upper": 49,
+                        "inner": 13,
+                        "boaz noz": 2
+                    },
+                    "boolean_stats": {
+                        "didTryClimb": true,
+                        "didClimb": true,
+                        "gotDefended": true,
+                        "defended": false
+                    }
                 }
             },
             {
@@ -56,15 +84,18 @@ export default class Stats extends React.Component {
                 "game_number": 1,
                 "team_number": 3076,
                 "stats": {
-                    "basic_score": {
+                    "number_stats": {
                         "lower": 45,
                         "upper": 14,
-                        "inner": 2
+                        "inner": 2,
+                        "boaz noz": 2
                     },
-                    "didTryClimb": true,
-                    "didClimb": true,
-                    "gotDefended": false,
-                    "defended": true
+                    "boolean_stats": {
+                        "didTryClimb": true,
+                        "didClimb": true,
+                        "gotDefended": false,
+                        "defended": true
+                    }
                 }
             }
         ];
@@ -80,28 +111,63 @@ export default class Stats extends React.Component {
         });
 
         for (const [team, games] of Object.entries(rawTeamsData)) {
-            let labels = [];
+            let graphLabels = [];
+            let graphValues = []; // {lable: '', data: []}
+            let precentageValues = [];
+            let amountOfGames = 0;
+            
+            console.log("pValues: " + precentageValues);
+            
+            for (const key of Object.keys(mongoData[0].stats.number_stats)) {
+                graphValues.push({ label: key, data: [] });
+            }
+            
+            for (const key of Object.keys(mongoData[0].stats.boolean_stats)) {
+                precentageValues.push({ label: key, times: 0});
+            }
+            console.log("pValues: " + precentageValues);
+            
             Object.keys(games).forEach(key => {
                 let label = 'game number #' + key;
-                if (games[key].gotDefended) {
+                if (games[key].boolean_stats.gotDefended) {
                     label += " (got defended)";
-                } else if (games[key].defended) {
+                } else if (games[key].boolean_stats.defended) {
                     label += " (defended)";
                 }
-                labels.push(label);
+                graphLabels.push(label);
+                
+                for (const dataStat of Object.keys(games[key].number_stats)) {
+                    graphValues.forEach(item => {
+                        if (item.label == dataStat) {
+                            item.data.push(games[key].number_stats[dataStat]);
+                        }
+                    });
+                }
+                
+                for (const dataStat of Object.keys(games[key].boolean_stats)) {
+                    precentageValues.forEach(item => {
+                        if (item.label == dataStat && games[key].boolean_stats[dataStat]) {
+                            item.times++;
+                        }
+                    });
+                }
+                
+                amountOfGames++;
+            });
+            console.log("pValues: " + precentageValues);
+            
+            let precentageValuesDisplayed = [<p>total games: {amountOfGames}</p>]
+            precentageValues.forEach(item => {
+                precentageValuesDisplayed.push(
+                    <p>{item.label}: {item.times} out of {amountOfGames} ({(item.times/amountOfGames*100).toFixed(2).replace(/[.,]00$/, "")}%)</p>
+                )
             })
             
-            let graphValues = [];
-
-
             this.state.teamsData.push(
                 <div className="stats-page">
-                    <h1>{team}</h1>
-                    <BarGraph labels={labels}
-                        values={[{ label: 'total', data: [71, 80, 72], stack: "total" },
-                        { label: 'bottom', data: [20, 20, 20], stack: "holes" },
-                        { label: 'top', data: [20, 28, 18], stack: "holes" },
-                        { label: 'inner', data: [30, 3, 25], stack: "holes" }]} />
+                    <h1>{"team " + team}</h1>
+                    <BarGraph labels={graphLabels} values={graphValues} />
+                    {precentageValuesDisplayed}
                 </div>
             )
         }
