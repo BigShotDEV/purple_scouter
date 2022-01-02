@@ -17,7 +17,6 @@ export default class BarGraph extends React.Component {
         if(this.props.values !== undefined && this.props.values !== null && Array.isArray(this.props.values)){
             this.props.values.forEach((item, index) => {
                 let nextColour = colourGenerator.generateNew(item.stack, item.newStack);
-                console.log("colour " + nextColour)
                 if(item.newStack !==undefined && item.newStack){
                     stackNum++;
                 }

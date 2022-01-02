@@ -64,16 +64,14 @@ export default class Stats extends React.Component {
             }
         ]
 
-        let avarageMongoData = {}
+        let teamsData = {
+        }
 
-        // mongoData.forEach((item, index) => {
-        //     this.label.push({
-
-        //     });
-        //     this.state.datas.push({
+        mongoData.forEach((item, index) => {
+            if (teamsData[item.team_number] === undefined){
                 
-        //     });
-        // });
+            } 
+        });
     }
     render() {
         return (
