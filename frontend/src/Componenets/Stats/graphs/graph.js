@@ -10,25 +10,25 @@ export default class BarGraph extends React.Component {
             labels: this.props.labels,
             datasets: [],
         };
-        
+
         let stackNum = 0;
         let colourGenerator = new ColourGenerator();
 
-        if(this.props.values !== undefined && this.props.values !== null && Array.isArray(this.props.values)){
+        if (this.props.values !== undefined && this.props.values !== null && Array.isArray(this.props.values)) {
             this.props.values.forEach((item, index) => {
                 let nextColour = colourGenerator.generateNew(item.stack, item.newStack);
-                if(item.newStack !==undefined && item.newStack){
+                if (item.newStack !== undefined && item.newStack) {
                     stackNum++;
                 }
                 this.state.datasets.push({
                     label: item.label,
-                    backgroundColor:'rgb(' + nextColour[0] +',' + nextColour[1] + ',' + nextColour[2] + ')',
+                    backgroundColor: 'rgb(' + nextColour[0] + ',' + nextColour[1] + ',' + nextColour[2] + ')',
                     hoverBackgroundColor: 'rgb(210, 120, 210)',
-                    borderColor : 'rgba(10,10,10,.9)',
-                    hoverBorderColor : 'rgba(0,0,0,1)',
-                    borderWidth : 2,
+                    borderColor: 'rgba(10,10,10,.9)',
+                    hoverBorderColor: 'rgba(0,0,0,1)',
+                    borderWidth: 2,
                     pointStyle: 'triangle',
-                    data : item.data,
+                    data: item.data,
                     stack: item.stack === undefined ? "stack " + stackNum : item.stack
                 });
             });
@@ -40,6 +40,7 @@ export default class BarGraph extends React.Component {
                 <Bar
                     data={this.state}
                     options={{
+                        aspectRatio: 1.2,
                         title: {
                             display: true,
                             text: 'Average Rainfall per month',

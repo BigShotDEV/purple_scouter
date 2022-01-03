@@ -1,13 +1,57 @@
-.graph{
-    width: 50vw;
-    border: 10px;
-    border-color: black;
-    margin: auto;    
+.graph {
+    width: 40vw;
+    margin: auto;
 }
-p, h1{
+
+h1 {
     text-align: center;
-    color: #ccc;
+    color: rgb(211, 216, 204);
 }
-.stats-page{
+
+p {
+    text-align: left;
+    color: #ccc;
+    padding-left: 40vw;
+}
+
+.centered {
+    text-align: center;
+}
+
+input {
+    width: 60vw;
+    margin: 20vw;
+    margin-top: 5vh; 
+    margin-bottom: 5vh; 
+    height: 2.5em;
+    text-align: center;
+}
+
+.select {
+    width: 8em;
+    font-size: 1em;
+    padding: 0%;
+    margin: auto
+}
+
+@media only screen and (max-width: 800px) {
+    .graph {
+        width: 95vw;
+        margin: auto;
+    }
     
+    p {
+        text-align: left;
+        color: #ccc;
+        padding-left: 10vw;
+    }
+
+    input {
+        width: 80vw;
+        margin: 10vw;
+        margin-top: 10vh; 
+        margin-bottom: 5vh; 
+        height: 2.5em;
+        text-align: center;
+    }
 }

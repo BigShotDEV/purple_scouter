@@ -1,14 +1,125 @@
 import React from 'react';
+import Select from "react-select"
 import BarGraph from './graphs/graph';
 import './stats.css'
 
+/**
+ * this method exports a data sheet into a graph form
+ * 
+ * @param {Array} data  the data to parse
+ * @returns the data sorted into an array of divs ready to be rendered
+ */
+let exportDataToRender = (data) => {
+    let rawTeamsData = {};
+
+    data.forEach(item => {
+        if (rawTeamsData[item.team_number] === undefined) {
+            rawTeamsData[item.team_number] = {};
+        }
+        rawTeamsData[item.team_number][item.game_number] = item.stats;
+    });
+
+    for (const [team, games] of Object.entries(rawTeamsData)) {
+        let graphLabels = [];
+        let graphValues = []; // {lable: '', data: []}
+        let precentageValues = [];
+        let amountOfGames = 0;
+
+        for (const [key, value] of Object.entries(data[0].stats)) {
+            switch (typeof value) {
+                case "number":
+                    graphValues.push({ label: key, data: [], stack: key });
+                    break;
+                case "boolean":
+                    precentageValues.push({ label: key, times: 0 });
+                    break;
+                case "object":
+                    for (const [subKey, subValue] of Object.entries(value)) {
+                        switch (typeof subValue) {
+                            case "number":
+                                graphValues.push({ label: subKey, data: [], stack: key });
+                                break;
+                            default:
+                                console.warn("the type of the stat " + key + "\\" + subKey + " (" + typeof subValue + ") is not supported");
+                                break;
+                        }
+                    }
+                    break;
+                default:
+                    console.warn("the type of the stat \"" + key + "\" (" + typeof value + ") is not supported");
+                    break;
+            }
+        }
+
+        Object.keys(games).forEach(key => {
+            let label = key;
+            if (games[key].gotDefended) {
+                label += " (got defended)";
+            } else if (games[key].defended) {
+                label += " (defended)";
+            }
+            graphLabels.push(label);
+
+            for (const [dataStat, value] of Object.entries(games[key])) {
+                switch (typeof value) {
+                    case "number":
+                        graphValues.forEach(item => {
+                            if (item.label === dataStat) {
+                                item.data.push(games[key][dataStat]);
+                            }
+                        });
+                        break
+                    case "object":
+                        for (const actualDataStat of Object.keys(value)) {
+                            graphValues.forEach(item => {
+                                if (item.label === actualDataStat) {
+                                    item.data.push(games[key][dataStat][actualDataStat]);
+                                }
+                            });
+                        }
+                        break
+                    case "boolean":
+                        precentageValues.forEach(item => {
+                            if (item.label === dataStat && games[key][dataStat]) {
+                                item.times++;
+                            }
+                        });
+                }
+            }
+
+            amountOfGames++;
+        });
+
+        let precentageValuesDisplayed = [<p>total games: {amountOfGames}</p>]
+        precentageValues.forEach(item => {
+            precentageValuesDisplayed.push(
+                <p>{item.label}: {item.times} out of {amountOfGames} ({(item.times / amountOfGames * 100).toFixed(2).replace(/[.,]00$/, "")}%)</p>
+            )
+        })
+
+        let teamsData = [];
+
+        teamsData.push(
+            <div className="stats-page">
+                <h1>{"team " + team}</h1>
+                <BarGraph labels={graphLabels} values={graphValues} />
+                {precentageValuesDisplayed}
+            </div>
+        )
+        return teamsData
+    }
+
+}
+
+const customStyles = {
+    control: base => ({
+        height: 35,
+        minHeight: 35
+    })
+};
+
 export default class Stats extends React.Component {
     constructor(props) {
-        super(props);
-        this.state = {
-            teamsData: []
-        };
-
         let mongoData = [
             {
                 "_id": {
@@ -20,6 +131,7 @@ export default class Stats extends React.Component {
                 "stats": {
                     "pablo": 10,
                     "shots": {
+
                         "lower": 12,
                         "upper": 44,
                         "inner": 8,
@@ -96,93 +208,21 @@ export default class Stats extends React.Component {
             }
         ];
 
-        let rawTeamsData = {};
-
-        mongoData.forEach(item => {
-            if (rawTeamsData[item.team_number] === undefined) {
-                rawTeamsData[item.team_number] = {};
-            }
-            rawTeamsData[item.team_number][item.game_number] = item.stats;
-        });
-
-        for (const [team, games] of Object.entries(rawTeamsData)) {
-            let graphLabels = [];
-            let graphValues = []; // {lable: '', data: []}
-            let precentageValues = [];
-            let amountOfGames = 0;
-
-            for (const [key, value] of Object.entries(mongoData[0].stats)) {
-                switch (typeof value) {
-                    case "number":
-                        graphValues.push({ label: key, data: [], stack: key });
-                        break;
-                    case "boolean":
-                        precentageValues.push({ label: key, times: 0 });
-                        break;
-                    // case "object":
-                    //     for (const [subKey, subValue] of value) {
-                    //         switch (typeof subValue) {
-                    //             case "number":
-                    //                 graphValues.push({ label: key, data: [], stack: subKey });
-                    //                 break;
-                    //             default:
-                    //                 console.warn("unhandled stat type: " + typeof value);
-                    //                 break;
-                    //         }
-                    //     }
-                    //     break;
-                    default:
-                        console.warn("unhandled stat type: " + typeof value);
-                        break;
-                }
-            }
-
-            Object.keys(games).forEach(key => {
-                let label = 'game number #' + key;
-                if (games[key].gotDefended) {
-                    label += " (got defended)";
-                } else if (games[key].defended) {
-                    label += " (defended)";
-                }
-                graphLabels.push(label);
-
-                for (const dataStat of Object.keys(games[key])) {
-                    graphValues.forEach(item => {
-                        if (item.label == dataStat) {
-                            item.data.push(games[key][dataStat]);
-                        }
-                    });
-
-                }
-
-                for (const dataStat of Object.keys(games[key])) {
-                    precentageValues.forEach(item => {
-                        if (item.label == dataStat && games[key][dataStat]) {
-                            item.times++;
-                        }
-                    });
-                }
-
-                amountOfGames++;
-            });
-
-            let precentageValuesDisplayed = [<p>total games: {amountOfGames}</p>]
-            precentageValues.forEach(item => {
-                precentageValuesDisplayed.push(
-                    <p>{item.label}: {item.times} out of {amountOfGames} ({(item.times / amountOfGames * 100).toFixed(2).replace(/[.,]00$/, "")}%)</p>
-                )
-            })
-
-            this.state.teamsData.push(
-                <div className="stats-page">
-                    <h1>{"team " + team}</h1>
-                    <BarGraph labels={graphLabels} values={graphValues} />
-                    {precentageValuesDisplayed}
-                </div>
-            )
-        }
+        super(props);
+        this.state = {
+            teamsData: exportDataToRender(mongoData)
+        };
     }
     render() {
-        return this.state.teamsData;
+
+        return (
+            <div>
+                <input type="search"></input>
+                <div className='centered'>sort by: <Select className='select' options={[
+                    { value: "hi", label: "asd" }
+                ]} /></div>
+                {this.state.teamsData}
+            </div>
+        )
     }
 }
