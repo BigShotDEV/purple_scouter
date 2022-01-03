@@ -64,6 +64,9 @@ def get_team_stats(team_number: int, current_user: User = Depends(get_current_ad
 def get_game(game_number: int, current_user: User = Depends(get_current_admin)):
     return mongodb.get_game(game_number)
 
+@app.get("/api/games/")
+def get_game(current_user: User = Depends(get_current_user)):
+    return mongodb.get_all_games()
 
 @app.get("/api/form/")
 def get_form(current_user: User = Depends(get_current_user)):

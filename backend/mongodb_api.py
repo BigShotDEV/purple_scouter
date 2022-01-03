@@ -14,7 +14,7 @@ class MongoDB:
     to improve performance create only one instance of the class.
     """
 
-    HOST = "192.168.1.74"
+    HOST = "localhost"
     PORT = 27017
 
     DB_NAME = "purple_scouter"
@@ -129,6 +129,13 @@ class MongoDB:
         """
         self.db["games"].insert_one(game_stat.dict())
 
+    def get_all_games(self) -> list:
+        """ Gets all the games data.
+
+        Returns:
+            list: a list of the games (yes all of them).    
+        """
+        return [result for result in self.db["games"].find({}, {"_id": 0})]
 
     def get_game(self, game_number: int):
         """Retuns all the data about a game by a game_number.
