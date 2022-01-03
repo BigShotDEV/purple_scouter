@@ -18,18 +18,17 @@ export default class Stats extends React.Component {
                 "game_number": 1,
                 "team_number": 3075,
                 "stats": {
-                    "number_stats": {
+                    "pablo": 10,
+                    "shots": {
                         "lower": 12,
                         "upper": 44,
                         "inner": 8,
-                        "boaz noz": 2
                     },
-                    "boolean_stats": {
-                        "didTryClimb": true,
-                        "didClimb": false,
-                        "gotDefended": false,
-                        "defended": false
-                    }
+                    "boaz noz": 2,
+                    "didTryClimb": true,
+                    "didClimb": false,
+                    "gotDefended": false,
+                    "defended": false
                 }
             },
             {
@@ -40,18 +39,17 @@ export default class Stats extends React.Component {
                 "game_number": 2,
                 "team_number": 3075,
                 "stats": {
-                    "number_stats": {
+                    "pablo": 10,
+                    "shots": {
                         "lower": 8,
                         "upper": 49,
                         "inner": 13,
-                        "boaz noz": 2
                     },
-                    "boolean_stats": {
-                        "didTryClimb": true,
-                        "didClimb": true,
-                        "gotDefended": true,
-                        "defended": false
-                    }
+                    "boaz noz": 2,
+                    "didTryClimb": true,
+                    "didClimb": true,
+                    "gotDefended": true,
+                    "defended": false
                 }
             },
             {
@@ -62,18 +60,17 @@ export default class Stats extends React.Component {
                 "game_number": 3,
                 "team_number": 3075,
                 "stats": {
-                    "number_stats": {
+                    "pablo": 10,
+                    "shots": {
                         "lower": 8,
                         "upper": 49,
                         "inner": 13,
                         "boaz noz": 2
                     },
-                    "boolean_stats": {
-                        "didTryClimb": true,
-                        "didClimb": true,
-                        "gotDefended": true,
-                        "defended": false
-                    }
+                    "didTryClimb": true,
+                    "didClimb": true,
+                    "gotDefended": true,
+                    "defended": false
                 }
             },
             {
@@ -84,24 +81,22 @@ export default class Stats extends React.Component {
                 "game_number": 1,
                 "team_number": 3076,
                 "stats": {
-                    "number_stats": {
+                    "pablo": 10,
+                    "shots": {
                         "lower": 45,
                         "upper": 14,
                         "inner": 2,
-                        "boaz noz": 2
                     },
-                    "boolean_stats": {
-                        "didTryClimb": true,
-                        "didClimb": true,
-                        "gotDefended": false,
-                        "defended": true
-                    }
+                    "boaz noz": 2,
+                    "didTryClimb": true,
+                    "didClimb": true,
+                    "gotDefended": false,
+                    "defended": true
                 }
             }
         ];
 
-        let rawTeamsData = {
-        };
+        let rawTeamsData = {};
 
         mongoData.forEach(item => {
             if (rawTeamsData[item.team_number] === undefined) {
@@ -115,54 +110,69 @@ export default class Stats extends React.Component {
             let graphValues = []; // {lable: '', data: []}
             let precentageValues = [];
             let amountOfGames = 0;
-            
-            console.log("pValues: " + precentageValues);
-            
-            for (const key of Object.keys(mongoData[0].stats.number_stats)) {
-                graphValues.push({ label: key, data: [] });
+
+            for (const [key, value] of Object.entries(mongoData[0].stats)) {
+                switch (typeof value) {
+                    case "number":
+                        graphValues.push({ label: key, data: [], stack: key });
+                        break;
+                    case "boolean":
+                        precentageValues.push({ label: key, times: 0 });
+                        break;
+                    // case "object":
+                    //     for (const [subKey, subValue] of value) {
+                    //         switch (typeof subValue) {
+                    //             case "number":
+                    //                 graphValues.push({ label: key, data: [], stack: subKey });
+                    //                 break;
+                    //             default:
+                    //                 console.warn("unhandled stat type: " + typeof value);
+                    //                 break;
+                    //         }
+                    //     }
+                    //     break;
+                    default:
+                        console.warn("unhandled stat type: " + typeof value);
+                        break;
+                }
             }
-            
-            for (const key of Object.keys(mongoData[0].stats.boolean_stats)) {
-                precentageValues.push({ label: key, times: 0});
-            }
-            console.log("pValues: " + precentageValues);
-            
+
             Object.keys(games).forEach(key => {
                 let label = 'game number #' + key;
-                if (games[key].boolean_stats.gotDefended) {
+                if (games[key].gotDefended) {
                     label += " (got defended)";
-                } else if (games[key].boolean_stats.defended) {
+                } else if (games[key].defended) {
                     label += " (defended)";
                 }
                 graphLabels.push(label);
-                
-                for (const dataStat of Object.keys(games[key].number_stats)) {
+
+                for (const dataStat of Object.keys(games[key])) {
                     graphValues.forEach(item => {
                         if (item.label == dataStat) {
-                            item.data.push(games[key].number_stats[dataStat]);
+                            item.data.push(games[key][dataStat]);
                         }
                     });
+
                 }
-                
-                for (const dataStat of Object.keys(games[key].boolean_stats)) {
+
+                for (const dataStat of Object.keys(games[key])) {
                     precentageValues.forEach(item => {
-                        if (item.label == dataStat && games[key].boolean_stats[dataStat]) {
+                        if (item.label == dataStat && games[key][dataStat]) {
                             item.times++;
                         }
                     });
                 }
-                
+
                 amountOfGames++;
             });
-            console.log("pValues: " + precentageValues);
-            
+
             let precentageValuesDisplayed = [<p>total games: {amountOfGames}</p>]
             precentageValues.forEach(item => {
                 precentageValuesDisplayed.push(
-                    <p>{item.label}: {item.times} out of {amountOfGames} ({(item.times/amountOfGames*100).toFixed(2).replace(/[.,]00$/, "")}%)</p>
+                    <p>{item.label}: {item.times} out of {amountOfGames} ({(item.times / amountOfGames * 100).toFixed(2).replace(/[.,]00$/, "")}%)</p>
                 )
             })
-            
+
             this.state.teamsData.push(
                 <div className="stats-page">
                     <h1>{"team " + team}</h1>
