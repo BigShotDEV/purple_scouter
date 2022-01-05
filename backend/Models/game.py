@@ -13,4 +13,4 @@ class GameStats(BaseModel):
     user_name: str #
     game_number: int
     team_number: int
-    stats: Dict[str, List]
+    stats: Dict
