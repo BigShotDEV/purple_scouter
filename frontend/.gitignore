@@ -11,6 +11,10 @@
 # production
 /build
 
+frontend/node_modules
+backend/__pycache__
+backend/Models/__pycache__
+
 # misc
 .DS_Store
 .env.local
