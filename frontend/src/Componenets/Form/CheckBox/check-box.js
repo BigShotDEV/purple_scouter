@@ -18,15 +18,21 @@ export default class CheckBox extends React.Component {
     renderOptions = () => {
         return this.props.keys.map(key => {
             if (this.props.default === undefined || !this.props.default.includes(key)) {
-                return <div key={key} className="option">
-                <input type="checkbox" onChange={() => {this.props.onChange(key, this.props.id)}} id={key} name={key}/>
-                <label htmlFor={key}>{key}</label>
-            </div>
+                return (
+                <label className="checkbox-label">
+                    <p>{key}</p>
+                    <input type="checkbox" onChange={() => {this.props.onChange(key, this.props.id)}} id={key} name={key}/>
+                    <span className="checkbox-custom"></span>
+                </label>
+                );
             } else {
-                return <div key={key} className="option">
-                <input type="checkbox" onChange={() => {this.props.onChange(key, this.props.id)}} id={key} name={key} checked/>
-                <label htmlFor={key}>{key}</label>
-            </div>
+                return (
+                    <label className="checkbox-label">
+                        <p>{key}</p>
+                        <input type="checkbox" onChange={() => {this.props.onChange(key, this.props.id)}} id={key} name={key} defaultChecked={true}/>
+                        <span className="checkbox-custom"></span>
+                    </label>
+                    );
             }
             
         })
