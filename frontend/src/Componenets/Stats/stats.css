@@ -3,12 +3,12 @@
     margin: auto;
 }
 
-h1 {
+.team-stats>h1 {
     text-align: center;
     color: rgb(211, 216, 204);
 }
 
-p {
+.team-stats>p {
     text-align: left;
     color: #ccc;
     padding-left: 40vw;
@@ -18,7 +18,7 @@ p {
     text-align: center;
 }
 
-input {
+.stats-page>input {
     width: 60vw;
     margin: 20vw;
     margin-top: 5vh; 
@@ -40,13 +40,13 @@ input {
         margin: auto;
     }
     
-    p {
+    .team-stats>p {
         text-align: left;
         color: #ccc;
         padding-left: 10vw;
     }
 
-    input {
+    .stats-page>input {
         width: 80vw;
         margin: 10vw;
         margin-top: 10vh; 

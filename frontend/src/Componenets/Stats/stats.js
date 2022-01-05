@@ -100,7 +100,7 @@ let exportDataToRender = (data) => {
         let teamsData = [];
 
         teamsData.push(
-            <div className="stats-page">
+            <div className="team-stats">
                 <h1>{"team " + team}</h1>
                 <BarGraph labels={graphLabels} values={graphValues} />
                 {precentageValuesDisplayed}
@@ -216,7 +216,7 @@ export default class Stats extends React.Component {
     render() {
 
         return (
-            <div>
+            <div className="stats-page">
                 <input type="search"></input>
                 <div className='centered'>sort by: <Select className='select' options={[
                     { value: "hi", label: "asd" }
