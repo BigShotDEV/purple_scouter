@@ -63,7 +63,12 @@ export default class Form extends React.Component {
 
     handleCheckBox = (event, id) => {
         if (this.form_data[id] === undefined) this.updateFormData(id, []);
-
+        
+        if (this.form_data[id].includes(event)) {
+            this.updateFormData(id, this.form_data[id].filter((data) => data != event));
+            return;
+        }
+        
         this.updateFormData(id, [...this.form_data[id], event]);
     }
 
