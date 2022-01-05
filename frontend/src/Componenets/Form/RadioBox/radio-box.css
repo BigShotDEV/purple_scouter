@@ -1,4 +1,4 @@
-.radio-box {
+/* .radio-box {
     border-width: 3px;
     border-style: solid;
     border-top-style: none;
@@ -8,7 +8,7 @@
     color: rgb(75, 37, 87);
 
     padding-bottom: 30px;
-}
+} */
 
 .radio-box .title {
     text-align: center;
@@ -18,15 +18,67 @@
     color: rgb(211, 216, 204);
 }
 
-.radio-box .option {
-    margin: auto;
-
-    font-size: 1.5em;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    color: rgb(177, 166, 179);
-    padding-left: 10%;
-}
-
-.radio-box label {
-    padding-left: 10px;
-}
+/* The container */
+.radiobox-label {
+    display: block;
+    position: relative;
+    padding-left: calc(10% + 40px);
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* Hide the browser's default radio button */
+  .radiobox-label input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  /* Create a custom radio button */
+  .radiobox-custom {
+    margin-left: 10%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+    border-radius: 50%;
+  }
+  
+  /* On mouse-over, add a grey background color */
+  .radiobox-label:hover input ~ .radiobox-custom {
+    background-color: #ccc;
+  }
+  
+  /* When the radio button is checked, add a blue background */
+  .radiobox-label input:checked ~ .radiobox-custom {
+    background-color: #2196F3;
+  }
+  
+  /* Create the indicator (the dot/circle - hidden when not checked) */
+  .radiobox-custom:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  /* Show the indicator (dot/circle) when checked */
+  .radiobox-label input:checked ~ .radiobox-custom:after {
+    display: block;
+  }
+  
+  /* Style the indicator (dot/circle) */
+  .radiobox-label .radiobox-custom:after {
+       top: 9px;
+      left: 9px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: white;
+  }

@@ -25,17 +25,19 @@ export default class RadioBox extends React.Component {
         return this.props.keys.map(key => {
             if (this.props.default === undefined || !this.props.default.includes(key)) {
             return (
-            <div className="option">
-                <input type="radio" onChange={(event) => {this.props.onChange(event, this.props.id)}} id={key} name={this.id} value={key}/>
-                <label for={key}>{key}</label>
-            </div>
+                <label className="radiobox-label">
+                    <p>{key}</p>
+                    <input type="radio" onChange={(event) => {this.props.onChange(event, this.props.id)}} id={key} name={this.id} value={key}/>
+                    <span className="radiobox-custom"></span>
+                </label>
             );
             } else {
                 return (
-                    <div className="option">
-                        <input type="radio" onChange={(event) => {this.props.onChange(event, this.props.id)}} id={key} name={this.id} value={key} checked/>
-                        <label for={key}>{key}</label>
-                    </div>
+                    <label className="radiobox-label">
+                        <p>{key}</p>
+                        <input type="radio" onChange={(event) => {this.props.onChange(event, this.props.id)}} id={key} name={this.id} value={key} defaultChecked={true}/>
+                        <span className="radiobox-custom"></span>
+                    </label>
                     ); 
             }
         });
