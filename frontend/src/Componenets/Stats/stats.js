@@ -1,5 +1,6 @@
 import React from 'react';
 import Select from "react-select"
+import { API } from '../../Utils/authentication';
 import BarGraph from './graphs/graph';
 import './stats.css'
 
@@ -213,6 +214,20 @@ export default class Stats extends React.Component {
             teamsData: exportDataToRender(mongoData)
         };
     }
+
+    componentDidMount() {
+        fetch(`${API}/api/games/`,
+        {
+            method: "GET"
+        }).then(res => {
+            return res;
+        }).then(data => {
+            this.mongoData = data;
+        }).catch(e => {
+            alert(e);
+        })
+    }
+
     render() {
 
         return (
