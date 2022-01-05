@@ -96,7 +96,7 @@ export default class Form extends React.Component {
         user_name = (await whoami()).user_name; // sets the user_name
 
         this.state.form.properties.map((property, id) => { // sets the stats
-            stats[property.title] = this.form_data[id];
+            stats[id] = this.form_data[id];
         });
 
         let requestBody = {
@@ -105,7 +105,7 @@ export default class Form extends React.Component {
             team_number: team_number,
             stats: stats
         }
-        console.log(JSON.stringify(requestBody));
+        console.log("request_body", JSON.stringify(requestBody));
 
         fetch(`${API}/api/game/`, {
             method: "POST",
