@@ -91,6 +91,7 @@ export default class Form extends React.Component {
             // goes here if the user hasn't asnwers all of the form.
 
             alert("error");
+            return;
         } 
 
         user_name = (await whoami()).user_name; // sets the user_name
@@ -118,6 +119,7 @@ export default class Form extends React.Component {
         }).then(res => {
             return res.json();
         }) .then(data => {
+            window.location.reload();
             console.log(data)
         })
         .catch(e => {
