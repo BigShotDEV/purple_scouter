@@ -1,14 +1,4 @@
-.check-box {
-    border-width: 3px;
-    border-style: solid;
-    border-top-style: none;
-    border-left-style: none;
-    border-right-style: none;
 
-    color: rgb(75, 37, 87);
-
-    padding-bottom: 30px;
-}
 
 .check-box .title {
     text-align: center;
@@ -18,15 +8,82 @@
     color: rgb(211, 216, 204);
 }
 
-.check-box .option {
-    margin: auto;
+/* The container */
+.checkbox-label {
+    display: block;
+    position: relative;
+    padding-left: calc(40px + 10%);
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
 
-    font-size: 1.5em;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    color: rgb(177, 166, 179);
-    padding-left: 10%;
-}
-
-.check-box label {
-    padding-left: 10px;
-}
+/* Hide the browser's default checkbox */
+.checkbox-label input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  
+  /* Create a custom checkbox */
+  .checkbox-custom {
+    margin-left: 10%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    border-radius: 3px;
+    background-color: #eee;
+    transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+  }
+  
+  /* On mouse-over, add a grey background color */
+  .checkbox-label:hover input ~ .checkbox-custom {
+    background-color: #ccc;
+  }
+  
+  /* When the checkbox is checked, add a blue background */
+  .checkbox-label input:checked ~ .checkbox-custom {
+    background-color: #2196F3;
+  }
+  
+  /* Create the checkmark/indicator (hidden when not checked) */
+  .checkbox-custom:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  /* Show the checkmark when checked */
+  .checkbox-label input:checked ~ .checkbox-custom:after {
+    display: block;
+  }
+  
+  /* Style the checkmark/indicator */
+  .checkbox-label .checkbox-custom:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+    transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+  }
