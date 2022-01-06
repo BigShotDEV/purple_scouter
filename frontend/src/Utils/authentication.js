@@ -71,31 +71,28 @@ export const whoami = () => {
 
 export const authentication = (form) => {
   const request = (form) => {
-    console.log(form)
-    // alert(1)
-    fetch(`${API}/token`, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      credentials: "include",
-      body: form
-      }
-    )
-    .then(res => {
-        if (res.status == 400) {
-          // if this running means the user's login attempt failed (username or password is wrong).
-          // Dan add here your shit to inform the user in a proper way.
-          alert("Username or Password is wrong.");
-  
-        } else if(res.status == 200) {
-          // if this running means the user's login attempt succeded.
-          
-          window.location.replace("/"); // redirect the user to the home page.
+    return new Promise((resolve, reject) => {
+      fetch(`${API}/token`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        credentials: "include",
+        body: form
         }
-    })
-    .catch(e => {
-      console.log("error", e)
+      )
+      .then(res => {
+          if (res.status == 400) {
+            // if this running means the user's login attempt failed (username or password is wrong).
+            reject("Username or Password is wrong");
+          } else if(res.status == 200) {
+            // if this running means the user's login attempt succeded.
+            resolve();
+          }
+      })
+      .catch(e => {
+        reject(e);
+      })
     })
     }
 
@@ -115,5 +112,5 @@ export const authentication = (form) => {
 
   var [username, password] = parse(form);
   form = buildForm(username, password);
-  request(form)
+  return request(form);
 }
