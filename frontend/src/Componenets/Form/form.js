@@ -77,7 +77,7 @@ export default class Form extends React.Component {
     }
 
      handleSubmit = async () => {
-        let stats = {};
+        let stats = [];
         let user_name = "";
         let game_number = 0;
         let team_number = 0;
@@ -97,7 +97,7 @@ export default class Form extends React.Component {
         user_name = (await whoami()).user_name; // sets the user_name
 
         this.state.form.properties.map((property, id) => { // sets the stats
-            stats[id] = this.form_data[id];
+            stats[id] = {title: this.state.form.properties[id].title, value: this.form_data[id]};
         });
 
         let requestBody = {
@@ -120,7 +120,6 @@ export default class Form extends React.Component {
             return res.json();
         }) .then(data => {
             window.location.reload();
-            console.log(data)
         })
         .catch(e => {
             alert(e)
