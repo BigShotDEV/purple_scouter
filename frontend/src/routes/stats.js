@@ -23,8 +23,8 @@ export default class StatsRoute extends React.Component {
     }
     
     render() {
-        // if (this.state.isAuthenticated === undefined) return<>Loading...</>;
-        // if (!this.state.isAuthenticated) return <NotAutherizedPage></NotAutherizedPage>;
+        if (this.state.isAuthenticated === undefined) return<>Loading...</>;
+        if (!this.state.isAuthenticated) return <NotAutherizedPage></NotAutherizedPage>;
 
         return <Stats/>;
     }

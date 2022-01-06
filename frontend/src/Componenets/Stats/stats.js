@@ -218,10 +218,12 @@ export default class Stats extends React.Component {
     componentDidMount() {
         fetch(`${API}/api/games/`,
         {
-            method: "GET"
+            method: "GET",
+            credentials: "include",
         }).then(res => {
-            return res;
+            return res.json();
         }).then(data => {
+            console.log(data)
             this.mongoData = data;
         }).catch(e => {
             alert(e);
