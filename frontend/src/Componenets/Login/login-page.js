@@ -1,6 +1,6 @@
 import React from 'react';
 import InputField from './inputField/input-field';
-import { authentication } from '../../Utils/authentication';
+import { authentication, isAuthenticated } from '../../Utils/authentication';
 import "./login-page.css"
 
 export default class LoginPage extends React.Component {    
@@ -9,6 +9,12 @@ export default class LoginPage extends React.Component {
 
         this.state = {
             error: "",
+        }
+    }
+
+    componentDidMount() {
+        if (isAuthenticated("/")) {
+            window.location.href = "/"; // redirects, user already authenticated...
         }
     }
     
