@@ -12,6 +12,7 @@ import './stats.css'
  */
 let exportDataToRender = (data) => {
     let rawTeamsData = {};
+    let teamsData = [];
 
     data.forEach(item => {
         if (rawTeamsData[item.team_number] === undefined) {
@@ -85,6 +86,10 @@ let exportDataToRender = (data) => {
                                 item.times++;
                             }
                         });
+                        break
+                    default:
+                        console.warn("the type of the stat \"" + key + "\" (" + typeof value + ") is not supported");
+                        break;
                 }
             }
 
@@ -98,8 +103,6 @@ let exportDataToRender = (data) => {
             )
         })
 
-        let teamsData = [];
-
         teamsData.push(
             <div className="team-stats">
                 <h1>{"team " + team}</h1>
@@ -107,127 +110,120 @@ let exportDataToRender = (data) => {
                 {precentageValuesDisplayed}
             </div>
         )
-        return teamsData
     }
-
+    
+    return teamsData
 }
-
-const customStyles = {
-    control: base => ({
-        height: 35,
-        minHeight: 35
-    })
-};
 
 export default class Stats extends React.Component {
     constructor(props) {
-        let mongoData = [
-            {
-                "_id": {
-                    "$oid": "61cecd20784c687627c3a10d"
-                },
-                "user_name": "joe",
-                "game_number": 1,
-                "team_number": 3075,
-                "stats": {
-                    "pablo": 10,
-                    "shots": {
-
-                        "lower": 12,
-                        "upper": 44,
-                        "inner": 8,
-                    },
-                    "boaz noz": 2,
-                    "didTryClimb": true,
-                    "didClimb": false,
-                    "gotDefended": false,
-                    "defended": false
-                }
-            },
-            {
-                "_id": {
-                    "$oid": "61cecd20784c687627c3a10d"
-                },
-                "user_name": "joe",
-                "game_number": 2,
-                "team_number": 3075,
-                "stats": {
-                    "pablo": 10,
-                    "shots": {
-                        "lower": 8,
-                        "upper": 49,
-                        "inner": 13,
-                    },
-                    "boaz noz": 2,
-                    "didTryClimb": true,
-                    "didClimb": true,
-                    "gotDefended": true,
-                    "defended": false
-                }
-            },
-            {
-                "_id": {
-                    "$oid": "61cecd20784c687627c3a10d"
-                },
-                "user_name": "joe",
-                "game_number": 3,
-                "team_number": 3075,
-                "stats": {
-                    "pablo": 10,
-                    "shots": {
-                        "lower": 8,
-                        "upper": 49,
-                        "inner": 13,
-                        "boaz noz": 2
-                    },
-                    "didTryClimb": true,
-                    "didClimb": true,
-                    "gotDefended": true,
-                    "defended": false
-                }
-            },
-            {
-                "_id": {
-                    "$oid": "61cecd20784c687627c3a10d"
-                },
-                "user_name": "joe",
-                "game_number": 1,
-                "team_number": 3076,
-                "stats": {
-                    "pablo": 10,
-                    "shots": {
-                        "lower": 45,
-                        "upper": 14,
-                        "inner": 2,
-                    },
-                    "boaz noz": 2,
-                    "didTryClimb": true,
-                    "didClimb": true,
-                    "gotDefended": false,
-                    "defended": true
-                }
-            }
-        ];
-
         super(props);
+        
         this.state = {
-            teamsData: exportDataToRender(mongoData)
+            mongoData: [],
+            tempData: [
+                {
+                    "_id": {
+                        "$oid": "61cecd20784c687627c3a10d"
+                    },
+                    "user_name": "joe",
+                    "game_number": 1,
+                    "team_number": 3075,
+                    "stats": {
+                        "pablo": 10,
+                        "shots": {
+    
+                            "lower": 12,
+                            "upper": 44,
+                            "inner": 8,
+                        },
+                        "boaz noz": 2,
+                        "didTryClimb": true,
+                        "didClimb": false,
+                        "gotDefended": false,
+                        "defended": false
+                    }
+                },
+                {
+                    "_id": {
+                        "$oid": "61cecd20784c687627c3a10d"
+                    },
+                    "user_name": "joe",
+                    "game_number": 2,
+                    "team_number": 3075,
+                    "stats": {
+                        "pablo": 10,
+                        "shots": {
+                            "lower": 8,
+                            "upper": 49,
+                            "inner": 13,
+                        },
+                        "boaz noz": 2,
+                        "didTryClimb": true,
+                        "didClimb": true,
+                        "gotDefended": true,
+                        "defended": false
+                    }
+                },
+                {
+                    "_id": {
+                        "$oid": "61cecd20784c687627c3a10d"
+                    },
+                    "user_name": "joe",
+                    "game_number": 3,
+                    "team_number": 3075,
+                    "stats": {
+                        "pablo": 10,
+                        "shots": {
+                            "lower": 8,
+                            "upper": 49,
+                            "inner": 13,
+                            "boaz noz": 2
+                        },
+                        "didTryClimb": true,
+                        "didClimb": true,
+                        "gotDefended": true,
+                        "defended": false
+                    }
+                },
+                {
+                    "_id": {
+                        "$oid": "61cecd20784c687627c3a10d"
+                    },
+                    "user_name": "joe",
+                    "game_number": 1,
+                    "team_number": 3076,
+                    "stats": {
+                        "pablo": 10,
+                        "shots": {
+                            "lower": 45,
+                            "upper": 14,
+                            "inner": 2,
+                        },
+                        "boaz noz": 2,
+                        "didTryClimb": true,
+                        "didClimb": true,
+                        "gotDefended": false,
+                        "defended": true
+                    }
+                }
+            ]
         };
     }
 
     componentDidMount() {
         fetch(`${API}/api/games/`,
-        {
-            method: "GET",
-            credentials: "include",
-        }).then(res => {
-            return res.json();
-        }).then(data => {
-            console.log(data)
-            this.mongoData = data;
-        }).catch(e => {
-            alert(e);
-        })
+            {
+                method: "GET",
+                credentials: "include",
+            }).then(res => {
+                return res.json();
+            }).then(data => {
+                console.log(data)
+                this.setState({mongoData: data});
+            }).catch(e => {
+                alert(e);
+            })
     }
 
     render() {
@@ -238,7 +234,7 @@ export default class Stats extends React.Component {
                 <div className='centered'>sort by: <Select className='select' options={[
                     { value: "hi", label: "asd" }
                 ]} /></div>
-                {this.state.teamsData}
+                {exportDataToRender(this.state.mongoData)}
             </div>
         )
     }
