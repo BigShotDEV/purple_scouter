@@ -13,9 +13,11 @@ export default class LoginPage extends React.Component {
     }
 
     componentDidMount() {
-        if (isAuthenticated("/")) {
-            window.location.href = "/"; // redirects, user already authenticated...
-        }
+        isAuthenticated("/").then((isAuth) => {
+            if (isAuth) {
+                window.location.href = "/"; // redirects, user already authenticated...
+            }
+        });
     }
     
     /**
