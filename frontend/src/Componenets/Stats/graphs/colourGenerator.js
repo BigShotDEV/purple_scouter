@@ -1,7 +1,7 @@
 export default class ColourGenerator {
     constructor() {
-        this.defaultColour = [191, 115, 25];
-        this.colourModifiers = [3, 15, 25];
+        this.defaultColour = [161, 25, 192];
+        this.colourModifiers = [20, 30, 10];
 
         this.nextColour = [this.defaultColour[0]-this.colourModifiers[0], 
                            this.defaultColour[1]-this.colourModifiers[1],

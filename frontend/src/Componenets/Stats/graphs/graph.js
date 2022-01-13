@@ -23,7 +23,7 @@ export default class BarGraph extends React.Component {
                 this.state.datasets.push({
                     label: item.label,
                     backgroundColor: 'rgb(' + nextColour[0] + ',' + nextColour[1] + ',' + nextColour[2] + ')',
-                    hoverBackgroundColor: 'rgb(210, 120, 210)',
+                    hoverBackgroundColor: 'rgb(240, 160, 50)',
                     borderColor: 'rgba(10,10,10,.9)',
                     hoverBorderColor: 'rgba(0,0,0,1)',
                     borderWidth: 2,
