@@ -139,30 +139,31 @@ let exportDataToRender = (rawTeamsData) => {
  */
 let flattenTeamsData = (rawTeamsData) => {
     let copyTeamsData = JSON.parse(JSON.stringify(rawTeamsData)); // deep copy
+
     let flattenedData = {};
 
     for (const [team, games] of Object.entries(copyTeamsData)) {
         let amountOfGames = 0;
         let flattenedTeamData = {}
-        for (const [_, stats] of Object.entries(games)) {
+        for (const [game, stats] of Object.entries(games)) {
+            amountOfGames++;
             for (const [key, value] of Object.entries(stats)) {
-                amountOfGames++;
                 switch (typeof value) {
                     case "number":
                         if (flattenedTeamData[key] === undefined) {
-                            flattenedTeamData[key] = 0;
+                            flattenedTeamData[key] = amountOfGames;
                         }
                         flattenedTeamData[key] *= amountOfGames - 1;
                         flattenedTeamData[key] += value;
                         flattenedTeamData[key] /= amountOfGames;
-
+                        
                         break;
-                    case "boolean":
-                        if (flattenedTeamData[key] !== undefined) {
-                            flattenedTeamData[key] = 0;
+                        case "boolean":
+                            if (flattenedTeamData[key] === undefined) {
+                            flattenedTeamData[key] = amountOfGames;
                         }
                         flattenedTeamData[key] *= amountOfGames - 1;
-                        flattenedTeamData[key] += 1;
+                        flattenedTeamData[key] += value ? 1 : 0;
                         flattenedTeamData[key] /= amountOfGames;
 
                         break;
@@ -174,7 +175,7 @@ let flattenTeamsData = (rawTeamsData) => {
                             switch (typeof subValue) {
                                 case "number":
                                     if (flattenedTeamData[key][subKey] === undefined) {
-                                        flattenedTeamData[key][subKey] = 0;
+                                        flattenedTeamData[key][subKey] = amountOfGames;
                                     }
                                     flattenedTeamData[key][subKey] *= amountOfGames - 1;
                                     flattenedTeamData[key][subKey] += subValue;
@@ -183,10 +184,10 @@ let flattenTeamsData = (rawTeamsData) => {
                                     break;
                                 case "boolean":
                                     if (flattenedTeamData[key][subKey] === undefined) {
-                                        flattenedTeamData[key][subKey] = 0;
+                                        flattenedTeamData[key][subKey] = amountOfGames;
                                     }
                                     flattenedTeamData[key][subKey] *= amountOfGames - 1;
-                                    flattenedTeamData[key][subKey] += 1;
+                                    flattenedTeamData[key][subKey] += value ? 1 : 0;
                                     flattenedTeamData[key][subKey] /= amountOfGames;
 
                                     break;
@@ -211,6 +212,13 @@ let flattenTeamsData = (rawTeamsData) => {
     return flattenedData;
 }
 
+/**
+ * this method exports the teams titles from the data sorted by a parameter
+ * 
+ * @param {Object} rawTeamsData the data from which to get the titles
+ * @param {String} sortKey the sorting key
+ * @returns the teams titles from the data
+ */
 let exportTitles = (rawTeamsData, sortKey) => {
     sortKey = "didClimb";
 
@@ -219,13 +227,14 @@ let exportTitles = (rawTeamsData, sortKey) => {
     }
 
     let flattenedTeamData = flattenTeamsData(rawTeamsData);
+    console.log(flattenedTeamData)
     let titles = [];
 
-    while(titles.length < Object.keys(flattenedTeamData).length) {
+    while (titles.length < Object.keys(flattenedTeamData).length) {
         let maxTeam;
 
-        for (const [team, stats] of Object.entries(flattenedTeamData)){
-            if (maxTeam === undefined) {
+        for (const [team, stats] of Object.entries(flattenedTeamData)) {
+            if (!titles.includes(team) && maxTeam === undefined) {
                 maxTeam = team;
             } else if (!titles.includes(team) && stats[sortKey] > flattenedTeamData[maxTeam][sortKey]) {
                 maxTeam = team;
@@ -254,8 +263,9 @@ export default class Stats extends React.Component {
             }).then(res => {
                 return res.json();
             }).then(data => {
-                console.log(data)
                 this.setState({ teamsData: exportMongoToTeams(data) });
+                console.log(data)
+                console.log(this.state.teamsData)
                 console.log(exportTitles(this.state.teamsData))
             }).catch(e => {
                 alert(e);
