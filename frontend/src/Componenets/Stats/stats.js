@@ -5,21 +5,31 @@ import BarGraph from './graphs/graph';
 import './stats.css'
 
 /**
- * this method exports a data sheet into a graph form
+ * this method resorts the mongo data by teams
  * 
- * @param {Array} data  the data to parse
- * @returns the data sorted into an array of divs ready to be rendered
+ * @param {Object} mongoData the data recieved form mongodb
+ * @returns the same data sorted by teams
  */
-let exportDataToRender = (data) => {
+let exportMongoToTeams = (mongoData) => {
     let rawTeamsData = {};
-    let teamsData = [];
 
-    data.forEach(item => {
+    mongoData.forEach(item => {
         if (rawTeamsData[item.team_number] === undefined) {
             rawTeamsData[item.team_number] = {};
         }
         rawTeamsData[item.team_number][item.game_number] = item.stats;
     });
+
+    return rawTeamsData;
+}
+/**
+ * this method exports a data sheet into a graph form
+ * 
+ * @param {Object} data  the data to parse
+ * @returns the data sorted into an array of divs ready to be rendered
+ */
+let exportDataToRender = (rawTeamsData) => {
+    let teamsData = [];
 
     for (const [team, games] of Object.entries(rawTeamsData)) {
         let graphLabels = [];
@@ -27,28 +37,34 @@ let exportDataToRender = (data) => {
         let precentageValues = [];
         let amountOfGames = 0;
 
-        for (const [key, value] of Object.entries(data[0].stats)) {
+        for (const [key, value] of Object.entries(Object.values(games)[0])) {
             switch (typeof value) {
                 case "number":
                     graphValues.push({ label: key, data: [], stack: key });
+
                     break;
                 case "boolean":
                     precentageValues.push({ label: key, times: 0 });
+
                     break;
                 case "object":
                     for (const [subKey, subValue] of Object.entries(value)) {
                         switch (typeof subValue) {
                             case "number":
                                 graphValues.push({ label: subKey, data: [], stack: key });
+
                                 break;
                             default:
                                 console.warn("the type of the stat " + key + "\\" + subKey + " (" + typeof subValue + ") is not supported");
+
                                 break;
                         }
                     }
+
                     break;
                 default:
                     console.warn("the type of the stat \"" + key + "\" (" + typeof value + ") is not supported");
+
                     break;
             }
         }
@@ -111,103 +127,122 @@ let exportDataToRender = (data) => {
             </div>
         )
     }
-    
+
     return teamsData
+}
+
+/**
+ * this method flattens the data sorted by teams 
+ * 
+ * @param {Object} rawTeamsData the data to flatten
+ * @returns the flattened data
+ */
+let flattenTeamsData = (rawTeamsData) => {
+    let copyTeamsData = JSON.parse(JSON.stringify(rawTeamsData)); // deep copy
+    let flattenedData = {};
+
+    for (const [team, games] of Object.entries(copyTeamsData)) {
+        let amountOfGames = 0;
+        let flattenedTeamData = {}
+        for (const [_, stats] of Object.entries(games)) {
+            for (const [key, value] of Object.entries(stats)) {
+                amountOfGames++;
+                switch (typeof value) {
+                    case "number":
+                        if (flattenedTeamData[key] === undefined) {
+                            flattenedTeamData[key] = 0;
+                        }
+                        flattenedTeamData[key] *= amountOfGames - 1;
+                        flattenedTeamData[key] += value;
+                        flattenedTeamData[key] /= amountOfGames;
+
+                        break;
+                    case "boolean":
+                        if (flattenedTeamData[key] !== undefined) {
+                            flattenedTeamData[key] = 0;
+                        }
+                        flattenedTeamData[key] *= amountOfGames - 1;
+                        flattenedTeamData[key] += 1;
+                        flattenedTeamData[key] /= amountOfGames;
+
+                        break;
+                    case "object":
+                        if (flattenedTeamData[key] === undefined) {
+                            flattenedTeamData[key] = {};
+                        }
+                        for (const [subKey, subValue] of Object.entries(value)) {
+                            switch (typeof subValue) {
+                                case "number":
+                                    if (flattenedTeamData[key][subKey] === undefined) {
+                                        flattenedTeamData[key][subKey] = 0;
+                                    }
+                                    flattenedTeamData[key][subKey] *= amountOfGames - 1;
+                                    flattenedTeamData[key][subKey] += subValue;
+                                    flattenedTeamData[key][subKey] /= amountOfGames;
+
+                                    break;
+                                case "boolean":
+                                    if (flattenedTeamData[key][subKey] === undefined) {
+                                        flattenedTeamData[key][subKey] = 0;
+                                    }
+                                    flattenedTeamData[key][subKey] *= amountOfGames - 1;
+                                    flattenedTeamData[key][subKey] += 1;
+                                    flattenedTeamData[key][subKey] /= amountOfGames;
+
+                                    break;
+                                default:
+                                    console.warn("the type of the stat " + key + "\\" + subKey + " (" + typeof subValue + ") is not supported");
+
+                                    break;
+                            }
+                        }
+
+                        break;
+                    default:
+                        console.warn("the type of the stat " + key + " (" + typeof value + ") is not supported");
+
+                        break;
+                }
+            }
+        }
+        flattenedData[team] = flattenedTeamData;
+    }
+
+    return flattenedData;
+}
+
+let exportTitles = (rawTeamsData, sortKey) => {
+    sortKey = "didClimb";
+
+    if (sortKey === undefined || sortKey === null) {
+        return Object.keys(rawTeamsData);
+    }
+
+    let flattenedTeamData = flattenTeamsData(rawTeamsData);
+    let titles = [];
+
+    while(titles.length < Object.keys(flattenedTeamData).length) {
+        let maxTeam;
+
+        for (const [team, stats] of Object.entries(flattenedTeamData)){
+            if (maxTeam === undefined) {
+                maxTeam = team;
+            } else if (!titles.includes(team) && stats[sortKey] > flattenedTeamData[maxTeam][sortKey]) {
+                maxTeam = team;
+            }
+        }
+        titles.push(maxTeam);
+    }
+
+    return titles;
 }
 
 export default class Stats extends React.Component {
     constructor(props) {
         super(props);
-        
+
         this.state = {
-            mongoData: [],
-            tempData: [
-                {
-                    "_id": {
-                        "$oid": "61cecd20784c687627c3a10d"
-                    },
-                    "user_name": "joe",
-                    "game_number": 1,
-                    "team_number": 3075,
-                    "stats": {
-                        "pablo": 10,
-                        "shots": {
-    
-                            "lower": 12,
-                            "upper": 44,
-                            "inner": 8,
-                        },
-                        "boaz noz": 2,
-                        "didTryClimb": true,
-                        "didClimb": false,
-                        "gotDefended": false,
-                        "defended": false
-                    }
-                },
-                {
-                    "_id": {
-                        "$oid": "61cecd20784c687627c3a10d"
-                    },
-                    "user_name": "joe",
-                    "game_number": 2,
-                    "team_number": 3075,
-                    "stats": {
-                        "pablo": 10,
-                        "shots": {
-                            "lower": 8,
-                            "upper": 49,
-                            "inner": 13,
-                        },
-                        "boaz noz": 2,
-                        "didTryClimb": true,
-                        "didClimb": true,
-                        "gotDefended": true,
-                        "defended": false
-                    }
-                },
-                {
-                    "_id": {
-                        "$oid": "61cecd20784c687627c3a10d"
-                    },
-                    "user_name": "joe",
-                    "game_number": 3,
-                    "team_number": 3075,
-                    "stats": {
-                        "pablo": 10,
-                        "shots": {
-                            "lower": 8,
-                            "upper": 49,
-                            "inner": 13,
-                            "boaz noz": 2
-                        },
-                        "didTryClimb": true,
-                        "didClimb": true,
-                        "gotDefended": true,
-                        "defended": false
-                    }
-                },
-                {
-                    "_id": {
-                        "$oid": "61cecd20784c687627c3a10d"
-                    },
-                    "user_name": "joe",
-                    "game_number": 1,
-                    "team_number": 3076,
-                    "stats": {
-                        "pablo": 10,
-                        "shots": {
-                            "lower": 45,
-                            "upper": 14,
-                            "inner": 2,
-                        },
-                        "boaz noz": 2,
-                        "didTryClimb": true,
-                        "didClimb": true,
-                        "gotDefended": false,
-                        "defended": true
-                    }
-                }
-            ]
+            teamsData: []
         };
     }
 
@@ -220,7 +255,8 @@ export default class Stats extends React.Component {
                 return res.json();
             }).then(data => {
                 console.log(data)
-                this.setState({mongoData: data});
+                this.setState({ teamsData: exportMongoToTeams(data) });
+                console.log(exportTitles(this.state.teamsData))
             }).catch(e => {
                 alert(e);
             })
@@ -230,11 +266,10 @@ export default class Stats extends React.Component {
 
         return (
             <div className="stats-page">
-                <input type="search"></input>
                 <div className='centered'>sort by: <Select className='select' options={[
                     { value: "hi", label: "asd" }
                 ]} /></div>
-                {exportDataToRender(this.state.mongoData)}
+                {exportDataToRender(this.state.teamsData)}
             </div>
         )
     }

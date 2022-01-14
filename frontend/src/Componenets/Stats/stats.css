@@ -18,15 +18,6 @@
     text-align: center;
 }
 
-.stats-page>input {
-    width: 60vw;
-    margin: 20vw;
-    margin-top: 5vh; 
-    margin-bottom: 5vh; 
-    height: 2.5em;
-    text-align: center;
-}
-
 .select {
     width: 8em;
     font-size: 1em;
@@ -44,14 +35,5 @@
         text-align: left;
         color: #ccc;
         padding-left: 10vw;
-    }
-
-    .stats-page>input {
-        width: 80vw;
-        margin: 10vw;
-        margin-top: 10vh; 
-        margin-bottom: 5vh; 
-        height: 2.5em;
-        text-align: center;
     }
 }
