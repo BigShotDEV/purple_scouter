@@ -264,9 +264,6 @@ export default class Stats extends React.Component {
                 return res.json();
             }).then(data => {
                 this.setState({ teamsData: exportMongoToTeams(data) });
-                console.log(data)
-                console.log(this.state.teamsData)
-                console.log(exportTitles(this.state.teamsData))
             }).catch(e => {
                 alert(e);
             })
@@ -279,7 +276,7 @@ export default class Stats extends React.Component {
                 <div className='centered'>sort by: <Select className='select' options={[
                     { value: "hi", label: "asd" }
                 ]} /></div>
-                {exportDataToRender(this.state.teamsData)}
+                {exportTitles(this.state.teamsData)}
             </div>
         )
     }
