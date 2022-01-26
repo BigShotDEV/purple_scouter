@@ -227,7 +227,6 @@ let exportTitles = (rawTeamsData, sortKey) => {
     }
 
     let flattenedTeamData = flattenTeamsData(rawTeamsData);
-    console.log(flattenedTeamData)
     let titles = [];
 
     while (titles.length < Object.keys(flattenedTeamData).length) {
@@ -242,8 +241,29 @@ let exportTitles = (rawTeamsData, sortKey) => {
         }
         titles.push(maxTeam);
     }
-
+    
+    console.log("titles: " + titles)
     return titles;
+}
+
+/**
+ * this method exports the teams titles from the data sorted by a parameter
+ * 
+ * @param {Object} rawTeamsData the data from which to get the titles
+ * @param {String} sortKey the sorting key
+ * @returns the teams titles from the data
+ */
+let exportTitlesGUI = (rawTeamsData, sortKey) => {
+    let titles = exportTitles(rawTeamsData, sortKey);
+    let GUITitles = [];
+
+    console.log(titles)
+    for (const title of titles) {
+        console.log(title)
+        GUITitles.push(<button>{title}</button>)
+    }
+
+    return GUITitles
 }
 
 export default class Stats extends React.Component {
@@ -276,7 +296,7 @@ export default class Stats extends React.Component {
                 <div className='centered'>sort by: <Select className='select' options={[
                     { value: "hi", label: "asd" }
                 ]} /></div>
-                {exportTitles(this.state.teamsData)}
+                {exportTitlesGUI(this.state.teamsData)}
             </div>
         )
     }
