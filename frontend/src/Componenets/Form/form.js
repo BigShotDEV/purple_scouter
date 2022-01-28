@@ -6,6 +6,7 @@ import SubmitButton from './SubmitButton/submit-button';
 import TextBox from './TextBox/text-box';
 import './form.css';
 import { deleteCookie, getCookie, setCookie } from '../../Utils/cookie';
+import Nav from '../Nav/nav';
 
 /**
  * This Componenet handles all about the form.
@@ -181,6 +182,7 @@ export default class Form extends React.Component {
 
         return (
             <div className="form">
+                <Nav items={[{title: "home", link: "https://www.google.com"}, {title: "home", link: "https://www.google.com"}, {title: "home", link: "https://www.google.com"}, {title: "home", link: "https://www.google.com"}]}></Nav>
                 <div className="title"><h>{this.state.form.title}</h></div>
                 {
                     this.state.form.properties.map((property, id) => {

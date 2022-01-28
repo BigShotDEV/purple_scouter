@@ -30,5 +30,4 @@
 .submit-button .button:active {
     background-color: rgb(216, 66, 208);
     box-shadow: 2px 10px 15px rgb(34, 28, 32) inset;
-    padding-top: 3%;
 } 

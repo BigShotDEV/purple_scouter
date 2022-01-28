@@ -39,8 +39,8 @@ export default class LoginPage extends React.Component {
                 <div className="title">Login</div>
 
                  <form name="myForm" action="" onSubmit={(form) => {form.preventDefault(); this.auth(form)}}>
-                    <InputField className="input" >Username</InputField>
-                    <InputField className="input" inputType="password">Password</InputField>
+                    <InputField className="input" >Enter Username</InputField>
+                    <InputField className="input" inputType="password">Enter Password</InputField>
                     <span className="error">{this.state.error}</span>
                     <button className="enter-button" type="submit">Enter</button>
                 </form> 
