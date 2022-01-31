@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import Select from "react-select"
 import { API } from '../../Utils/authentication';
-import BarGraph from './graphs/graph';
+import BarGraph from './TeamPage/graphs/graph';
 import './stats.css'
-import { useNavigate } from "react-router-dom";
 
 export default class Stats extends React.Component {
     /**
