@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Select from "react-select"
 import { API } from '../../Utils/authentication';
-import BarGraph from './TeamPage/graphs/graph';
 import './stats.css'
 
 export default class Stats extends React.Component {

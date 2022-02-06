@@ -21,7 +21,7 @@ ReactDOM.render(
       <Route path="/" element={<RootRoute />} />
       <Route path="/login" element={<LoginRoute/>} />
       <Route path="/stats" element={<StatsRoute/>} />
-      <Route path="/stats/teams/3075" element={<TeamPage/>} />
+      <Route path="/stats/teams/:team" element={<TeamPage/>} />
       <Route path="/create-form" element={<CreateFormRoute/>} />
     </Routes>
   </BrowserRouter>,
