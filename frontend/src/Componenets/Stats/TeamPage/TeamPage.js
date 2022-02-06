@@ -120,8 +120,6 @@ export default class TeamPage extends React.Component {
                                 console.warn(`the type of the stat ${key}\\${subKey} (${typeof subValue}) is not supported`);
                         }
                     }
-                    console.log(graphValues)
-                    console.log(graphLabels)
                     break;
                 default:
                     console.warn(`the type of the stat ${key} (${typeof value}) is not supported`);
