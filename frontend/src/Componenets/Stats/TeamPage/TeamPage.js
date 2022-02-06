@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { API } from '../../../Utils/authentication';
+import BarGraph from './graphs/graph';
+import './teamPage.css'
 
 export default class TeamPage extends React.Component {
     TEAM = window.location.pathname.match(/\/stats\/teams\/(.*)/)[1];
@@ -86,11 +88,49 @@ export default class TeamPage extends React.Component {
         return data;
     }
 
-    exportDataToGUI = (mongoData) => {
+    exportDataToAverageGUI = (mongoData) => {
         let data = this.getAverageOfStatsFromMongoData(mongoData);
         let gamesGUI = [];
+        let graphLabels = [];
+        let graphValues = []; // {lable: '', data: []}
 
+        for (const [key, value] of Object.entries(data)) {
+            switch (typeof value) {
+                case 'number':
+                    gamesGUI.push(<p key={key}>{`${key}: ${value.toFixed(2).replace(/[.,]00$/, "")}`}</p>);
 
+                    break;
+                case 'object':
+                    for (const dataSet of graphValues)
+                        dataSet.data.push(0)
+                    graphLabels.push(key);
+
+                    for (const [subKey, subValue] of Object.entries(value)) {
+                        switch (typeof subValue) {
+                            case 'number':
+                                graphValues.push({ label: subKey, data: [] });
+
+                                for (let i = 0; i < graphLabels.length - 1; i++)
+                                    graphValues[graphValues.length - 1].data.push(0);
+                                
+                                graphValues[graphValues.length - 1].data.push(subValue);
+
+                                break;
+                            default:
+                                console.warn(`the type of the stat ${key}\\${subKey} (${typeof subValue}) is not supported`);
+                        }
+                    }
+                    console.log(graphValues)
+                    console.log(graphLabels)
+                    break;
+                default:
+                    console.warn(`the type of the stat ${key} (${typeof value}) is not supported`);
+            }
+        }
+
+        gamesGUI.push(<BarGraph labels={graphLabels} values={graphValues} />)
+
+        return gamesGUI;
     }
 
     componentDidMount() {
@@ -101,7 +141,6 @@ export default class TeamPage extends React.Component {
             }).then(res => {
                 return res.json();
             }).then(data => {
-                console.log(this.getAverageOfStatsFromMongoData(data));
                 this.setState({ mongoData: data })
             }).catch(e => {
                 alert(e);
@@ -109,9 +148,9 @@ export default class TeamPage extends React.Component {
     }
 
     render() {
-        return <div className='TeamPage' >
+        return <div className='TeamPage'>
             <h1>Team {this.TEAM}</h1>
-
+            {this.exportDataToAverageGUI(this.state.mongoData)}
         </div>;
     }
 }
