@@ -148,10 +148,13 @@ export default class Stats extends React.Component {
         let GUITitles = [];
 
         for (const title of titles) {
-            GUITitles.push(<button onClick={() => {
-                // console.log("stats/teams/"+title)
-                window.location.href = "stats/teams/"+title
-            }}>{title}</button>)
+            GUITitles.push(
+                <div className='team-button'>
+                    <button onClick={() => {
+                        window.location.href = "stats/teams/" + title
+                    }}>{title}</button>
+                </div>
+            )
         }
 
         return GUITitles
@@ -227,7 +230,48 @@ export default class Stats extends React.Component {
 
         return (
             <div className="stats-page">
-                <Select className='select centered' options={this.exportSortingKeys(this.state.teamsData)} placeholder="sort by" onChange={this.updateSortingTitle} />
+                <Select
+                    className='select centered' options={this.exportSortingKeys(this.state.teamsData)} placeholder="sort by" onChange={this.updateSortingTitle}
+                    styles={
+                        {
+                            option: (provided, state) => ({
+                                ...provided,
+                                borderTop: '1px solid gray',
+                                backgroundColor: state.isSelected ? '#bfbbbf' : (state.isFocused ? '#bbbbbb' : '#cccccc'),
+                                color: state.isSelected ? 'red' : 'black',
+                                padding: 8
+                            }),
+                            control: (provided, state) => ({
+                                ...provided,
+                                backgroundColor: 'light-gray',
+                                border: '0px',
+                                padding: 0,
+                            }),
+                            indicatorSeparator: (provided, state) => ({
+                                ...provided,
+                                backgroundColor: 'white',
+                                border: '0px'
+                            }),
+                            placeholder: (provided, state) => ({
+                                ...provided,
+                                color: 'white',
+                                border: '0px',
+                                padding: 0,
+                            }),
+                            menu: (provided, state) => ({
+                                ...provided,
+                                backgroundColor: '#cccccc',
+                                border: '0px',
+                                padding: 0,
+                            }),
+                            singleValue: (provided, state) => ({
+                                ...provided,
+                                color: 'white',
+                                border: '5px',
+                                padding: 0,
+                            })
+                        }}
+                />
                 {this.exportTeamsButtons(this.state.teamsData, this.state.sortingKey)}
             </div>
         )
