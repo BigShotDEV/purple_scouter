@@ -1,7 +1,7 @@
 import React from 'react';
 import NotAutherizedPage from '../Componenets/NotAutherized/not-autherized';
 import { isAuthenticated } from '../Utils/authentication';
-import Stats from '../Componenets/Stats/stats';
+import TeamsStatsMenu from '../Componenets/TeamsStats/TeamsStatsMenu';
 
 
 export default class StatsRoute extends React.Component {
@@ -26,6 +26,6 @@ export default class StatsRoute extends React.Component {
         if (this.state.isAuthenticated === undefined) return<>Loading...</>;
         if (!this.state.isAuthenticated) return <NotAutherizedPage></NotAutherizedPage>;
 
-        return <Stats/>;
+        return <TeamsStatsMenu/>;
     }
 }

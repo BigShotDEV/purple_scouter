@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { API } from '../../../Utils/authentication';
 import BarGraph from './graphs/graph';
-import './teamPage.css'
+import './teamStatsPage.css'
 
-export default class TeamPage extends React.Component {
+export default class TeamStatsPage extends React.Component {
     TEAM = window.location.pathname.match(/\/stats\/teams\/(.*)/)[1];
 
     constructor(props) {
@@ -146,7 +146,7 @@ export default class TeamPage extends React.Component {
     }
 
     render() {
-        return <div className='TeamPage'>
+        return <div className='team-stats-page'>
             <h1>Team {this.TEAM}</h1>
             {this.exportDataToAverageGUI(this.state.mongoData)}
         </div>;

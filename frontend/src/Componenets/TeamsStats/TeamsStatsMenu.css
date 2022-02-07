@@ -1,0 +1,15 @@
+.graph {
+    width: 40vw;
+    margin: auto;
+}
+
+.centered {
+    text-align: center;
+}
+
+.select {
+    width: 8em;
+    font-size: 1em;
+    padding: 0%;
+    margin: auto
+}

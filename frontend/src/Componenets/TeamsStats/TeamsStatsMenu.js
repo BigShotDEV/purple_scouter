@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Select from "react-select"
 import { API } from '../../Utils/authentication';
-import './stats.css'
+import './TeamsStatsMenu.css'
 
 export default class Stats extends React.Component {
     /**

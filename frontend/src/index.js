@@ -13,7 +13,7 @@ import RootRoute from './routes/root';
 import LoginRoute from './routes/login';
 import StatsRoute from './routes/stats';
 import CreateFormRoute from './routes/create-form';
-import TeamPage from './Componenets/Stats/TeamPage/teamPage';
+import TeamStatsPage from './Componenets/TeamsStats/TeamsStats/teamStatsPage';
 
 ReactDOM.render(
   <BrowserRouter>
@@ -21,7 +21,7 @@ ReactDOM.render(
       <Route path="/" element={<RootRoute />} />
       <Route path="/login" element={<LoginRoute/>} />
       <Route path="/stats" element={<StatsRoute/>} />
-      <Route path="/stats/teams/:team" element={<TeamPage/>} />
+      <Route path="/stats/teams/:team" element={<TeamStatsPage/>} />
       <Route path="/create-form" element={<CreateFormRoute/>} />
     </Routes>
   </BrowserRouter>,
