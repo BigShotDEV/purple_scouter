@@ -13,7 +13,7 @@ import RootRoute from './routes/root';
 import LoginRoute from './routes/login';
 import StatsRoute from './routes/stats';
 import CreateFormRoute from './routes/create-form';
-import TeamStatsPage from './Componenets/TeamsStats/TeamsStats/teamStatsPage';
+import TeamStatsPage from './Componenets/TeamsStats/StatsPage/teamStatsPage';
 
 ReactDOM.render(
   <BrowserRouter>
