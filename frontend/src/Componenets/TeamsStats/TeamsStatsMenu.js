@@ -234,7 +234,7 @@ export default class Stats extends React.Component {
     render() {
 
         return (
-            <div className="stats-page">
+            <div className="teams-stats-menu">
                 <SearchBar />
                 <Select className='select centered'
                     options={this.exportSortingKeys(this.state.teamsData)} placeholder="sort by"
@@ -295,11 +295,14 @@ function SearchBar() {
 
     return (
         <form onSubmit={handleSubmit}>
-            <input
-                type="text"
-                value={team}
-                onChange={(e) => setTeam(e.target.value)}
-            />
+            <div className='stats-menu-input-field centered'>
+                <input
+                    className='stats-menu-input test'
+                    type="text"
+                    value={team}
+                    onChange={(e) => setTeam(e.target.value)}
+                />
+            </div>
         </form>
     )
 }

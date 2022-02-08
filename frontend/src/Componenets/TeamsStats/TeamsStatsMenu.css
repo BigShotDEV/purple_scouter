@@ -16,8 +16,37 @@
 
 .stats-menu-input {
     margin: auto;
-    text-align: center;
+    text-align: left;
+    font-size: xx-large;
+    size: 1000%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    padding-left: 1.5%;
+    padding-right: 2%;
 }
+
+.stats-menu-input-field {
+    padding-top: 3%;
+    border-width: 3px;
+    border-style: none;
+    color: rgb(177, 166, 179);
+    size: 10%;
+    padding-bottom: 5px;
+}
+
+.stats-menu-input-field input {
+    height: 20px; 
+    /* width: 220px;  */
+    /* width: 60px; */
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: rgba(231, 231, 231, 0.4);
+    color: rgb(0, 0, 0);
+}
+
+
 
 .team-button {
     margin: auto;
