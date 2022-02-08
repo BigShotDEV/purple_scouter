@@ -194,6 +194,11 @@ export default class Stats extends React.Component {
             })
     }
 
+    handleSubmit = (input) => {
+        // window.location.href = "stats/teams/" + input
+        alert(input.search)
+    }
+
     constructor(props) {
         super(props);
 
@@ -230,8 +235,10 @@ export default class Stats extends React.Component {
 
         return (
             <div className="stats-page">
-                <Select
-                    className='select centered' options={this.exportSortingKeys(this.state.teamsData)} placeholder="sort by" onChange={this.updateSortingTitle}
+                <SearchBar />
+                <Select className='select centered'
+                    options={this.exportSortingKeys(this.state.teamsData)} placeholder="sort by"
+                    onChange={this.updateSortingTitle}
                     styles={
                         {
                             option: (provided, state) => ({
@@ -276,4 +283,23 @@ export default class Stats extends React.Component {
             </div>
         )
     }
+}
+
+function SearchBar() {
+    const [team, setTeam] = useState("");
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        window.location.href = "stats/teams/" + team
+    }
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <input
+                type="text"
+                value={team}
+                onChange={(e) => setTeam(e.target.value)}
+            />
+        </form>
+    )
 }
