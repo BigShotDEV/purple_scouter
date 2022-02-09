@@ -1,12 +1,5 @@
 .text-box {
     border-width: 3px;
-    border-style: solid;
-    border-top-style: none;
-    border-left-style: none;
-    border-right-style: none;
-    
-    color: rgb(75, 37, 87);
-
     padding-bottom: 30px;
 }
 
@@ -19,6 +12,7 @@
 }
 
 .text-box .text {
+    font-size: 1.3em;
     margin-left: 10%;
     width: 80%;
     height: 28px;  

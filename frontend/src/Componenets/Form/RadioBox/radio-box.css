@@ -58,7 +58,7 @@
   
   /* When the radio button is checked, add a blue background */
   .radiobox-label input:checked ~ .radiobox-custom {
-    background-color: #2196F3;
+    background-color: #ec61be;
   }
   
   /* Create the indicator (the dot/circle - hidden when not checked) */
