@@ -7,8 +7,12 @@ import TextBox from './TextBox/text-box';
 import './form.css';
 import { deleteCookie, getCookie, setCookie } from '../../Utils/cookie';
 import Nav from '../Nav/nav';
+<<<<<<< HEAD
 import NumberBox from './NumberBox/number-box'
 import Headline from './Headline/headline';
+=======
+import CounterBox from './CounterBox/counter-box'
+>>>>>>> 3d6a50a16d047079ae0b68fb407224309deface4
 
 /**
  * This Componenet handles all about the form.
@@ -79,7 +83,7 @@ export default class Form extends React.Component {
         this.updateFormData(id, [event.target.value]);
     }
 
-    handleNumberBox = (value, id) => {
+    handleCounterBox = (value, id) => {
         this.updateFormData(id, [value])
     }
 
@@ -180,9 +184,9 @@ export default class Form extends React.Component {
         }
     }
 
-    renderNumberBox = (property, id) => {
+    renderCounterBox = (property, id) => {
         try {
-            return <NumberBox id={id} default={this.cookie_data[id]} onChange={this.handleNumberBox}>{property.title}</NumberBox>
+            return <CounterBox id={id} default={this.cookie_data[id]} onChange={this.handleCounterBox}>{property.title}</CounterBox>
         } catch (e) {
             return <></>;
         }
@@ -210,17 +214,20 @@ export default class Form extends React.Component {
                 <Nav items={[{ title: "home", link: "https://www.google.com" }, { title: "home", link: "https://www.google.com" }, { title: "home", link: "https://www.google.com" }, { title: "home", link: "https://www.google.com" }]}></Nav>
                 <div className="title"><h>{this.state.form.title}</h></div>
                 {
-                    this.state.form.properties.map((property) => {
-                        if (property.type == "radio-box") {
-                            return this.renderRadioBox(property, property.id);
-                        } else if (property.type === "check-box") {
-                            return this.renderCheckBox(property, property.id);
-                        } else if (property.type === "text-box") {
-                            return this.renderTextBox(property, property.id);
-                        } else if (property.type === "number-box") {
-                            return this.renderNumberBox(property, property.id);
-                        } else if (property.type === "headline") {
-                            return this.renderHeadline(property); // doesn't have an id, 'cause it doesn't output anything.
+                    this.state.form.properties.map((property, id) => {
+                        switch (property.type){
+                            case "radio-box":
+                                return this.renderRadioBox(property, id);
+                            case "check-box":
+                                return this.renderCheckBox(property, id);
+                            case "text-box":
+                                return this.renderTextBox(property, id);
+                            case "counter-box":
+                                return this.renderCounterBox(property, id);
+                            case "headline":
+                                return this.renderHeadline(property); // doesn't have an id, 'cause it doesn't output anything.
+                            default:
+                                console.warn(`unsupported form-element type: ${property.type}`);
                         }
                     })
                 }

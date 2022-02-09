@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import "./number-box.css";
+import "./counter-box.css";
 
 
 /**
@@ -27,11 +27,11 @@ export default class NumberBox extends React.Component {
 
     render() {
         return (
-            <div className="number-box">
-                <p className="title">{this.props.children}</p>
+            <div className="counter-box">
+                <h1 className="title">{this.props.children}</h1>
 
                 <button onClick={this.subtractValue}>-</button>
-                <span className='number'>{this.state.value}</span>
+                <span>{this.state.value}</span>
                 <button onClick={this.addValue}>+</button>
             </div>
         );
