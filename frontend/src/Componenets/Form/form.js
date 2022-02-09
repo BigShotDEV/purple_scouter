@@ -10,6 +10,7 @@ import Nav from '../Nav/nav';
 import Headline from './Headline/headline';
 import CounterBox from './CounterBox/counter-box'
 import NumberBox from './NumberBox/number-box';
+import BooleanBox from './BooleanBox/boolean-box';
 
 /**
  * This Componenet handles all about the form.
@@ -59,6 +60,7 @@ export default class Form extends React.Component {
         this.form_data[id] = data;
 
         setCookie(this.COOKIE_NAME, JSON.stringify(this.form_data), this.COOKIE_EXDAYS); // update the form's cookie.
+        console.log(this.form_data)
     }
 
     handleRadioBox = (event, id) => {
@@ -74,6 +76,15 @@ export default class Form extends React.Component {
         }
 
         this.updateFormData(id, [...this.form_data[id], event]);
+    }
+
+    handleBooleanBox = (id) => {
+        console.log(this.form_data[id])
+        if (this.form_data[id] === undefined || this.form_data[id][0] === false) {
+            this.updateFormData(id, [true])
+        } else if (this.form_data[id][0] === true) {
+            this.updateFormData(id, [false])
+        }
     }
 
     handleTextBox = (event, id) => {
@@ -172,6 +183,15 @@ export default class Form extends React.Component {
         }
     }
 
+    renderBooleanBox = (property, id) => {
+        try {
+            return <BooleanBox id={id} default={this.cookie_data[id] !== undefined ? this.cookie_data[id][0] : false} onChange={this.handleBooleanBox}>{property.title}</BooleanBox>;
+        } catch (e) {
+            console.log(e)
+            return <></>;
+        }
+    }
+
     // renders a text box
     renderTextBox = (property, id) => {
         try {
@@ -193,7 +213,7 @@ export default class Form extends React.Component {
     // renders a counter box
     renderCounterBox = (property, id) => {
         try {
-            return <CounterBox id={id} default={this.cookie_data[id]} onChange={this.handleCounterBox}>{property.title}</CounterBox>
+            return <CounterBox id={id} default={this.cookie_data[id]} onChange={this.handleCounterBox}>{property.title}</CounterBox>;
         } catch (e) {
             return <></>;
         }
@@ -235,6 +255,8 @@ export default class Form extends React.Component {
                                 return this.renderNumberBox(property, id);
                             case "headline":
                                 return this.renderHeadline(property); // doesn't have an id, 'cause it doesn't output anything.
+                            case "boolean-box":
+                                return this.renderBooleanBox(property, id)
                             default:
                                 console.warn(`unsupported form-element type: ${property.type}`);
                         }
