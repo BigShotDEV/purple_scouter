@@ -23,6 +23,7 @@ export default class TeamStatsPage extends React.Component {
 
         let data = {};
         let amountOfGames = 0;
+        let booleanData = {};
 
         copyMongoData.forEach(game => {
             amountOfGames++;
@@ -38,12 +39,10 @@ export default class TeamStatsPage extends React.Component {
 
                         break;
                     case "boolean":
-                        if (data[key] === undefined) {
-                            data[key] = 0;
+                        if (booleanData[key] === undefined) {
+                            booleanData[key] = 0;
                         }
-                        data[key] *= amountOfGames - 1;
-                        data[key] += value ? 1 : 0;
-                        data[key] /= amountOfGames;
+                        if (value) booleanData[key]++;
 
                         break;
                     case "object":
@@ -85,6 +84,9 @@ export default class TeamStatsPage extends React.Component {
                 }
             }
         });
+        for (const [key, value] of Object.entries(booleanData)) {
+            data[key] = `${(value/amountOfGames).toFixed(2).replace(/[.,]00$/, "")}% (${value} out of ${amountOfGames})`;
+        }
         return data;
     }
 
@@ -98,6 +100,10 @@ export default class TeamStatsPage extends React.Component {
             switch (typeof value) {
                 case 'number':
                     gamesGUI.push(<p key={key}>{`${key}: ${value.toFixed(2).replace(/[.,]00$/, "")}`}</p>);
+                    
+                    break;
+                    case "string":
+                    gamesGUI.push(<p key={key}>{`${key}: ${value}`}</p>);
 
                     break;
                 case 'object':
@@ -112,7 +118,7 @@ export default class TeamStatsPage extends React.Component {
 
                                 for (let i = 0; i < graphLabels.length - 1; i++)
                                     graphValues[graphValues.length - 1].data.push(0);
-                                
+
                                 graphValues[graphValues.length - 1].data.push(subValue);
 
                                 break;
