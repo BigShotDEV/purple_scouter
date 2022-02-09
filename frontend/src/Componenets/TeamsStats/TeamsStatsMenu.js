@@ -112,9 +112,13 @@ export default class Stats extends React.Component {
      * @returns the teams titles from the data
      */
     exportTitles = (rawTeamsData, sortKey) => {
-
         if (sortKey === undefined || sortKey === null || typeof sortKey != "string") {
             return Object.keys(rawTeamsData);
+        }
+
+        let objKey = '';
+        if(sortKey.includes("⇾")) {
+            [objKey, sortKey] = sortKey.split("⇾");
         }
 
         let flattenedTeamData = this.flattenTeamsData(rawTeamsData);
@@ -125,6 +129,8 @@ export default class Stats extends React.Component {
 
             for (const [team, stats] of Object.entries(flattenedTeamData)) {
                 if (!titles.includes(team) && maxTeam === undefined) {
+                    maxTeam = team;
+                } else if (objKey !== '' && !titles.includes(team) && stats[objKey][sortKey] > flattenedTeamData[maxTeam][objKey][sortKey]) {
                     maxTeam = team;
                 } else if (!titles.includes(team) && stats[sortKey] > flattenedTeamData[maxTeam][sortKey]) {
                     maxTeam = team;
@@ -168,7 +174,26 @@ export default class Stats extends React.Component {
     exportSortingKeys = (rawTeamsData) => {
         if (rawTeamsData.length === 0) return [{ value: "error", label: "error" }];
 
-        let keys = Object.keys(Object.values(Object.values(rawTeamsData)[0])[0]);
+        let keys = [];
+
+        for (const [key, value] of Object.entries(Object.values(Object.values(rawTeamsData)[0])[0])) {
+            switch (typeof value) {
+                case "boolean":
+                case "number":
+                    keys.push(key);
+                    break;
+                case "object":
+                    for (const [subKey, subValue] of Object.entries(value)) {
+                        switch (typeof subValue) {
+                            case "boolean":
+                            case "number":
+                                keys.push(key + "⇾" + subKey)
+                        }
+                    }
+                    break;
+            }
+        }
+
         let select_items = [];
         keys.forEach(key => {
             select_items.push({ value: key, label: key });
