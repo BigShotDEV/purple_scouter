@@ -1,0 +1,8 @@
+.headline-container > p {
+    text-align: center;
+    font-size: 2.5em; 
+    font-weight: bolder;
+    color: rgb(211, 216, 204);
+
+    text-decoration: underline;
+}

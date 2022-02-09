@@ -8,6 +8,7 @@ import './form.css';
 import { deleteCookie, getCookie, setCookie } from '../../Utils/cookie';
 import Nav from '../Nav/nav';
 import NumberBox from './NumberBox/number-box'
+import Headline from './Headline/headline';
 
 /**
  * This Componenet handles all about the form.
@@ -187,6 +188,20 @@ export default class Form extends React.Component {
         }
     }
 
+    /**
+     * renders an headline
+     * 
+     * @param {Object} property a property object
+     * @returns an XHTML object of an headline
+     */
+    renderHeadline = (property) => {
+        try {
+            return <Headline>{property.title}</Headline>;
+        } catch (e) {
+            return <></>;
+        }
+    }
+
     render() {
         if (!this.state.form) return <h>Loading...</h>;
 
@@ -195,15 +210,17 @@ export default class Form extends React.Component {
                 <Nav items={[{ title: "home", link: "https://www.google.com" }, { title: "home", link: "https://www.google.com" }, { title: "home", link: "https://www.google.com" }, { title: "home", link: "https://www.google.com" }]}></Nav>
                 <div className="title"><h>{this.state.form.title}</h></div>
                 {
-                    this.state.form.properties.map((property, id) => {
+                    this.state.form.properties.map((property) => {
                         if (property.type == "radio-box") {
-                            return this.renderRadioBox(property, id);
+                            return this.renderRadioBox(property, property.id);
                         } else if (property.type === "check-box") {
-                            return this.renderCheckBox(property, id);
+                            return this.renderCheckBox(property, property.id);
                         } else if (property.type === "text-box") {
-                            return this.renderTextBox(property, id);
-                        } else if (property.type === "number-box", id) {
-                            return this.renderNumberBox(property, id);
+                            return this.renderTextBox(property, property.id);
+                        } else if (property.type === "number-box") {
+                            return this.renderNumberBox(property, property.id);
+                        } else if (property.type === "headline") {
+                            return this.renderHeadline(property); // doesn't have an id, 'cause it doesn't output anything.
                         }
                     })
                 }
