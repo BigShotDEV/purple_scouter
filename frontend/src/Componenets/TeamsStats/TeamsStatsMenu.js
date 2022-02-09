@@ -151,7 +151,7 @@ export default class Stats extends React.Component {
             GUITitles.push(
                 <div className='team-button'>
                     <button onClick={() => {
-                        window.location.href = "stats/teams/" + title
+                        window.location.href = "/stats/teams/" + title
                     }}>{title}</button>
                 </div>
             )
