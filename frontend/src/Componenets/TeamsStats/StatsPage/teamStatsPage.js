@@ -145,6 +145,10 @@ export default class TeamStatsPage extends React.Component {
             }).then(res => {
                 return res.json();
             }).then(data => {
+                if (data.detail != undefined) { // team not found.
+                    window.location.href = "/stats";
+                }
+
                 this.setState({ mongoData: data })
             }).catch(e => {
                 alert(e);
