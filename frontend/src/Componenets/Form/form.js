@@ -8,6 +8,7 @@ import './form.css';
 import { deleteCookie, getCookie, setCookie } from '../../Utils/cookie';
 import Nav from '../Nav/nav';
 import CounterBox from './CounterBox/counter-box'
+import NumberBox from './NumberBox/number-box';
 
 /**
  * This Componenet handles all about the form.
@@ -179,6 +180,16 @@ export default class Form extends React.Component {
         }
     }
 
+    // renders a number box
+    renderNumberBox = (property, id) => {
+        try {
+            return <NumberBox id={id} default={this.cookie_data[id]} onChange={this.handleTextBox} >{property.title}</NumberBox>;
+        } catch (e) {
+            return <></>;
+        }
+    }
+
+    // renders a counter box
     renderCounterBox = (property, id) => {
         try {
             return <CounterBox id={id} default={this.cookie_data[id]} onChange={this.handleCounterBox}>{property.title}</CounterBox>
@@ -196,7 +207,7 @@ export default class Form extends React.Component {
                 <div className="title"><h>{this.state.form.title}</h></div>
                 {
                     this.state.form.properties.map((property, id) => {
-                        switch (property.type){
+                        switch (property.type) {
                             case "radio-box":
                                 return this.renderRadioBox(property, id);
                             case "check-box":
@@ -205,6 +216,8 @@ export default class Form extends React.Component {
                                 return this.renderTextBox(property, id);
                             case "counter-box":
                                 return this.renderCounterBox(property, id);
+                            case "number-box":
+                                return this.renderNumberBox(property, id);
                             default:
                                 console.warn(`unsupported form-element type: ${property.type}`);
                         }
