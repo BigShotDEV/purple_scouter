@@ -36,7 +36,6 @@ export default class RadioBox extends React.Component {
                     </label>
                 );
             } else {
-                console.log(`default: ${key}`)
                 return (
                     <label className="radiobox-label">
                         <p>{key}</p>
