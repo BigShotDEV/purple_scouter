@@ -7,6 +7,8 @@ import TextBox from './TextBox/text-box';
 import './form.css';
 import { deleteCookie, getCookie, setCookie } from '../../Utils/cookie';
 import Nav from '../Nav/nav';
+import NumberBox from './NumberBox/number-box'
+import Headline from './Headline/headline';
 import CounterBox from './CounterBox/counter-box'
 import NumberBox from './NumberBox/number-box';
 
@@ -198,6 +200,20 @@ export default class Form extends React.Component {
         }
     }
 
+    /**
+     * renders an headline
+     * 
+     * @param {Object} property a property object
+     * @returns an XHTML object of an headline
+     */
+    renderHeadline = (property) => {
+        try {
+            return <Headline>{property.title}</Headline>;
+        } catch (e) {
+            return <></>;
+        }
+    }
+
     render() {
         if (!this.state.form) return <h>Loading...</h>;
 
@@ -218,6 +234,8 @@ export default class Form extends React.Component {
                                 return this.renderCounterBox(property, id);
                             case "number-box":
                                 return this.renderNumberBox(property, id);
+                            case "headline":
+                                return this.renderHeadline(property); // doesn't have an id, 'cause it doesn't output anything.
                             default:
                                 console.warn(`unsupported form-element type: ${property.type}`);
                         }
