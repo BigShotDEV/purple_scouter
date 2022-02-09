@@ -7,12 +7,9 @@ import TextBox from './TextBox/text-box';
 import './form.css';
 import { deleteCookie, getCookie, setCookie } from '../../Utils/cookie';
 import Nav from '../Nav/nav';
-<<<<<<< HEAD
 import NumberBox from './NumberBox/number-box'
 import Headline from './Headline/headline';
-=======
 import CounterBox from './CounterBox/counter-box'
->>>>>>> 3d6a50a16d047079ae0b68fb407224309deface4
 
 /**
  * This Componenet handles all about the form.
