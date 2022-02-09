@@ -27,14 +27,11 @@ export default class NumberBox extends React.Component {
 
     render() {
         return (
-            <div className="text-box">
+            <div className="number-box">
                 <p className="title">{this.props.children}</p>
 
                 <button onClick={this.subtractValue}>-</button>
-                <input type="strings"
-                    value={this.state.value}
-                    className="number"
-                />
+                <span className='number'>{this.state.value}</span>
                 <button onClick={this.addValue}>+</button>
             </div>
         );

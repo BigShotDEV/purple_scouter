@@ -1,0 +1,39 @@
+.number-box {
+    margin: auto;
+    text-align: center;
+    padding-bottom: 30px;
+}
+
+.number-box .title {
+    text-align: center;
+    font-size: 1.8em;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700;
+    color: rgb(211, 216, 204);
+}
+
+.number-box .number {
+    text-align: center;
+    font-size: 2em;
+    width: 2em;
+    padding-top: .2em;
+    padding-bottom: .3em;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border;
+    background-color: rgba(231, 231, 231, 0.4);
+    color: black;
+}
+
+.number-box button {
+    background-color: rgba(0, 0, 0, 0);
+    border-color: rgba(0, 0, 0, 0);
+    font-size: 2em;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 900;
+    padding: .3em;
+    padding-left: .9em;
+    padding-right: .9em;
+    color: #ccc;
+}
