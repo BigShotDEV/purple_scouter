@@ -57,6 +57,7 @@ export default class Form extends React.Component {
         this.form_data[id] = data;
 
         setCookie(this.COOKIE_NAME, JSON.stringify(this.form_data), this.COOKIE_EXDAYS); // update the form's cookie.
+        console.log(getCookie(this.COOKIE_NAME))
     }
 
     handleRadioBox = (event, id) => {
