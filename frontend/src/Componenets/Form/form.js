@@ -7,7 +7,7 @@ import TextBox from './TextBox/text-box';
 import './form.css';
 import { deleteCookie, getCookie, setCookie } from '../../Utils/cookie';
 import Nav from '../Nav/nav';
-import NumberBox from './NumberBox/number-box'
+import CounterBox from './CounterBox/counter-box'
 
 /**
  * This Componenet handles all about the form.
@@ -78,7 +78,7 @@ export default class Form extends React.Component {
         this.updateFormData(id, [event.target.value]);
     }
 
-    handleNumberBox = (value, id) => {
+    handleCounterBox = (value, id) => {
         this.updateFormData(id, [value])
     }
 
@@ -179,9 +179,9 @@ export default class Form extends React.Component {
         }
     }
 
-    renderNumberBox = (property, id) => {
+    renderCounterBox = (property, id) => {
         try {
-            return <NumberBox id={id} default={this.cookie_data[id]} onChange={this.handleNumberBox}>{property.title}</NumberBox>
+            return <CounterBox id={id} default={this.cookie_data[id]} onChange={this.handleCounterBox}>{property.title}</CounterBox>
         } catch (e) {
             return <></>;
         }
@@ -202,8 +202,8 @@ export default class Form extends React.Component {
                             return this.renderCheckBox(property, id);
                         } else if (property.type === "text-box") {
                             return this.renderTextBox(property, id);
-                        } else if (property.type === "number-box", id) {
-                            return this.renderNumberBox(property, id);
+                        } else if (property.type === "counter-box", id) {
+                            return this.renderCounterBox(property, id);
                         }
                     })
                 }

@@ -1,10 +1,10 @@
-.number-box {
+.counter-box {
     margin: auto;
     text-align: center;
     padding-bottom: 30px;
 }
 
-.number-box .title {
+.counter-box h1 {
     text-align: center;
     font-size: 1.8em;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -12,7 +12,7 @@
     color: rgb(211, 216, 204);
 }
 
-.number-box .number {
+.counter-box span {
     text-align: center;
     font-size: 2em;
     width: 2em;
@@ -26,7 +26,7 @@
     color: black;
 }
 
-.number-box button {
+.counter-box button {
     background-color: rgba(0, 0, 0, 0);
     border-color: rgba(0, 0, 0, 0);
     font-size: 2em;
