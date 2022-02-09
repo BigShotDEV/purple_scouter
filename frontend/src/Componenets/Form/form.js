@@ -7,7 +7,6 @@ import TextBox from './TextBox/text-box';
 import './form.css';
 import { deleteCookie, getCookie, setCookie } from '../../Utils/cookie';
 import Nav from '../Nav/nav';
-import NumberBox from './NumberBox/number-box'
 import Headline from './Headline/headline';
 import CounterBox from './CounterBox/counter-box'
 import NumberBox from './NumberBox/number-box';
