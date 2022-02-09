@@ -196,14 +196,17 @@ export default class Form extends React.Component {
                 <div className="title"><h>{this.state.form.title}</h></div>
                 {
                     this.state.form.properties.map((property, id) => {
-                        if (property.type == "radio-box") {
-                            return this.renderRadioBox(property, id);
-                        } else if (property.type === "check-box") {
-                            return this.renderCheckBox(property, id);
-                        } else if (property.type === "text-box") {
-                            return this.renderTextBox(property, id);
-                        } else if (property.type === "counter-box", id) {
-                            return this.renderCounterBox(property, id);
+                        switch (property.type){
+                            case "radio-box":
+                                return this.renderRadioBox(property, id);
+                            case "check-box":
+                                return this.renderCheckBox(property, id);
+                            case "text-box":
+                                return this.renderTextBox(property, id);
+                            case "counter-box":
+                                return this.renderCounterBox(property, id);
+                            default:
+                                console.warn(`unsupported form-element type: ${property.type}`);
                         }
                     })
                 }
