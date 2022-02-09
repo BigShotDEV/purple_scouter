@@ -7,6 +7,7 @@ import TextBox from './TextBox/text-box';
 import './form.css';
 import { deleteCookie, getCookie, setCookie } from '../../Utils/cookie';
 import Nav from '../Nav/nav';
+import NumberBox from './NumberBox/number-box'
 
 /**
  * This Componenet handles all about the form.
@@ -18,7 +19,7 @@ export default class Form extends React.Component {
 
     constructor(props) {
         super(props);
-        
+
         // here dynamically updating the form_data.
         this.form_data = {} // example: {"id": data, ...}
 
@@ -34,7 +35,7 @@ export default class Form extends React.Component {
      * Loads form_data from the cookie.
      */
     loadFormData = () => {
-        try{
+        try {
             let cookie_data = JSON.parse(getCookie(this.COOKIE_NAME));
             this.form_data = cookie_data; // this is the only place which shouldn't call updateCookie
             return cookie_data;
@@ -64,12 +65,12 @@ export default class Form extends React.Component {
 
     handleCheckBox = (event, id) => {
         if (this.form_data[id] === undefined) this.updateFormData(id, []);
-        
+
         if (this.form_data[id].includes(event)) {
             this.updateFormData(id, this.form_data[id].filter((data) => data != event));
             return;
         }
-        
+
         this.updateFormData(id, [...this.form_data[id], event]);
     }
 
@@ -77,28 +78,32 @@ export default class Form extends React.Component {
         this.updateFormData(id, [event.target.value]);
     }
 
-     handleSubmit = async () => {
+    handleNumberBox = (value, id) => {
+        this.updateFormData(id, [value])
+    }
+
+    handleSubmit = async () => {
         let stats = [];
         let user_name = "";
         let game_number = 0;
         let team_number = 0;
 
-         
+
         // the form data in the this.form_data.
         // add a post request for the data.
         console.log(this.state.form)
-        
+
         if (this.state.form.properties.length > Object.keys(this.form_data).length) {
             // goes here if the user hasn't asnwers all of the form.
 
             alert("error");
             return;
-        } 
+        }
 
         user_name = (await whoami()).user_name; // sets the user_name
 
         this.state.form.properties.map((property, id) => { // sets the stats
-            stats[id] = {title: this.state.form.properties[id].title, value: this.form_data[id]};
+            stats[id] = { title: this.state.form.properties[id].title, value: this.form_data[id] };
         });
 
         let requestBody = {
@@ -115,25 +120,25 @@ export default class Form extends React.Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
-            },    
+            },
             body: JSON.stringify(requestBody)
         }).then(res => {
             return res.json();
-        }) .then(data => {
+        }).then(data => {
             window.location.reload();
         })
-        .catch(e => {
-            alert(e)
-        })
+            .catch(e => {
+                alert(e)
+            })
         deleteCookie(this.COOKIE_NAME);
     }
 
     componentDidMount() {
         this.requestForm().then(form => {
-            this.setState({form: form});
+            this.setState({ form: form });
         })
     }
-    
+
     // retrieves the latest form from the db.
     requestForm = () => {
         return new Promise((resolve, reject) => {
@@ -145,7 +150,7 @@ export default class Form extends React.Component {
                 return res.json();
             }).then(data => {
                 resolve(data);
-            }).catch(e => {console.alert(e); reject(e)})
+            }).catch(e => { console.alert(e); reject(e) })
         })
     }
 
@@ -166,12 +171,19 @@ export default class Form extends React.Component {
             return <></>;
         }
     }
-    
+
     // renders a text box
     renderTextBox = (property, id) => {
-        console.log(property)
         try {
             return <TextBox id={id} default={this.cookie_data[id]} onChange={this.handleTextBox} >{property.title}</TextBox>;
+        } catch (e) {
+            return <></>;
+        }
+    }
+
+    renderNumberBox = (property, id) => {
+        try {
+            return <NumberBox id={id} default={this.cookie_data[id]} onChange={this.handleNumberBox}>{property.title}</NumberBox>
         } catch (e) {
             return <></>;
         }
@@ -182,7 +194,7 @@ export default class Form extends React.Component {
 
         return (
             <div className="form">
-                <Nav items={[{title: "home", link: "https://www.google.com"}, {title: "home", link: "https://www.google.com"}, {title: "home", link: "https://www.google.com"}, {title: "home", link: "https://www.google.com"}]}></Nav>
+                <Nav items={[{ title: "home", link: "https://www.google.com" }, { title: "home", link: "https://www.google.com" }, { title: "home", link: "https://www.google.com" }, { title: "home", link: "https://www.google.com" }]}></Nav>
                 <div className="title"><h>{this.state.form.title}</h></div>
                 {
                     this.state.form.properties.map((property, id) => {
@@ -193,11 +205,13 @@ export default class Form extends React.Component {
                             return this.renderCheckBox(property, id);
                         } else if (property.type === "text-box") {
                             return this.renderTextBox(property, id);
+                        } else if (property.type === "number-box", id) {
+                            return this.renderNumberBox(property, id);
                         }
                     })
                 }
                 <SubmitButton onClick={this.handleSubmit}>Submit</SubmitButton>
-            </div>         
+            </div>
         );
     }
 }
