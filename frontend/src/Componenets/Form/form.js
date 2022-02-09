@@ -57,7 +57,6 @@ export default class Form extends React.Component {
         this.form_data[id] = data;
 
         setCookie(this.COOKIE_NAME, JSON.stringify(this.form_data), this.COOKIE_EXDAYS); // update the form's cookie.
-        console.log(getCookie(this.COOKIE_NAME))
     }
 
     handleRadioBox = (event, id) => {
@@ -92,7 +91,6 @@ export default class Form extends React.Component {
 
         // the form data in the this.form_data.
         // add a post request for the data.
-        console.log(this.state.form)
 
         if (this.state.form.properties.length > Object.keys(this.form_data).length) {
             // goes here if the user hasn't asnwers all of the form.
@@ -113,7 +111,6 @@ export default class Form extends React.Component {
             team_number: team_number,
             stats: stats
         }
-        console.log("request_body", JSON.stringify(requestBody));
 
         fetch(`${API}/api/game/`, {
             method: "POST",
@@ -199,7 +196,6 @@ export default class Form extends React.Component {
                 <div className="title"><h>{this.state.form.title}</h></div>
                 {
                     this.state.form.properties.map((property, id) => {
-                        console.log(property.type)
                         if (property.type == "radio-box") {
                             return this.renderRadioBox(property, id);
                         } else if (property.type === "check-box") {
