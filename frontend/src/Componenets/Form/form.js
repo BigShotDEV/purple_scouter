@@ -59,6 +59,8 @@ export default class Form extends React.Component {
         // here we can set a cookie each time.
         this.form_data[id] = data;
 
+        console.log(this.form_data);
+        
         setCookie(this.COOKIE_NAME, JSON.stringify(this.form_data), this.COOKIE_EXDAYS); // update the form's cookie.
         console.log(this.form_data)
     }
@@ -80,19 +82,23 @@ export default class Form extends React.Component {
 
     handleBooleanBox = (id) => {
         console.log(this.form_data[id])
-        if (this.form_data[id] === undefined || this.form_data[id][0] === false) {
-            this.updateFormData(id, [true])
-        } else if (this.form_data[id][0] === true) {
-            this.updateFormData(id, [false])
+        if (this.form_data[id] === undefined || this.form_data[id] === false) {
+            this.updateFormData(id, true)
+        } else {
+            this.updateFormData(id, false)
         }
     }
 
     handleTextBox = (event, id) => {
-        this.updateFormData(id, [event.target.value]);
+        this.updateFormData(id, event.target.value);
+    }
+
+    handleNumberBox = (event, id) => {
+        this.updateFormData(id, Number(event.target.value));
     }
 
     handleCounterBox = (value, id) => {
-        this.updateFormData(id, [value])
+        this.updateFormData(id, value)
     }
 
     handleSubmit = async () => {
@@ -185,7 +191,7 @@ export default class Form extends React.Component {
 
     renderBooleanBox = (property, id) => {
         try {
-            return <BooleanBox id={id} default={this.cookie_data[id] !== undefined ? this.cookie_data[id][0] : false} onChange={this.handleBooleanBox}>{property.title}</BooleanBox>;
+            return <BooleanBox id={id} default={this.cookie_data[id] !== undefined ? this.cookie_data[id] : false} onChange={this.handleBooleanBox}>{property.title}</BooleanBox>;
         } catch (e) {
             console.log(e)
             return <></>;
@@ -204,7 +210,7 @@ export default class Form extends React.Component {
     // renders a number box
     renderNumberBox = (property, id) => {
         try {
-            return <NumberBox id={id} default={this.cookie_data[id]} onChange={this.handleTextBox} >{property.title}</NumberBox>;
+            return <NumberBox id={id} default={this.cookie_data[id]} onChange={this.handleNumberBox} >{property.title}</NumberBox>;
         } catch (e) {
             return <></>;
         }

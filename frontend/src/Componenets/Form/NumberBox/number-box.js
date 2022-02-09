@@ -12,7 +12,7 @@ export default class TextBox extends React.Component {
             <div className="number-box">
                 <h1>{this.props.children}</h1>
 
-                <input type="number" onChange={(event) => {this.props.onChange(event, this.props.id)}} defaultValue={this.props.default ? this.props.default[0] : ""}></input>
+                <input type="number" onChange={(event) => {this.props.onChange(event, this.props.id)}} defaultValue={this.props.default ? this.props.default : ""}></input>
             </div>
         );  
     }

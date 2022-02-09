@@ -12,7 +12,7 @@ export default class TextBox extends React.Component {
             <div className="text-box">
                 <p className="title">{this.props.children}</p>
 
-                <input type="text" onChange={(event) => {this.props.onChange(event, this.props.id)}} defaultValue={this.props.default ? this.props.default[0] : ""} className="text"></input>
+                <input type="text" onChange={(event) => {this.props.onChange(event, this.props.id)}} defaultValue={this.props.default ? this.props.default : ""} className="text"></input>
             </div>
         );  
     }
