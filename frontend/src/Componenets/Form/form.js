@@ -114,7 +114,7 @@ export default class Form extends React.Component {
         if (this.state.form.properties.length > Object.keys(this.form_data).length) {
             // goes here if the user hasn't asnwers all of the form.
 
-            alert("error");
+            alert("You need to complete the form in order to submit it");
             return;
         }
 
