@@ -59,10 +59,7 @@ export default class Form extends React.Component {
         // here we can set a cookie each time.
         this.form_data[id] = data;
 
-        console.log(this.form_data);
-        
         setCookie(this.COOKIE_NAME, JSON.stringify(this.form_data), this.COOKIE_EXDAYS); // update the form's cookie.
-        console.log(this.form_data)
     }
 
     handleRadioBox = (event, id) => {
@@ -73,7 +70,7 @@ export default class Form extends React.Component {
         if (this.form_data[id] === undefined) this.updateFormData(id, []);
 
         if (this.form_data[id].includes(event)) {
-            this.updateFormData(id, this.form_data[id].filter((data) => data != event));
+            this.updateFormData(id, this.form_data[id].filter((data) => data !== event));
             return;
         }
 
@@ -81,7 +78,6 @@ export default class Form extends React.Component {
     }
 
     handleBooleanBox = (id) => {
-        console.log(this.form_data[id])
         if (this.form_data[id] === undefined || this.form_data[id] === false) {
             this.updateFormData(id, true)
         } else {
@@ -106,12 +102,17 @@ export default class Form extends React.Component {
         let user_name = "";
         let game_number = 0;
         let team_number = 0;
+        let form_length = 0;
+
+        for (const property of this.state.form.properties) {
+            if (property.type !== "headline") form_length++;
+        }
 
 
         // the form data in the this.form_data.
         // add a post request for the data.
 
-        if (this.state.form.properties.length > Object.keys(this.form_data).length) {
+        if (form_length > Object.keys(this.form_data).length) {
             // goes here if the user hasn't asnwers all of the form.
 
             alert("You need to complete the form in order to submit it");
@@ -191,9 +192,9 @@ export default class Form extends React.Component {
 
     renderBooleanBox = (property, id) => {
         try {
-            return <BooleanBox id={id} default={this.cookie_data[id] !== undefined ? this.cookie_data[id] : false} onChange={this.handleBooleanBox}>{property.title}</BooleanBox>;
+            if (this.cookie_data[id] === undefined) this.updateFormData(id, false);
+            return <BooleanBox id={id} default={this.cookie_data[id]} onChange={this.handleBooleanBox}>{property.title}</BooleanBox>;
         } catch (e) {
-            console.log(e)
             return <></>;
         }
     }
