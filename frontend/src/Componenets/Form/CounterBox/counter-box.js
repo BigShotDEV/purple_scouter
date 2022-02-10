@@ -11,7 +11,7 @@ export default class NumberBox extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: this.props.default ? this.props.default : "0"
+            value: this.props.default !==undefined ? this.props.default : "-1"
         }
     }
 
