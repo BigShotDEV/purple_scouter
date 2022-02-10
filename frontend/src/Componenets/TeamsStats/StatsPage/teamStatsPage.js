@@ -24,6 +24,7 @@ export default class TeamStatsPage extends React.Component {
         let data = {};
         let amountOfGames = 0;
         let booleanData = {};
+        let stringData = {};
 
         copyMongoData.forEach(game => {
             amountOfGames++;
@@ -43,6 +44,24 @@ export default class TeamStatsPage extends React.Component {
                             booleanData[key] = 0;
                         }
                         if (value) booleanData[key]++;
+
+                        break;
+                    case "string":
+                        if (stringData[key] === undefined) {
+                            stringData[key] = [{ value: value, count: 1 }]
+                        } else {
+                            let put = false;
+                            for (const item of stringData[key]) {
+                                if (item.value === value) {
+                                    item.count++;
+                                    put = true;
+                                    break;
+                                }
+                            }
+                            if (!put) {
+                                stringData[key].push({ value: value, count: 1})
+                            }
+                        }
 
                         break;
                     case "object":
@@ -85,7 +104,15 @@ export default class TeamStatsPage extends React.Component {
             }
         });
         for (const [key, value] of Object.entries(booleanData)) {
-            data[key] = `${(value/amountOfGames).toFixed(2).replace(/[.,]00$/, "")}% (${value} out of ${amountOfGames})`;
+            data[key] = `${(value / amountOfGames).toFixed(2).replace(/[.,]00$/, "")}% (${value} out of ${amountOfGames})`;
+        }
+        for (const [key, value] of Object.entries(stringData)) {
+            let str = '';
+            for (const item of value) {
+                str += `${item.value} - ${item.count} times, `;
+            }
+
+            data[key] = str
         }
         return data;
     }
@@ -100,9 +127,9 @@ export default class TeamStatsPage extends React.Component {
             switch (typeof value) {
                 case 'number':
                     gamesGUI.push(<p key={key}>{`${key}: ${value.toFixed(2).replace(/[.,]00$/, "")}`}</p>);
-                    
+
                     break;
-                    case "string":
+                case "string":
                     gamesGUI.push(<p key={key}>{`${key}: ${value}`}</p>);
 
                     break;

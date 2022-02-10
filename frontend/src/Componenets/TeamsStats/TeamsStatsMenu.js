@@ -84,7 +84,6 @@ export default class Stats extends React.Component {
 
                                         break;
                                     default:
-                                        console.warn("the type of the stat " + key + "\\" + subKey + " (" + typeof subValue + ") is not supported");
 
                                         break;
                                 }
@@ -92,7 +91,6 @@ export default class Stats extends React.Component {
 
                             break;
                         default:
-                            console.warn("the type of the stat " + key + " (" + typeof value + ") is not supported");
 
                             break;
                     }
