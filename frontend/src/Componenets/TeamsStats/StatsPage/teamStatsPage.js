@@ -24,7 +24,7 @@ export default class TeamStatsPage extends React.Component {
         let data = {};
         let amountOfGames = 0;
         let booleanData = {};
-        let stringData = {};
+        let multiOptionsData = {};
 
         copyMongoData.forEach(game => {
             amountOfGames++;
@@ -47,11 +47,11 @@ export default class TeamStatsPage extends React.Component {
 
                         break;
                     case "string":
-                        if (stringData[key] === undefined) {
-                            stringData[key] = [{ value: value, count: 1 }]
+                        if (multiOptionsData[key] === undefined) {
+                            multiOptionsData[key] = [{ value: value, count: 1 }]
                         } else {
                             let put = false;
-                            for (const item of stringData[key]) {
+                            for (const item of multiOptionsData[key]) {
                                 if (item.value === value) {
                                     item.count++;
                                     put = true;
@@ -59,12 +59,35 @@ export default class TeamStatsPage extends React.Component {
                                 }
                             }
                             if (!put) {
-                                stringData[key].push({ value: value, count: 1})
+                                multiOptionsData[key].push({ value: value, count: 1 });
                             }
                         }
 
                         break;
                     case "object":
+                        if (Array.isArray(value)) {
+                            if (multiOptionsData[key] === undefined) {
+                                multiOptionsData[key] = [];
+                                for (const item of value) {
+                                    multiOptionsData[key].push({ value: item, count: 1 });
+                                }
+                            } else {
+                                for (const item of value) {
+                                    let put = false;
+                                    for (const dataItem of multiOptionsData[key]) {
+                                        if (dataItem.value === item) {
+                                            dataItem.count++;
+                                            put = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!put) {
+                                        multiOptionsData[key].push({ value: item, count: 1 })
+                                    }
+                                }
+                            }
+                            break;
+                        }
                         if (data[key] === undefined) {
                             data[key] = {};
                         }
@@ -106,7 +129,7 @@ export default class TeamStatsPage extends React.Component {
         for (const [key, value] of Object.entries(booleanData)) {
             data[key] = `${(value / amountOfGames).toFixed(2).replace(/[.,]00$/, "")}% (${value} out of ${amountOfGames})`;
         }
-        for (const [key, value] of Object.entries(stringData)) {
+        for (const [key, value] of Object.entries(multiOptionsData)) {
             let str = '';
             for (const item of value) {
                 str += `${item.value} - ${item.count} times, `;
