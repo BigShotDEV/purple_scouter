@@ -15,6 +15,7 @@ import BooleanBox from './BooleanBox/boolean-box';
 /**
  * This Componenet handles all about the form.
  * 
+ * The game number(id=0) and the team number(id=1)
  */
 export default class Form extends React.Component {
     COOKIE_EXDAYS = 0.5; // 12 hours
@@ -30,6 +31,8 @@ export default class Form extends React.Component {
 
         this.state = {
             form: undefined,
+            game_number: 0,
+            team_number: 0,
         }
     }
 
@@ -97,11 +100,26 @@ export default class Form extends React.Component {
         this.updateFormData(id, value)
     }
 
+    handleGameInfo = (event, id) => {
+        switch (id) {
+            case(0):
+                this.setState({game_number: Number(event.target.value)});
+                break;
+            case(1):
+                this.setState({team_number: Number(event.target.value)});
+                break;
+        } 
+    }
+
     handleSubmit = async () => {
+        let properties = JSON.parse(JSON.stringify(this.state.form.properties));
+
+        properties = properties.filter((property => property.type !== "headline"));
+
         let stats = [];
         let user_name = "";
-        let game_number = 0;
-        let team_number = 0;
+        let game_number = this.state.game_number;
+        let team_number = this.state.team_number;
         let form_length = 0;
 
         for (const property of this.state.form.properties) {
@@ -121,8 +139,8 @@ export default class Form extends React.Component {
 
         user_name = (await whoami()).user_name; // sets the user_name
 
-        this.state.form.properties.map((property, id) => { // sets the stats
-            stats[id] = { title: this.state.form.properties[id].title, value: this.form_data[id] };
+        properties.map((property, id) => { // sets the stats
+            stats[id] = { title: properties[id].title, value: this.form_data[id] };
         });
 
         let requestBody = {
@@ -247,6 +265,8 @@ export default class Form extends React.Component {
             <div className="form">
                 <Nav items={[{ title: "home", link: "https://www.google.com" }, { title: "home", link: "https://www.google.com" }, { title: "home", link: "https://www.google.com" }, { title: "home", link: "https://www.google.com" }]}></Nav>
                 <div className="title"><h>{this.state.form.title}</h></div>
+                <NumberBox id={0} default={0} onChange={this.handleGameInfo} >מספר משחק</NumberBox>
+                <NumberBox id={1} default={0} onChange={this.handleGameInfo} >מספר קבוצה</NumberBox>
                 {
                     this.state.form.properties.map((property, id) => {
                         switch (property.type) {
