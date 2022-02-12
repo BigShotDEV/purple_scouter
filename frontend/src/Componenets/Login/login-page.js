@@ -2,6 +2,7 @@ import React from 'react';
 import InputField from './inputField/input-field';
 import { authentication, isAuthenticated } from '../../Utils/authentication';
 import "./login-page.css"
+import Nav from '../Nav/nav';
 
 export default class LoginPage extends React.Component {    
     constructor(props) {
@@ -36,6 +37,7 @@ export default class LoginPage extends React.Component {
     render() {
         return (
             <div className="login-page">    
+                <Nav items={[{ title: "home", link: "/" }, { title: "login", link: "/login" }, { title: "stats", link: "/stats" }]}></Nav>
                 <div className="title">Login</div>
 
                  <form name="myForm" action="" onSubmit={(form) => {form.preventDefault(); this.auth(form)}}>

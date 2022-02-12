@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { API } from '../../../Utils/authentication';
+import Nav from '../../Nav/nav';
 import BarGraph from './graphs/graph';
 import './teamStatsPage.css'
 
@@ -222,6 +223,8 @@ export default class TeamStatsPage extends React.Component {
 
     render() {
         return <div className='team-stats-page'>
+            <Nav items={[{ title: "home", link: "/" }, { title: "login", link: "/login" }, { title: "stats", link: "/stats" }]}></Nav>
+
             <h1>Team {this.TEAM}</h1>
             {this.exportDataToAverageGUI(this.state.mongoData)}
         </div>;
