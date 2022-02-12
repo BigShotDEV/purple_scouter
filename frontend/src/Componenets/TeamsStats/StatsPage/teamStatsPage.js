@@ -3,203 +3,23 @@ import { API } from '../../../Utils/authentication';
 import BarGraph from './graphs/graph';
 import './teamStatsPage.css'
 
+function round(num) {
+    var m = Number((Math.abs(num) * 100).toPrecision(15));
+    return Math.round(m) / 100 * Math.sign(num);
+}
+
 export default class TeamStatsPage extends React.Component {
     TEAM = window.location.pathname.match(/\/stats\/teams\/(.*)/)[1];
 
     constructor(props) {
         super(props)
         this.state = {
-            mongoData: []
+            mongoData: [],
+            amountOfGames: 0,
+            language: 'hebrew'
         }
     }
 
-    // please do everything again
-    badConversion = (data) => {
-        let badData = [];
-
-        data.forEach(game => {
-            let badGame = { team_number: game.team_number, game_number: game.game_number, stats: {} };
-            game.stats.forEach(stat => {
-                badGame.stats[stat.title] = stat.value;
-            });
-            badData.push(badGame);
-        });
-        return badData;
-    }
-
-    /**
-     * this method flattens the mongo data (gets the averages)
-     * @param {array} mongoData the data recieved from the mongoDB
-     * @returns an objects that contains the average all stats
-     */
-    getAverageOfStatsFromMongoData = (mongoData) => {
-        let copyMongoData = JSON.parse(JSON.stringify(mongoData)); // deep copy
-
-        let data = {};
-        let amountOfGames = 0;
-        let booleanData = {};
-        let multiOptionsData = {};
-
-        copyMongoData.forEach(game => {
-            amountOfGames++;
-            for (const [key, value] of Object.entries(game.stats)) {
-                switch (typeof value) {
-                    case "number":
-                        if (data[key] === undefined) {
-                            data[key] = 0;
-                        }
-                        data[key] *= amountOfGames - 1;
-                        data[key] += value;
-                        data[key] /= amountOfGames;
-
-                        break;
-                    case "boolean":
-                        if (booleanData[key] === undefined) {
-                            booleanData[key] = 0;
-                        }
-                        if (value) booleanData[key]++;
-
-                        break;
-                    case "string":
-                        if (multiOptionsData[key] === undefined) {
-                            multiOptionsData[key] = [{ value: value, count: 1 }]
-                        } else {
-                            let put = false;
-                            for (const item of multiOptionsData[key]) {
-                                if (item.value === value) {
-                                    item.count++;
-                                    put = true;
-                                    break;
-                                }
-                            }
-                            if (!put) {
-                                multiOptionsData[key].push({ value: value, count: 1 });
-                            }
-                        }
-
-                        break;
-                    case "object":
-                        if (Array.isArray(value)) {
-                            if (multiOptionsData[key] === undefined) {
-                                multiOptionsData[key] = [];
-                                for (const item of value) {
-                                    multiOptionsData[key].push({ value: item, count: 1 });
-                                }
-                            } else {
-                                for (const item of value) {
-                                    let put = false;
-                                    for (const dataItem of multiOptionsData[key]) {
-                                        if (dataItem.value === item) {
-                                            dataItem.count++;
-                                            put = true;
-                                            break;
-                                        }
-                                    }
-                                    if (!put) {
-                                        multiOptionsData[key].push({ value: item, count: 1 })
-                                    }
-                                }
-                            }
-                            break;
-                        }
-                        if (data[key] === undefined) {
-                            data[key] = {};
-                        }
-                        for (const [subKey, subValue] of Object.entries(value)) {
-                            switch (typeof subValue) {
-                                case "number":
-                                    if (data[key][subKey] === undefined) {
-                                        data[key][subKey] = 0;
-                                    }
-                                    data[key][subKey] *= amountOfGames - 1;
-                                    data[key][subKey] += subValue;
-                                    data[key][subKey] /= amountOfGames;
-
-                                    break;
-                                case "boolean":
-                                    if (data[key][subKey] === undefined) {
-                                        data[key][subKey] = 0;
-                                    }
-                                    data[key][subKey] *= amountOfGames - 1;
-                                    data[key][subKey] += value ? 1 : 0;
-                                    data[key][subKey] /= amountOfGames;
-
-                                    break;
-                                default:
-                                    console.warn("the type of the stat " + key + "\\" + subKey + " (" + typeof subValue + ") is not supported");
-
-                                    break;
-                            }
-                        }
-
-                        break;
-                    default:
-                        console.warn("the type of the stat " + key + " (" + typeof value + ") is not supported");
-
-                        break;
-                }
-            }
-        });
-        for (const [key, value] of Object.entries(booleanData)) {
-            data[key] = `${(value / amountOfGames).toFixed(2).replace(/[.,]00$/, "")}% (${value} out of ${amountOfGames})`;
-        }
-        for (const [key, value] of Object.entries(multiOptionsData)) {
-            let str = '';
-            for (const item of value) {
-                str += `${item.value} - ${item.count} times, `;
-            }
-
-            data[key] = str
-        }
-        return data;
-    }
-
-    exportDataToAverageGUI = (mongoData) => {
-        let data = this.getAverageOfStatsFromMongoData(mongoData);
-        let gamesGUI = [];
-        let graphLabels = [];
-        let graphValues = []; // {lable: '', data: []}
-
-        for (const [key, value] of Object.entries(data)) {
-            switch (typeof value) {
-                case 'number':
-                    gamesGUI.push(<p key={key}>{`${key}: ${value.toFixed(2).replace(/[.,]00$/, "")}`}</p>);
-
-                    break;
-                case "string":
-                    gamesGUI.push(<p key={key}>{`${key}: ${value}`}</p>);
-
-                    break;
-                case 'object':
-                    for (const dataSet of graphValues)
-                        dataSet.data.push(0)
-                    graphLabels.push(key);
-
-                    for (const [subKey, subValue] of Object.entries(value)) {
-                        switch (typeof subValue) {
-                            case 'number':
-                                graphValues.push({ label: subKey, data: [] });
-
-                                for (let i = 0; i < graphLabels.length - 1; i++)
-                                    graphValues[graphValues.length - 1].data.push(0);
-
-                                graphValues[graphValues.length - 1].data.push(subValue);
-
-                                break;
-                            default:
-                                console.warn(`the type of the stat ${key}\\${subKey} (${typeof subValue}) is not supported`);
-                        }
-                    }
-                    break;
-                default:
-                    console.warn(`the type of the stat ${key} (${typeof value}) is not supported`);
-            }
-        }
-
-        gamesGUI.push(<BarGraph labels={graphLabels} values={graphValues} />)
-
-        return gamesGUI;
-    }
 
     componentDidMount() {
         fetch(`${API}/api/teams/${this.TEAM}`,
@@ -209,21 +29,151 @@ export default class TeamStatsPage extends React.Component {
             }).then(res => {
                 return res.json();
             }).then(data => {
-                data = this.badConversion(data);
                 if (data.detail != undefined) { // team not found.
                     window.location.href = "/stats";
                 }
 
-                this.setState({ mongoData: data })
+                this.setState({ mongoData: data, amountOfGames: data.length })
             }).catch(e => {
                 alert(e);
             })
     }
 
+    determineParagraphLanguageClass() {
+        if (this.state.language === 'hebrew')
+            return 'hebrew-paragraph'
+        if (this.state.language === 'english')
+            return 'english-paragraph'
+    }
+
+    summerizeNumber(index) {
+        let average = 0;
+
+        this.state.mongoData.forEach(game => {
+            average += game.stats[index].value;
+        });
+
+        average /= this.state.amountOfGames;
+
+        return average;
+    }
+
+    summerizeBoolean(index) {
+        let sum = 0;
+
+        this.state.mongoData.forEach(game => {
+            if (game.stats[index].value) sum++;
+        });
+
+        let outOf = 'out of';
+        if (this.state.language === 'hebrew') outOf = 'מתוך';
+
+        return `${round(sum / this.state.amountOfGames * 100)}% (${sum} ${outOf} ${this.state.amountOfGames})`;
+    }
+
+    summerizeString(index) {
+        let data = []
+
+        this.state.mongoData.forEach(game => {
+            let wasAdded = false;
+
+            for (const dataPiece of data) {
+                if (dataPiece.value === game.stats[index].value) {
+                    wasAdded = true;
+                    dataPiece.count++;
+                    break;
+                }
+            }
+
+            if (!wasAdded) {
+                data.push({ value: game.stats[index].value, count: 1 });
+            }
+        });
+
+        let text = '';
+
+        let outOf = 'out of';
+        if (this.state.language === 'hebrew') outOf = 'מתוך';
+
+        data.forEach(dataPiece => {
+            text += `${dataPiece.value} - ${round(dataPiece.count/this.state.amountOfGames*100)}% (${dataPiece.count} ${outOf} ${this.state.amountOfGames}), `
+        })
+
+        return text
+    }
+
+    summerizeArray(index) {
+        let data = []
+
+        this.state.mongoData.forEach(game => {
+            game.stats[index].value.forEach(value => {
+                console.log(value)
+                let wasAdded = false;
+
+                for (const dataPiece of data) {
+                    if (dataPiece.value === value) {
+                        wasAdded = true;
+                        dataPiece.count++;
+                        break;
+                    }
+                }
+
+                if (!wasAdded) {
+                    data.push({ value: value, count: 1 });
+                }
+            })
+        });
+
+        let text = '';
+
+        let outOf = 'out of';
+        if (this.state.language === 'hebrew') outOf = 'מתוך';
+
+        data.forEach(dataPiece => {
+            text += `${dataPiece.value} - ${round(dataPiece.count/this.state.amountOfGames*100)}% (${dataPiece.count} ${outOf} ${this.state.amountOfGames}), `
+        })
+
+        return text;
+    }
+
+    summerize(index) {
+        let value = this.state.mongoData[0].stats[index].value;
+
+        switch (typeof value) {
+            case 'number':
+                return this.summerizeNumber(index);
+            case 'boolean':
+                return this.summerizeBoolean(index);
+            case 'string':
+                return this.summerizeString(index);
+            case 'object':
+                if (Array.isArray(value))
+                    return this.summerizeArray(index);
+            default:
+                console.warn(`the type ${typeof value} is not supported`);
+                return 'unsupported type';
+        }
+    }
+
+    renderData() {
+        if (this.state.mongoData.length === 0) return <p>sorry, no data is avaliable</p>
+
+        let renderedData = [];
+
+        if (this.state.language === 'hebrew') renderedData.push(<p className='hebrew-paragraph'>סך הכל משחקים: {this.state.amountOfGames}</p>)
+
+        for (let i = 0; i < this.state.mongoData[0].stats.length; i++) {
+            renderedData.push(
+                <p className={this.determineParagraphLanguageClass()}>{this.state.mongoData[0].stats[i].title}: {this.summerize(i)}</p>
+            );
+        }
+        return renderedData;
+    }
+
     render() {
         return <div className='team-stats-page'>
             <h1>Team {this.TEAM}</h1>
-            {this.exportDataToAverageGUI(this.state.mongoData)}
+            {this.renderData()}
         </div>;
     }
 }
