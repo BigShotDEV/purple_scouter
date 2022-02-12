@@ -173,12 +173,12 @@ export default class Form extends React.Component {
         }).then(res => {
             return res.json();
         }).then(data => {
-            // window.location.reload();
+            window.location.reload();
         })
             .catch(e => {
                 alert(e)
             })
-        // deleteCookie(this.COOKIE_NAME);
+        deleteCookie(this.COOKIE_NAME);
     }
 
     componentDidMount() {
@@ -277,7 +277,7 @@ export default class Form extends React.Component {
 
         return (
             <div className="form">
-                <Nav items={[{ title: "home", link: "https://www.google.com" }, { title: "home", link: "https://www.google.com" }, { title: "home", link: "https://www.google.com" }, { title: "home", link: "https://www.google.com" }]}></Nav>
+                <Nav items={[{ title: "home", link: "/" }, { title: "login", link: "/login" }, { title: "stats", link: "/stats" }]}></Nav>
                 <div className="title"><h>{this.state.form.title[this.state.language] !== undefined ? this.state.form.title[this.state.language] : this.state.form.title["english"]}</h></div>
                 <NumberBox id={0} default={0} onChange={this.handleGameInfo} >מספר משחק</NumberBox>
                 <NumberBox id={1} default={0} onChange={this.handleGameInfo} >מספר קבוצה</NumberBox>

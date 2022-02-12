@@ -7,9 +7,7 @@ import './nav-item.css';
 export default class NavItem extends React.Component {
     render() {
         return (
-        <div className="nav-item">
-            <a href={this.props.link}>{this.props.children}</a>
-        </div>
+            <li><a href={this.props.link}>{this.props.children}</a></li>
         );
     }
 }
