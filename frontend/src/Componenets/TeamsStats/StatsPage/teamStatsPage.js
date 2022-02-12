@@ -13,6 +13,20 @@ export default class TeamStatsPage extends React.Component {
         }
     }
 
+    // please do everything again
+    badConversion = (data) => {
+        let badData = [];
+
+        data.forEach(game => {
+            let badGame = { team_number: game.team_number, game_number: game.game_number, stats: {} };
+            game.stats.forEach(stat => {
+                badGame.stats[stat.title] = stat.value;
+            });
+            badData.push(badGame);
+        });
+        return badData;
+    }
+
     /**
      * this method flattens the mongo data (gets the averages)
      * @param {array} mongoData the data recieved from the mongoDB
@@ -195,6 +209,7 @@ export default class TeamStatsPage extends React.Component {
             }).then(res => {
                 return res.json();
             }).then(data => {
+                data = this.badConversion(data);
                 if (data.detail != undefined) { // team not found.
                     window.location.href = "/stats";
                 }
