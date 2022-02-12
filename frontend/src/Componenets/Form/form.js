@@ -29,6 +29,11 @@ export default class Form extends React.Component {
 
         this.cookie_data = this.loadFormData();
 
+        this.game_info = {
+            game_number: {"hebrew": "מספר משחק", "english": "game number"},
+            team_number: {"hebrew": "מספר קבוצה", "english": "team number"}
+        }
+
         this.state = {
             form: undefined,
             game_number: 0,
@@ -274,13 +279,14 @@ export default class Form extends React.Component {
 
     render() {
         if (!this.state.form) return <h>Loading...</h>;
-
+        
         return (
             <div className="form">
                 <Nav items={[{ title: "home", link: "/" }, { title: "login", link: "/login" }, { title: "stats", link: "/stats" }]}></Nav>
+                
                 <div className="title"><h>{this.state.form.title[this.state.language] !== undefined ? this.state.form.title[this.state.language] : this.state.form.title["english"]}</h></div>
-                <NumberBox id={0} default={0} onChange={this.handleGameInfo} >מספר משחק</NumberBox>
-                <NumberBox id={1} default={0} onChange={this.handleGameInfo} >מספר קבוצה</NumberBox>
+                <NumberBox id={0} default={0} onChange={this.handleGameInfo} >{this.game_info.game_number[this.state.language]}</NumberBox>
+                <NumberBox id={1} default={0} onChange={this.handleGameInfo} >{this.game_info.team_number[this.state.language]}</NumberBox>
                 {
                     this.state.form.properties.map((property, id) => {
                         switch (property.type) {
