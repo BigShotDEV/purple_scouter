@@ -20,6 +20,7 @@ import BooleanBox from './BooleanBox/boolean-box';
 export default class Form extends React.Component {
     COOKIE_EXDAYS = 0.5; // 12 hours
     COOKIE_NAME = "form_data";
+    GAME_INFO_COOKIE = "game_info"
 
     constructor(props) {
         super(props);
@@ -28,20 +29,20 @@ export default class Form extends React.Component {
         this.form_data = {} // example: {"id": data, ...}
 
         this.cookie_data = this.loadFormData();
+        this.game_info_cookie = this.loadGameInfo();
 
-        this.game_info = {
+        this.game_info_name = {
             game_number: {"hebrew": "מספר משחק", "english": "game number"},
             team_number: {"hebrew": "מספר קבוצה", "english": "team number"}
         }
 
         this.state = {
             form: undefined,
-            game_number: 0,
-            team_number: 0,
+            game_number: this.cookie_data.game_number === undefined ? 0 : this.cookie_data.game_number,
+            team_number: this.cookie_data.team_number  === undefined ? 0 : this.cookie_data.team_number,
             language: "english",
         }
     }
-
 
     /**
      * Loads form_data from the cookie.
@@ -49,8 +50,24 @@ export default class Form extends React.Component {
     loadFormData = () => {
         try {
             let cookie_data = JSON.parse(getCookie(this.COOKIE_NAME));
+
             this.form_data = cookie_data; // this is the only place which shouldn't call updateCookie
             return cookie_data;
+        } catch (e) {
+            return {};
+        }
+    }
+
+    /**
+     * Loads the game info from cookies.
+     * 
+     * @returns The game info
+     */
+    loadGameInfo = () => {
+        try {
+            let game_info = JSON.parse(getCookie(this.GAME_INFO_COOKIE));
+            
+            return game_info;
         } catch (e) {
             return {};
         }
@@ -110,11 +127,14 @@ export default class Form extends React.Component {
         switch (id) {
             case(0):
                 this.setState({game_number: Number(event.target.value)});
+                setCookie(this.GAME_INFO_COOKIE, JSON.stringify({game_number: Number(event.target.value), team_number: this.state.team_number}), this.COOKIE_EXDAYS); // update the form's cookie.
                 break;
             case(1):
                 this.setState({team_number: Number(event.target.value)});
+                setCookie(this.GAME_INFO_COOKIE, JSON.stringify({game_number: this.state.game_number, team_number: Number(event.target.value)}), this.COOKIE_EXDAYS); // update the form's cookie.
                 break;
         } 
+
     }
 
     handleSubmit = async () => {
@@ -184,6 +204,7 @@ export default class Form extends React.Component {
                 alert(e)
             })
         deleteCookie(this.COOKIE_NAME);
+        deleteCookie(this.GAME_INFO_COOKIE);
     }
 
     componentDidMount() {
@@ -285,8 +306,8 @@ export default class Form extends React.Component {
                 <Nav items={[{ title: "home", link: "/" }, { title: "login", link: "/login" }, { title: "stats", link: "/stats" }]}></Nav>
                 
                 <div className="title"><h>{this.state.form.title[this.state.language] !== undefined ? this.state.form.title[this.state.language] : this.state.form.title["english"]}</h></div>
-                <NumberBox id={0} default={0} onChange={this.handleGameInfo} >{this.game_info.game_number[this.state.language]}</NumberBox>
-                <NumberBox id={1} default={0} onChange={this.handleGameInfo} >{this.game_info.team_number[this.state.language]}</NumberBox>
+                <NumberBox id={0} default={this.game_info_cookie.game_number} onChange={this.handleGameInfo} >{this.game_info_name.game_number[this.state.language]}</NumberBox>
+                <NumberBox id={1} default={this.game_info_cookie.team_number} onChange={this.handleGameInfo} >{this.game_info_name.team_number[this.state.language]}</NumberBox>
                 {
                     this.state.form.properties.map((property, id) => {
                         switch (property.type) {
