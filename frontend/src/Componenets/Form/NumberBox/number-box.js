@@ -6,7 +6,7 @@ import "./number-box.css";
  * it gets the title has a property through the children, 
  * and it gets a onChange callback. 
  */
-export default class TextBox extends React.Component {
+export default class NumberBox extends React.Component {
     render() {
         return (
             <div className="number-box">
