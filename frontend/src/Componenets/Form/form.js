@@ -138,9 +138,9 @@ export default class Form extends React.Component {
         }
 
         user_name = (await whoami()).user_name; // sets the user_name
-
+        console.log(this.form_data, properties)
         properties.map((property, id) => { // sets the stats
-            stats[id] = { title: properties[id].title, value: this.form_data[id] };
+            stats[id] = { title: properties[property.id].title, value: this.form_data[id] };
         });
 
         let requestBody = {
@@ -161,12 +161,12 @@ export default class Form extends React.Component {
         }).then(res => {
             return res.json();
         }).then(data => {
-            window.location.reload();
+            // window.location.reload();
         })
             .catch(e => {
                 alert(e)
             })
-        deleteCookie(this.COOKIE_NAME);
+        // deleteCookie(this.COOKIE_NAME);
     }
 
     componentDidMount() {
@@ -231,6 +231,7 @@ export default class Form extends React.Component {
         try {
             return <NumberBox id={id} default={this.cookie_data[id]} onChange={this.handleNumberBox} >{property.title}</NumberBox>;
         } catch (e) {
+            console.warn(e)
             return <></>;
         }
     }
@@ -240,6 +241,7 @@ export default class Form extends React.Component {
         try {
             return <CounterBox id={id} default={this.cookie_data[id]} onChange={this.handleCounterBox}>{property.title}</CounterBox>;
         } catch (e) {
+            console.log("error", e)
             return <></>;
         }
     }
@@ -271,19 +273,19 @@ export default class Form extends React.Component {
                     this.state.form.properties.map((property, id) => {
                         switch (property.type) {
                             case "radio-box":
-                                return this.renderRadioBox(property, id);
+                                return this.renderRadioBox(property, Number(property.id));
                             case "check-box":
-                                return this.renderCheckBox(property, id);
+                                return this.renderCheckBox(property, Number(property.id));
                             case "text-box":
-                                return this.renderTextBox(property, id);
+                                return this.renderTextBox(property, Number(property.id));
                             case "counter-box":
-                                return this.renderCounterBox(property, id);
+                                return this.renderCounterBox(property, Number(property.id));
                             case "number-box":
-                                return this.renderNumberBox(property, id);
+                                return this.renderNumberBox(property, Number(property.id));
                             case "headline":
                                 return this.renderHeadline(property); // doesn't have an id, 'cause it doesn't output anything.
                             case "boolean-box":
-                                return this.renderBooleanBox(property, id)
+                                return this.renderBooleanBox(property, Number(property.id))
                             default:
                                 console.warn(`unsupported form-element type: ${property.type}`);
                         }
