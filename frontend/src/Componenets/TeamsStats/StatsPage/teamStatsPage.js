@@ -17,7 +17,7 @@ export default class TeamStatsPage extends React.Component {
         this.state = {
             mongoData: [],
             amountOfGames: 0,
-            language: 'hebrew'
+            language: 'english'
         }
     }
 
@@ -40,13 +40,6 @@ export default class TeamStatsPage extends React.Component {
             })
     }
 
-    determineParagraphLanguageClass() {
-        if (this.state.language === 'hebrew')
-            return 'hebrew-paragraph'
-        if (this.state.language === 'english')
-            return 'english-paragraph'
-    }
-
     summerizeNumber(index) {
         let average = 0;
 
@@ -56,7 +49,7 @@ export default class TeamStatsPage extends React.Component {
 
         average /= this.state.amountOfGames;
 
-        return average;
+        return round(average);
     }
 
     summerizeBoolean(index) {
@@ -79,7 +72,7 @@ export default class TeamStatsPage extends React.Component {
             let wasAdded = false;
 
             for (const dataPiece of data) {
-                if (dataPiece.value === game.stats[index].value) {
+                if (dataPiece.value === game.stats[index].value[this.state.language]) {
                     wasAdded = true;
                     dataPiece.count++;
                     break;
@@ -87,7 +80,7 @@ export default class TeamStatsPage extends React.Component {
             }
 
             if (!wasAdded) {
-                data.push({ value: game.stats[index].value, count: 1 });
+                data.push({ value: game.stats[index].value[this.state.language], count: 1 });
             }
         });
 
@@ -97,7 +90,7 @@ export default class TeamStatsPage extends React.Component {
         if (this.state.language === 'hebrew') outOf = 'מתוך';
 
         data.forEach(dataPiece => {
-            text += `${dataPiece.value} - ${round(dataPiece.count/this.state.amountOfGames*100)}% (${dataPiece.count} ${outOf} ${this.state.amountOfGames}), `
+            text += `${dataPiece.value} - ${round(dataPiece.count / this.state.amountOfGames * 100)}% (${dataPiece.count} ${outOf} ${this.state.amountOfGames}), `
         })
 
         return text
@@ -131,7 +124,7 @@ export default class TeamStatsPage extends React.Component {
         if (this.state.language === 'hebrew') outOf = 'מתוך';
 
         data.forEach(dataPiece => {
-            text += `${dataPiece.value} - ${round(dataPiece.count/this.state.amountOfGames*100)}% (${dataPiece.count} ${outOf} ${this.state.amountOfGames}), `
+            text += `${dataPiece.value} - ${round(dataPiece.count / this.state.amountOfGames * 100)}% (${dataPiece.count} ${outOf} ${this.state.amountOfGames}), `
         })
 
         return text;
@@ -145,11 +138,19 @@ export default class TeamStatsPage extends React.Component {
                 return this.summerizeNumber(index);
             case 'boolean':
                 return this.summerizeBoolean(index);
-            case 'string':
-                return this.summerizeString(index);
             case 'object':
-                if (Array.isArray(value))
-                    return this.summerizeArray(index);
+                if (value[this.state.language] !== null) {
+                    switch (typeof value[this.state.language]) {
+                        case 'string':
+                            return this.summerizeString(index)
+                        case 'object':
+                            if (Array.isArray(value[this.state.language]))
+                                return this.summerizeArray(index)
+                        default:
+                            console.warn(`the type ${typeof value[this.state.language]} is not supported`);
+                            return 'unsupported type';
+                    }
+                }
             default:
                 console.warn(`the type ${typeof value} is not supported`);
                 return 'unsupported type';
@@ -165,7 +166,7 @@ export default class TeamStatsPage extends React.Component {
 
         for (let i = 0; i < this.state.mongoData[0].stats.length; i++) {
             renderedData.push(
-                <p className={this.determineParagraphLanguageClass()}>{this.state.mongoData[0].stats[i].title}: {this.summerize(i)}</p>
+                <p className={this.state.language + "-paragraph"}>{this.state.mongoData[0].stats[i].title[this.state.language]}: {this.summerize(i)}</p>
             );
         }
         return renderedData;
