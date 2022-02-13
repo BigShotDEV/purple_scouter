@@ -10,3 +10,10 @@
     font-weight: 700;
     color: rgb(211, 216, 204);
 }
+
+.boolean-box .checkbox-custom {
+    top: 0;
+    left: 40%;
+
+    transform: translate(-50%, 50%);
+}

@@ -22,7 +22,7 @@ export default class RadioBox extends React.Component {
      * @returns A rendered XHTMl object.
      */
     renderOptions = () => {
-        return this.props.keys.map(key => {
+        return this.props.keys[this.props.language].map(key => {
             if (this.props.default === undefined || !this.props.default.includes(String(key))) {
                 return (
                     <label className="radiobox-label">

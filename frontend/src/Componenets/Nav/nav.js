@@ -1,7 +1,9 @@
 import React from 'react';
 import NavItem from './item';
-import {CgMoreO} from 'react-icons/cg'
-import './nav.css';
+import {CgMoreO} from 'react-icons/cg';
+import {IconContext} from 'react-icons';
+import './nav.scss';
+import NavIcon from './nav-icon';
 
 export default class Nav extends React.Component {
     constructor(props) {
@@ -26,19 +28,15 @@ export default class Nav extends React.Component {
     }
 
     render() {
-        if (this.state.render) {
-            return (
-                <div className="nav">
-                    <CgMoreO onClick={this.handleShowButton}></CgMoreO>
-    
-                    {this.renderItems(this.props.items)}
-                </div>
-            );    
-        } 
-
         return (
             <div className="nav">
-                <CgMoreO onClick={this.handleShowButton}></CgMoreO>
+               <NavIcon></NavIcon>
+
+                <nav class="main-navigation">
+                        <ul>
+                        {this.renderItems(this.props.items)}
+                        </ul>
+                    </nav>     
             </div>
         );
 

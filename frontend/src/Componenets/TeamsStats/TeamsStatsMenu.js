@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Select from "react-select"
 import { API } from '../../Utils/authentication';
+import Nav from '../Nav/nav';
 import './TeamsStatsMenu.css'
 
 export default class Stats extends React.Component {
@@ -318,15 +319,19 @@ function SearchBar() {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div className='stats-menu-input-field centered'>
-                <input
-                    className='stats-menu-input test'
-                    type="text"
-                    value={team}
-                    onChange={(e) => setTeam(e.target.value)}
-                />
-            </div>
-        </form>
+        <>
+            <Nav items={[{ title: "home", link: "/" }, { title: "login", link: "/login" }, { title: "stats", link: "/stats" }]}></Nav>
+
+            <form onSubmit={handleSubmit}>
+                <div className='stats-menu-input-field centered'>
+                    <input
+                        className='stats-menu-input test'
+                        type="text"
+                        value={team}
+                        onChange={(e) => setTeam(e.target.value)}
+                    />
+                </div>
+            </form>
+    </>
     )
 }

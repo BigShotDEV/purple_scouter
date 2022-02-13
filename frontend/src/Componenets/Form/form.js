@@ -20,6 +20,7 @@ import BooleanBox from './BooleanBox/boolean-box';
 export default class Form extends React.Component {
     COOKIE_EXDAYS = 0.5; // 12 hours
     COOKIE_NAME = "form_data";
+    GAME_INFO_COOKIE = "game_info"
 
     constructor(props) {
         super(props);
@@ -28,14 +29,20 @@ export default class Form extends React.Component {
         this.form_data = {} // example: {"id": data, ...}
 
         this.cookie_data = this.loadFormData();
+        this.game_info_cookie = this.loadGameInfo();
+
+        this.game_info_name = {
+            game_number: {"hebrew": "מספר משחק", "english": "game number"},
+            team_number: {"hebrew": "מספר קבוצה", "english": "team number"}
+        }
 
         this.state = {
             form: undefined,
-            game_number: 0,
-            team_number: 0,
+            game_number: this.cookie_data.game_number === undefined ? 0 : this.cookie_data.game_number,
+            team_number: this.cookie_data.team_number  === undefined ? 0 : this.cookie_data.team_number,
+            language: "english",
         }
     }
-
 
     /**
      * Loads form_data from the cookie.
@@ -43,8 +50,24 @@ export default class Form extends React.Component {
     loadFormData = () => {
         try {
             let cookie_data = JSON.parse(getCookie(this.COOKIE_NAME));
+
             this.form_data = cookie_data; // this is the only place which shouldn't call updateCookie
             return cookie_data;
+        } catch (e) {
+            return {};
+        }
+    }
+
+    /**
+     * Loads the game info from cookies.
+     * 
+     * @returns The game info
+     */
+    loadGameInfo = () => {
+        try {
+            let game_info = JSON.parse(getCookie(this.GAME_INFO_COOKIE));
+            
+            return game_info;
         } catch (e) {
             return {};
         }
@@ -104,11 +127,14 @@ export default class Form extends React.Component {
         switch (id) {
             case(0):
                 this.setState({game_number: Number(event.target.value)});
+                setCookie(this.GAME_INFO_COOKIE, JSON.stringify({game_number: Number(event.target.value), team_number: this.state.team_number}), this.COOKIE_EXDAYS); // update the form's cookie.
                 break;
             case(1):
                 this.setState({team_number: Number(event.target.value)});
+                setCookie(this.GAME_INFO_COOKIE, JSON.stringify({game_number: this.state.game_number, team_number: Number(event.target.value)}), this.COOKIE_EXDAYS); // update the form's cookie.
                 break;
         } 
+
     }
 
     handleSubmit = async () => {
@@ -140,7 +166,18 @@ export default class Form extends React.Component {
         user_name = (await whoami()).user_name; // sets the user_name
         console.log(this.form_data, properties)
         properties.map((property, id) => { // sets the stats
-            stats[id] = { title: properties[property.id].title, value: this.form_data[id] };
+            try {
+                // I know you are might be afraid right now, but think of me the guy who acutally thought of it. I didn't commited suicide (yet).
+                // ok, its get the indexes of the answers in the languages the form was performed and then it joins all of the answers from all of the languages.
+                let ids = this.form_data[id].map(answer => properties[property.id].options[this.state.language].indexOf(answer, 0));
+                let answers = Object.keys(properties[property.id].options).map(language => {
+                    return ids.map(id => properties[property.id].options[language][id])[0];
+                });
+
+                stats[id] = { title: properties[property.id].title, value: answers };
+            } catch (e) {
+                stats[id] = { title: properties[property.id].title, value: this.form_data[id] };
+            }
         });
 
         let requestBody = {
@@ -161,12 +198,13 @@ export default class Form extends React.Component {
         }).then(res => {
             return res.json();
         }).then(data => {
-            // window.location.reload();
+            window.location.reload();
         })
             .catch(e => {
                 alert(e)
             })
-        // deleteCookie(this.COOKIE_NAME);
+        deleteCookie(this.COOKIE_NAME);
+        deleteCookie(this.GAME_INFO_COOKIE);
     }
 
     componentDidMount() {
@@ -193,7 +231,7 @@ export default class Form extends React.Component {
     // renders a check box
     renderCheckBox = (property, id) => {
         try {
-            return <CheckBox id={id} onChange={this.handleCheckBox} default={this.cookie_data[id]} keys={property.options}>{property.title}</CheckBox>;
+            return <CheckBox language={this.state.language} id={id} onChange={this.handleCheckBox} default={this.cookie_data[id]} keys={property.options}>{property.title[this.state.language] !== undefined ? property.title[this.state.language] : property.title["english"]}</CheckBox>;
         } catch (e) {
             return <></>;
         }
@@ -202,7 +240,7 @@ export default class Form extends React.Component {
     // renders a radio box
     renderRadioBox = (property, id) => {
         try {
-            return <RadioBox id={id} onChange={this.handleRadioBox} default={this.cookie_data[id]} keys={property.options}>{property.title}</RadioBox>;
+            return <RadioBox language={this.state.language} id={id} onChange={this.handleRadioBox} default={this.cookie_data[id]} keys={property.options}>{property.title[this.state.language] !== undefined ? property.title[this.state.language] : property.title["english"]}</RadioBox>;
         } catch (e) {
             return <></>;
         }
@@ -211,7 +249,7 @@ export default class Form extends React.Component {
     renderBooleanBox = (property, id) => {
         try {
             if (this.cookie_data[id] === undefined) this.updateFormData(id, false);
-            return <BooleanBox id={id} default={this.cookie_data[id]} onChange={this.handleBooleanBox}>{property.title}</BooleanBox>;
+            return <BooleanBox id={id} default={this.cookie_data[id]} onChange={this.handleBooleanBox}>{property.title[this.state.language] !== undefined ? property.title[this.state.language] : property.title["english"]}</BooleanBox>;
         } catch (e) {
             return <></>;
         }
@@ -220,7 +258,7 @@ export default class Form extends React.Component {
     // renders a text box
     renderTextBox = (property, id) => {
         try {
-            return <TextBox id={id} default={this.cookie_data[id]} onChange={this.handleTextBox} >{property.title}</TextBox>;
+            return <TextBox id={id} default={this.cookie_data[id]} onChange={this.handleTextBox} >{property.title[this.state.language] !== undefined ? property.title[this.state.language] : property.title["english"]}</TextBox>;
         } catch (e) {
             return <></>;
         }
@@ -229,7 +267,7 @@ export default class Form extends React.Component {
     // renders a number box
     renderNumberBox = (property, id) => {
         try {
-            return <NumberBox id={id} default={this.cookie_data[id]} onChange={this.handleNumberBox} >{property.title}</NumberBox>;
+            return <NumberBox id={id} default={this.cookie_data[id]} onChange={this.handleNumberBox} >{property.title[this.state.language] !== undefined ? property.title[this.state.language] : property.title["english"]}</NumberBox>;
         } catch (e) {
             console.warn(e)
             return <></>;
@@ -239,7 +277,7 @@ export default class Form extends React.Component {
     // renders a counter box
     renderCounterBox = (property, id) => {
         try {
-            return <CounterBox id={id} default={this.cookie_data[id]} onChange={this.handleCounterBox}>{property.title}</CounterBox>;
+            return <CounterBox id={id} default={this.cookie_data[id]} onChange={this.handleCounterBox}>{property.title[this.state.language] !== undefined ? property.title[this.state.language] : property.title["english"]}</CounterBox>;
         } catch (e) {
             console.log("error", e)
             return <></>;
@@ -254,7 +292,7 @@ export default class Form extends React.Component {
      */
     renderHeadline = (property) => {
         try {
-            return <Headline>{property.title}</Headline>;
+            return <Headline>{property.title[this.state.language] !== undefined ? property.title[this.state.language] : property.title["english"]}</Headline>;
         } catch (e) {
             return <></>;
         }
@@ -262,13 +300,14 @@ export default class Form extends React.Component {
 
     render() {
         if (!this.state.form) return <h>Loading...</h>;
-
+        
         return (
             <div className="form">
-                <Nav items={[{ title: "home", link: "https://www.google.com" }, { title: "home", link: "https://www.google.com" }, { title: "home", link: "https://www.google.com" }, { title: "home", link: "https://www.google.com" }]}></Nav>
-                <div className="title"><h>{this.state.form.title}</h></div>
-                <NumberBox id={0} default={0} onChange={this.handleGameInfo} >מספר משחק</NumberBox>
-                <NumberBox id={1} default={0} onChange={this.handleGameInfo} >מספר קבוצה</NumberBox>
+                <Nav items={[{ title: "home", link: "/" }, { title: "login", link: "/login" }, { title: "stats", link: "/stats" }]}></Nav>
+                
+                <div className="title"><h>{this.state.form.title[this.state.language] !== undefined ? this.state.form.title[this.state.language] : this.state.form.title["english"]}</h></div>
+                <NumberBox id={0} default={this.game_info_cookie.game_number} onChange={this.handleGameInfo} >{this.game_info_name.game_number[this.state.language]}</NumberBox>
+                <NumberBox id={1} default={this.game_info_cookie.team_number} onChange={this.handleGameInfo} >{this.game_info_name.team_number[this.state.language]}</NumberBox>
                 {
                     this.state.form.properties.map((property, id) => {
                         switch (property.type) {

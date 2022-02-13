@@ -1,13 +1,10 @@
 .not-autherized {
     color: rgb(211, 216, 204);
-    margin: auto;
-    /* width: 50vh;  */
-    /* transform: translate(-50%, 0%); */
 }
 
 .not-autherized>.title { 
-    position: relative;
-    left: 40%;
+    margin-top: 100px;
+    text-align: center;
     font-size: 3em;
 }
 
@@ -15,3 +12,11 @@
     text-align: left;
     font-size: 2em;
 }
+
+@media only screen and (max-width: 600px) {
+    .not-autherized>.content {
+        margin-top: 10%;
+        text-align: center;
+        font-size: 1.5em;
+    }
+} 

@@ -15,11 +15,15 @@ export default class BooleanBox extends React.Component {
                 <h1 className="title">
                     {this.props.children}
                 </h1>
+                <label className="checkbox-label">
                     <input type="checkbox"
                         onChange={() => { this.props.onChange(this.props.id) }}
                         defaultChecked={this.props.default}
                     />
-
+                    <span className="checkbox-custom"></span>
+                    <br></br>
+                </label>
+                    
             </div>
         );
     }

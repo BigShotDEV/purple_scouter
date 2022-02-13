@@ -16,7 +16,7 @@ export default class CheckBox extends React.Component {
      * @returns A XHTML object of all the options
      */
     renderOptions = () => {
-        return this.props.keys.map(key => {
+        return this.props.keys[this.props.language].map(key => {
             if (this.props.default === undefined || !this.props.default.includes(key)) {
                 return (
                 <label className="checkbox-label">
