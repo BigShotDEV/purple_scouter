@@ -40,7 +40,7 @@ export default class Form extends React.Component {
             form: undefined,
             game_number: this.cookie_data.game_number === undefined ? 0 : this.cookie_data.game_number,
             team_number: this.cookie_data.team_number  === undefined ? 0 : this.cookie_data.team_number,
-            language: "english",
+            language: "hebrew",
         }
     }
 
@@ -170,8 +170,9 @@ export default class Form extends React.Component {
                 // I know you are might be afraid right now, but think of me the guy who acutally thought of it. I didn't commited suicide (yet).
                 // ok, its get the indexes of the answers in the languages the form was performed and then it joins all of the answers from all of the languages.
                 let ids = this.form_data[id].map(answer => properties[property.id].options[this.state.language].indexOf(answer, 0));
-                let answers = Object.keys(properties[property.id].options).map(language => {
-                    return ids.map(id => properties[property.id].options[language][id])[0];
+                let answers = {};
+                Object.keys(properties[property.id].options).forEach(language => {
+                    answers[language] = ids.map(id => properties[property.id].options[language][id])[0];
                 });
 
                 stats[id] = { title: properties[property.id].title, value: answers };
