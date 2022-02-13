@@ -9,7 +9,7 @@ export default class ColourGenerator {
         this.names = {};
     }
 
-    generateNew = (stackName, isNewStack, defense) => {
+    generateNew = (stackName, isNewStack) => {
         if (isNewStack !== undefined && isNewStack) {
             this.nextColour = this.defaultColour;
             return this.nextColour;
