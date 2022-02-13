@@ -6,5 +6,5 @@ class Form(BaseModel):
     """The Form basemodel, represents a form.
     """
     id: Optional[int]
-    title: str
+    title: Dict[str, str]
     properties: List[Dict]
