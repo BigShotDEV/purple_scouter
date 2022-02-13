@@ -48,6 +48,10 @@ async def login(response: Response, form_data: OAuth2PasswordRequestForm = Depen
 def reed_root(current_user: str = Depends(get_current_user)):
     return {"whoami": current_user}
 
+@app.get("/login/")
+def read_login():
+    return {"login": "login"}
+
 @app.get("/stats/")
 def read_stats(current_user: User = Depends(get_current_admin)):
     return {"stats": "stats"}
@@ -72,7 +76,7 @@ def get_game(current_user: User = Depends(get_current_user)):
 def get_form(current_user: User = Depends(get_current_user)):
     return mongodb.get_latest_form()
 
-@app.post("/api/form")
+@app.post("/api/form/")
 def insert_post(form : Form, current_user: User = Depends(get_current_admin)):
     return {"Success": mongodb.insert_form(form)}
 
