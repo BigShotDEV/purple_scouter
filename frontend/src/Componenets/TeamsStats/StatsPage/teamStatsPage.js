@@ -157,18 +157,53 @@ export default class TeamStatsPage extends React.Component {
         }
     }
 
+    renderGraph(valueIndexes) {
+        if (valueIndexes.length === 0) return <></>;
+        let labels = [];
+        let values = []; // {label: '', data: []}
+
+        valueIndexes.forEach(index => {
+            let statExample = this.state.mongoData[0].stats[index];
+
+            if (!labels.includes(statExample.graph_stack[this.state.language])) {
+                labels.push(statExample.graph_stack[this.state.language]);
+            }
+
+            let data = [];
+            for (let i = 0; i < labels.indexOf(statExample.graph_stack[this.state.language]); i++) {
+                data.push(0);
+            }
+
+            data.push(this.summerizeNumber(index));
+
+            values.push({ label: statExample.title[this.state.language], data: data });
+        });
+
+        return <BarGraph values={values} labels={labels} />
+    }
+
     renderData() {
-        if (this.state.mongoData.length === 0) return <p>sorry, no data is avaliable</p>
+        if (this.state.mongoData.length === 0) return <p className='english-paragraph'>sorry, no data is avaliable</p>
 
         let renderedData = [];
+        let graphValuesIndexes = [];
 
         if (this.state.language === 'hebrew') renderedData.push(<p className='hebrew-paragraph'>סך הכל משחקים: {this.state.amountOfGames}</p>)
+        if (this.state.language === 'english') renderedData.push(<p className='english-paragraph'>total games: {this.state.amountOfGames}</p>)
 
         for (let i = 0; i < this.state.mongoData[0].stats.length; i++) {
+            if (this.state.mongoData[0].stats[i].graph_stack !== undefined) {
+                graphValuesIndexes.push(i);
+                continue;
+            }
+
             renderedData.push(
                 <p className={this.state.language + "-paragraph"}>{this.state.mongoData[0].stats[i].title[this.state.language]}: {this.summerize(i)}</p>
             );
         }
+
+        renderedData.push(this.renderGraph(graphValuesIndexes));
+
         return renderedData;
     }
 
