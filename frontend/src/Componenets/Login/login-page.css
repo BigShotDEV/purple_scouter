@@ -25,27 +25,39 @@
     font-size: 2em;
 }
 
-.login-page .enter-button {
-    font-family: 'Courier New', monospace;
-    font-size: 2em;
-    font-weight: 900;
-    margin-left: 70/2%;
-
-    width: 50%;
-    border: 2px solid rgba(75, 27, 87);
-    border-radius: 8px;
-    background-color: rgba(158, 25, 147);
-    box-shadow: 2px 10px 15px rgb(108, 30, 114) inset;
+.enter-button {
+    margin: auto;
+    text-align: center;
+    padding-top: 3%;
 }
 
-.login-page .enter-button:hover {
-    background-color: rgb(216, 66, 208);
-} 
+.enter-button  {
+	
+    border-style: solid;
+    border-width: 0px 0px 3px;
+    box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.1) inset;
+    color: #FFFFFF;	   
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-block;
+    font-style: normal;
+    overflow: hidden;
+    text-align: center;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    transition: all 200ms ease-in-out 0s;
+    white-space: nowrap;	
+    font-family: "Gotham Rounded A","Gotham Rounded B",Helvetica,Arial,sans-serif;
+    font-weight: 700;	
+    padding: 19px 39px 18px;
+    font-size: 18px;
+    background-color: #ec61be;
+    border-color: #916392;
+    width: 60%;
 
-.login-page .enter-button:active {
-    background-color: rgb(216, 66, 208);
-    box-shadow: 0px 2px 7px rgb(34, 28, 32) inset;
-} 
+    margin-top: 2px; 
+}
+ 
 
 .login-page .error {
     color: red;
@@ -64,7 +76,7 @@
         text-align: center;
 
         width: 30vw;
-        height: 30vh;
+        padding-bottom: .5%;
         
         position: absolute;
         top: 50%; 
@@ -75,8 +87,9 @@
         margin: auto;
     }
 
-    .login-page .enter-button {
-        margin-top: 30px; 
+    .login-page .input {
+        width: 90%;
+
     }
 }
 
