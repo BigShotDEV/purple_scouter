@@ -175,9 +175,9 @@ export default class Form extends React.Component {
                     answers[language] = ids.map(id => properties[property.id].options[language][id])[0];
                 });
 
-                stats[id] = { title: properties[property.id].title, value: answers };
+                stats[id] = { title: properties[property.id].title, value: answers, graph_stack: property.graph_stack };
             } catch (e) {
-                stats[id] = { title: properties[property.id].title, value: this.form_data[id] };
+                stats[id] = { title: properties[property.id].title, value: this.form_data[id], graph_stack: property.graph_stack};
             }
         });
 
