@@ -5,6 +5,32 @@ import Nav from '../Nav/nav';
 import './TeamsStatsMenu.css'
 
 export default class Stats extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            averagedTeamsData: [],
+            sortingKey: "",
+            language: "english"
+        };
+
+    }
+
+    componentDidMount() {
+        fetch(`${API}/api/games/`,
+            {
+                method: "GET",
+                credentials: "include",
+            }).then(res => {
+                return res.json();
+            }).then(data => {
+                this.setState({ averagedTeamsData: this.averageTeamsData(data) });
+                console.log(this.state.averagedTeamsData)
+            }).catch(e => {
+                alert(e);
+            })
+    }
+
     /**
     * this method resorts the mongo data by teams
     * 
@@ -12,131 +38,78 @@ export default class Stats extends React.Component {
     * @returns the same data sorted by teams
     */
     exportMongoToTeams = (mongoData) => {
-        let rawTeamsData = {};
+        let teamsData = {};
 
         mongoData.forEach(item => {
-            if (rawTeamsData[item.team_number] === undefined) {
-                rawTeamsData[item.team_number] = {};
+            if (teamsData[item.team_number] === undefined) {
+                teamsData[item.team_number] = {};
             }
-            rawTeamsData[item.team_number][item.game_number] = item.stats;
+            teamsData[item.team_number][item.game_number] = item.stats;
         });
 
-        return rawTeamsData;
+        return teamsData;
     }
 
     /**
-     * this method flattens the data sorted by teams 
+     * this method averages the data sorted by teams 
      * 
-     * @param {Object} rawTeamsData the data to flatten
-     * @returns the flattened data
+     * @param {Object} mongoData the data to average
+     * @returns the averaged data
      */
-    flattenTeamsData = (rawTeamsData) => {
-        let copyTeamsData = JSON.parse(JSON.stringify(rawTeamsData)); // deep copy
-
-        let flattenedData = {};
-
-        for (const [team, games] of Object.entries(copyTeamsData)) {
+    averageTeamsData = (mongoData) => {
+        let teamsData = this.exportMongoToTeams(mongoData)
+        let averageData = {};
+        for (const [team, games] of Object.entries(teamsData)) {
+            let averageTeamsData = [];
             let amountOfGames = 0;
-            let flattenedTeamData = {}
-            for (const [game, stats] of Object.entries(games)) {
+            for (const game of Object.values(games)) {
                 amountOfGames++;
-                for (const [key, value] of Object.entries(stats)) {
-                    switch (typeof value) {
-                        case "number":
-                            if (flattenedTeamData[key] === undefined) {
-                                flattenedTeamData[key] = amountOfGames;
+                game.forEach((stat, index) => {
+                    switch (typeof stat.value) {
+                        case 'number':
+                            if (index > averageTeamsData.length - 1) {
+                                averageTeamsData.push({ title: stat.title, value: 0 });
                             }
-                            flattenedTeamData[key] *= amountOfGames - 1;
-                            flattenedTeamData[key] += value;
-                            flattenedTeamData[key] /= amountOfGames;
-
+                            averageTeamsData[index].value *= amountOfGames - 1;
+                            averageTeamsData[index].value += stat.value;
+                            averageTeamsData[index].value /= amountOfGames;
                             break;
-                        case "boolean":
-                            if (flattenedTeamData[key] === undefined) {
-                                flattenedTeamData[key] = amountOfGames;
+                        case 'boolean':
+                            if (index > averageTeamsData.length - 1) {
+                                averageTeamsData.push({ title: stat.title, value: 0 });
                             }
-                            flattenedTeamData[key] *= amountOfGames - 1;
-                            flattenedTeamData[key] += value ? 1 : 0;
-                            flattenedTeamData[key] /= amountOfGames;
-
-                            break;
-                        case "object":
-                            if (flattenedTeamData[key] === undefined) {
-                                flattenedTeamData[key] = {};
+                            if (averageTeamsData.values) {
+                                averageTeamsData[index].value *= amountOfGames - 1;
+                                averageTeamsData[index].value++;
+                                averageTeamsData[index].value /= amountOfGames;
                             }
-                            for (const [subKey, subValue] of Object.entries(value)) {
-                                switch (typeof subValue) {
-                                    case "number":
-                                        if (flattenedTeamData[key][subKey] === undefined) {
-                                            flattenedTeamData[key][subKey] = amountOfGames;
-                                        }
-                                        flattenedTeamData[key][subKey] *= amountOfGames - 1;
-                                        flattenedTeamData[key][subKey] += subValue;
-                                        flattenedTeamData[key][subKey] /= amountOfGames;
-
-                                        break;
-                                    case "boolean":
-                                        if (flattenedTeamData[key][subKey] === undefined) {
-                                            flattenedTeamData[key][subKey] = amountOfGames;
-                                        }
-                                        flattenedTeamData[key][subKey] *= amountOfGames - 1;
-                                        flattenedTeamData[key][subKey] += value ? 1 : 0;
-                                        flattenedTeamData[key][subKey] /= amountOfGames;
-
-                                        break;
-                                    default:
-
-                                        break;
-                                }
-                            }
-
                             break;
                         default:
-
-                            break;
+                            if (index > averageTeamsData.length - 1) {
+                                averageTeamsData.push({ title: stat.title, value: "non-countable" });
+                            }
                     }
-                }
+                });
             }
-            flattenedData[team] = flattenedTeamData;
+            averageData[team] = averageTeamsData;
         }
-
-        return flattenedData;
+        return averageData;
     }
 
     /**
      * this method exports the teams titles from the data sorted by a parameter
      * 
-     * @param {Object} rawTeamsData the data from which to get the titles
+     * @param {Object} averagedTeamsData the data from which to get the titles
      * @param {String} sortKey the sorting key
      * @returns the teams titles from the data
      */
-    exportTitles = (rawTeamsData, sortKey) => {
-        if (sortKey === undefined || sortKey === null || typeof sortKey != "string") {
-            return Object.keys(rawTeamsData);
-        }
+    exportTeamsNumbers = (averagedTeamsData, sortIndex) => {
+        let titles = [3075, 1690, 248, 3339];
+        // let titles = [];
 
-        let objKey = '';
-        if(sortKey.includes("⇾")) {
-            [objKey, sortKey] = sortKey.split("⇾");
-        }
+        
 
-        let flattenedTeamData = this.flattenTeamsData(rawTeamsData);
-        let titles = [];
-
-        while (titles.length < Object.keys(flattenedTeamData).length) {
-            let maxTeam;
-
-            for (const [team, stats] of Object.entries(flattenedTeamData)) {
-                if (!titles.includes(team) && maxTeam === undefined) {
-                    maxTeam = team;
-                } else if (objKey !== '' && !titles.includes(team) && stats[objKey][sortKey] > flattenedTeamData[maxTeam][objKey][sortKey]) {
-                    maxTeam = team;
-                } else if (!titles.includes(team) && stats[sortKey] > flattenedTeamData[maxTeam][sortKey]) {
-                    maxTeam = team;
-                }
-            }
-            titles.push(maxTeam);
-        }
+        // while()
 
         return titles;
     }
@@ -144,12 +117,12 @@ export default class Stats extends React.Component {
     /**
      * this method exports the teams titles from the data sorted by a parameter
      * 
-     * @param {Object} rawTeamsData the data from which to get the titles
+     * @param {Object} averagedTeamsData the data from which to get the titles
      * @param {String} sortKey the sorting key
      * @returns the teams titles from the data
      */
-    exportTeamsButtons = (rawTeamsData, sortKey) => {
-        let titles = this.exportTitles(rawTeamsData, sortKey);
+    exportTeamsButtons = (averagedTeamsData, sortKey) => {
+        let titles = this.exportTeamsNumbers(averagedTeamsData, sortKey);
         let GUITitles = [];
 
         for (const title of titles) {
@@ -167,93 +140,65 @@ export default class Stats extends React.Component {
 
     /**
      * 
-     * @param {Object} rawTeamsData the data from which to get the keys
+     * @param {Object} averagedTeamsData the data from which to get the keys
      * @returns 
      */
-    exportSortingKeys = (rawTeamsData) => {
-        if (rawTeamsData.length === 0) return [{ value: "error", label: "error" }];
+    exportSortingKeys = (averagedTeamsData) => {
+        if (averagedTeamsData === null || averagedTeamsData.length < 1)
+            return [];
 
-        let keys = [];
+        let gameExample = Object.values(averagedTeamsData)[0];
+        let keys = []
 
-        for (const [key, value] of Object.entries(Object.values(Object.values(rawTeamsData)[0])[0])) {
-            switch (typeof value) {
-                case "boolean":
-                case "number":
-                    keys.push(key);
-                    break;
-                case "object":
-                    for (const [subKey, subValue] of Object.entries(value)) {
-                        switch (typeof subValue) {
-                            case "boolean":
-                            case "number":
-                                keys.push(key + "⇾" + subKey)
-                        }
-                    }
-                    break;
-            }
-        }
+        gameExample.forEach((stat, index) => {
+            if (typeof stat.value === 'number') keys.push({value: index, label: stat.title[this.state.language]});
+        });
 
-        let select_items = [];
-        keys.forEach(key => {
-            select_items.push({ value: key, label: key });
-        })
-        return select_items;
+
+        return keys;
     }
 
     updateSortingTitle = (selectObj) => {
         this.setState({ sortingKey: selectObj.value });
     }
 
-    componentDidMount() {
-        fetch(`${API}/api/games/`,
-            {
-                method: "GET",
-                credentials: "include",
-            }).then(res => {
-                return res.json();
-            }).then(data => {
-                console.log(data)
-                this.setState({ teamsData: this.exportMongoToTeams(data) });
-            }).catch(e => {
-                alert(e);
-            })
-    }
-
-    handleSubmit = (input) => {
-        // window.location.href = "stats/teams/" + input
-        alert(input.search)
-    }
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            teamsData: [],
-            /*
-            teamName1: {
-                gameNum1: {
-                    stat1: val,
-                    stat2: val2
-                },
-                gameNum2: {
-                    stat1: val,
-                    stat2: val2
-                }
-            },
-            teamName2: {
-                gameNum1: {
-                    stat1: val,
-                    stat2: val2
-                },
-                gameNum2: {
-                    stat1: val,
-                    stat2: val2
-                }
-            }
-            */
-            sortingKey: ""
-        };
-
+    selectStyle = {
+        option: (provided, state) => ({
+            ...provided,
+            borderTop: '1px solid gray',
+            backgroundColor: state.isSelected ? '#bfbbbf' : (state.isFocused ? '#bbbbbb' : '#cccccc'),
+            color: state.isSelected ? 'red' : 'black',
+            padding: 8
+        }),
+        control: (provided, state) => ({
+            ...provided,
+            backgroundColor: 'light-gray',
+            border: '0px',
+            padding: 0,
+        }),
+        indicatorSeparator: (provided, state) => ({
+            ...provided,
+            backgroundColor: 'white',
+            border: '0px'
+        }),
+        placeholder: (provided, state) => ({
+            ...provided,
+            color: 'white',
+            border: '0px',
+            padding: 0,
+        }),
+        menu: (provided, state) => ({
+            ...provided,
+            backgroundColor: '#cccccc',
+            border: '0px',
+            padding: 0,
+        }),
+        singleValue: (provided, state) => ({
+            ...provided,
+            color: 'white',
+            border: '5px',
+            padding: 0,
+        })
     }
 
     render() {
@@ -262,49 +207,12 @@ export default class Stats extends React.Component {
             <div className="teams-stats-menu">
                 <SearchBar />
                 <Select className='select centered'
-                    options={this.exportSortingKeys(this.state.teamsData)} placeholder="sort by"
+                    options={this.exportSortingKeys(this.state.averagedTeamsData)}
+                    placeholder={this.state.language === "hebrew" ? "מיין על פי:" : "sort by"}
                     onChange={this.updateSortingTitle}
-                    styles={
-                        {
-                            option: (provided, state) => ({
-                                ...provided,
-                                borderTop: '1px solid gray',
-                                backgroundColor: state.isSelected ? '#bfbbbf' : (state.isFocused ? '#bbbbbb' : '#cccccc'),
-                                color: state.isSelected ? 'red' : 'black',
-                                padding: 8
-                            }),
-                            control: (provided, state) => ({
-                                ...provided,
-                                backgroundColor: 'light-gray',
-                                border: '0px',
-                                padding: 0,
-                            }),
-                            indicatorSeparator: (provided, state) => ({
-                                ...provided,
-                                backgroundColor: 'white',
-                                border: '0px'
-                            }),
-                            placeholder: (provided, state) => ({
-                                ...provided,
-                                color: 'white',
-                                border: '0px',
-                                padding: 0,
-                            }),
-                            menu: (provided, state) => ({
-                                ...provided,
-                                backgroundColor: '#cccccc',
-                                border: '0px',
-                                padding: 0,
-                            }),
-                            singleValue: (provided, state) => ({
-                                ...provided,
-                                color: 'white',
-                                border: '5px',
-                                padding: 0,
-                            })
-                        }}
+                    styles={this.selectStyle}
                 />
-                {this.exportTeamsButtons(this.state.teamsData, this.state.sortingKey)}
+                {this.exportTeamsButtons(this.state.averagedTeamsData, this.state.sortingKey)}
             </div>
         )
     }
@@ -332,6 +240,6 @@ function SearchBar() {
                     />
                 </div>
             </form>
-    </>
+        </>
     )
 }
