@@ -104,7 +104,7 @@ export default class Stats extends React.Component {
      * @returns the teams titles from the data
      */
     exportTeamsNumbers = (averagedTeamsData, sortIndex) => {
-        let titles = [3075, 1690, 248, 3339];
+        let titles = [3075, 8];
         // let titles = [];
 
         
