@@ -1,0 +1,12 @@
+{
+  "name": "flowtype",
+  "repo": "jkroso/flowtype",
+  "description": "keep font-size in proportion with its containers size",
+  "keywords": ["font", "responsive"],
+  "dependencies": {
+    "jkroso/viewport": "*",
+    "yields/merge": "*"
+  },
+  "scripts": ["index.js"],
+  "license": "MIT"
+}

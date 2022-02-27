@@ -4,6 +4,14 @@ import { API } from '../../Utils/authentication';
 import Nav from '../Nav/nav';
 import './TeamsStatsMenu.css'
 
+function arrayRemove(arr, value) { 
+    
+    return arr.filter(function(ele){ 
+        return ele != value; 
+    });
+}
+
+
 export default class Stats extends React.Component {
     constructor(props) {
         super(props);
@@ -68,7 +76,7 @@ export default class Stats extends React.Component {
                     switch (typeof stat.value) {
                         case 'number':
                             if (index > averageTeamsData.length - 1) {
-                                averageTeamsData.push({ title: stat.title, value: 0 });
+                                averageTeamsData.push({ title: stat.title, value: 0, team_name: team });
                             }
                             averageTeamsData[index].value *= amountOfGames - 1;
                             averageTeamsData[index].value += stat.value;
@@ -76,7 +84,7 @@ export default class Stats extends React.Component {
                             break;
                         case 'boolean':
                             if (index > averageTeamsData.length - 1) {
-                                averageTeamsData.push({ title: stat.title, value: 0 });
+                                averageTeamsData.push({ title: stat.title, value: 0, team_name: team });
                             }
                             if (averageTeamsData.values) {
                                 averageTeamsData[index].value *= amountOfGames - 1;
@@ -86,7 +94,7 @@ export default class Stats extends React.Component {
                             break;
                         default:
                             if (index > averageTeamsData.length - 1) {
-                                averageTeamsData.push({ title: stat.title, value: "non-countable" });
+                                averageTeamsData.push({ title: stat.title, value: "non-countable", team_name: team });
                             }
                     }
                 });
@@ -96,6 +104,8 @@ export default class Stats extends React.Component {
         return averageData;
     }
 
+
+    
     /**
      * this method exports the teams titles from the data sorted by a parameter
      * 
@@ -103,15 +113,56 @@ export default class Stats extends React.Component {
      * @param {String} sortKey the sorting key
      * @returns the teams titles from the data
      */
-    exportTeamsNumbers = (averagedTeamsData, sortIndex) => {
-        let titles = [3075, 8];
-        // let titles = [];
-
-        
-
+    exportTeamsNumbers = (averagedTeamsData, sortKey) => {
+        let values = [];
+        let team_values = [];
+        for (const game of Object.values(averagedTeamsData)){
+            console.log(game)
+            game.forEach((stat, index) => {
+                console.log(sortKey)
+                console.log(stat.title)
+                if(sortKey == stat.title[this.state.language]){
+                    switch (typeof stat.value) {
+                        case 'number':
+                            if(values.find(function(title_s){return title_s == stat.team_name})){
+                            } else {
+                              values.push({team: stat.team_name, value: stat.value})
+                            }     
+                    }
+                } else if(sortKey == "") {
+                    switch (typeof stat.value) {
+                        case 'number':
+                            if(values.find(function(title_s){return title_s == stat.team_name})){
+                            } else {
+                                 values.push({team: stat.team_name, value: stat.value})
+                            }
+                    }    
+                }
+            })
+        }
+        for(var i = 0; i < values.length; i++){
+            if(i > 0 && values[i].team != values[i-1].team){
+                team_values.push(values[i].team + "-" + values[i].value)
+            } else if(i == 0) {
+                team_values.push(values[i].team + "-" + values[i].value)
+            }
+        }
+        var helper = [];
+        var max = 0
+        for(const hi of team_values){
+            helper.push(hi)
+        }
+        for(const hi of team_values){
+            var current = hi.split("-").pop()
+            if(current > max){
+                helper = arrayRemove(helper, hi)
+                helper.push(hi)
+                max = current
+            }
+        }
         // while()
 
-        return titles;
+        return helper;
     }
 
     /**
@@ -126,7 +177,7 @@ export default class Stats extends React.Component {
         let GUITitles = [];
 
         for (const title of titles) {
-            GUITitles.push(
+            GUITitles.unshift(
                 <div className='team-button'>
                     <button onClick={() => {
                         window.location.href = "/stats/teams/" + title
@@ -159,7 +210,7 @@ export default class Stats extends React.Component {
     }
 
     updateSortingTitle = (selectObj) => {
-        this.setState({ sortingKey: selectObj.value });
+        this.setState({ sortingKey: selectObj.label });
     }
 
     selectStyle = {
