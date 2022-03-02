@@ -115,54 +115,55 @@ export default class Stats extends React.Component {
      */
     exportTeamsNumbers = (averagedTeamsData, sortKey) => {
         let values = [];
-        let team_values = [];
-        for (const game of Object.values(averagedTeamsData)){
-            console.log(game)
-            game.forEach((stat, index) => {
-                console.log(sortKey)
-                console.log(stat.title)
+        var lastgame = "0";
+        for (const [team, games] of Object.entries(averagedTeamsData)){
+            if (games.length === 0) continue;
+            games.forEach((stat, index) => {
                 if(sortKey == stat.title[this.state.language]){
-                    switch (typeof stat.value) {
-                        case 'number':
-                            if(values.find(function(title_s){return title_s == stat.team_name})){
-                            } else {
-                              values.push({team: stat.team_name, value: stat.value})
-                            }     
-                    }
-                } else if(sortKey == "") {
-                    switch (typeof stat.value) {
-                        case 'number':
-                            if(values.find(function(title_s){return title_s == stat.team_name})){
-                            } else {
-                                 values.push({team: stat.team_name, value: stat.value})
+                            if(values.find(function(title_s){return title_s == team})){
+                                console.log("whats")
+                                
+                            } else{
+                                console.log("what")
+                                values.push({team: team, value: stat.value})
                             }
-                    }    
+                    
+                } else if(sortKey == ""){
+                    if(lastgame != team){
+                        values.push({team: team, value: 0})
+                    }
                 }
+            lastgame = team
             })
         }
-        for(var i = 0; i < values.length; i++){
-            if(i > 0 && values[i].team != values[i-1].team){
-                team_values.push(values[i].team + "-" + values[i].value)
-            } else if(i == 0) {
-                team_values.push(values[i].team + "-" + values[i].value)
-            }
-        }
-        var helper = [];
+        // for(var i = 0; i < values.length; i++){
+        //     if(i > 0 && values[i].team != values[i-1].team){
+        //         team_values.push(values[i].team + "-" + values[i].value)
+        //     } else if(i == 0) {
+        //         team_values.push(values[i].team + "-" + values[i].value)
+        //     }
+        // }
+        console.log(values)
+        var titles = [];
         var max = 0
-        for(const hi of team_values){
-            helper.push(hi)
+        for(const team_value of values){
+            titles.push(team_value.team)
         }
-        for(const hi of team_values){
-            var current = hi.split("-").pop()
-            if(current > max){
-                helper = arrayRemove(helper, hi)
-                helper.push(hi)
-                max = current
+        for(const team_value of values){
+            if(team_value.value > max){
+                titles = arrayRemove(titles, team_value.team)
+                titles.push(team_value.team)
+                max = team_value.value
+                console.log(2)
             }
         }
+        // for(var i = 0; i < titles.length; i ++){
+        //     titles[i] = titles[i].split("-").shift()
+        // }
+
         // while()
 
-        return helper;
+        return titles;
     }
 
     /**
@@ -195,8 +196,8 @@ export default class Stats extends React.Component {
      * @returns 
      */
     exportSortingKeys = (averagedTeamsData) => {
-        if (averagedTeamsData === null || averagedTeamsData.length < 1)
-            return [];
+        console.log(averagedTeamsData)
+        if (averagedTeamsData === null || averagedTeamsData.length < 1) return [];
 
         let gameExample = Object.values(averagedTeamsData)[0];
         let keys = []
@@ -205,7 +206,7 @@ export default class Stats extends React.Component {
             if (typeof stat.value === 'number') keys.push({value: index, label: stat.title[this.state.language]});
         });
 
-
+        console.log(keys)
         return keys;
     }
 

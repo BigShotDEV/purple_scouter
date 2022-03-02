@@ -32,3 +32,44 @@
         padding-right: 4%;
     }
 }
+.centered {
+    text-align: center;
+}
+
+.select {
+    width: 12em;
+    font-size: 1em;
+    padding: 0%;
+    margin: auto
+}
+
+.stats-menu-input {
+    margin: auto;
+    text-align: left;
+    font-size: xx-large;
+    padding-top: .5em;
+    padding-bottom: .5em;
+    padding-left: .5em;
+    padding-right: 1em;
+}
+
+.stats-menu-input-field {
+    padding-top: 3%;
+    border-width: 3px;
+    border-style: none;
+    color: rgb(177, 166, 179);
+    size: 10%;
+    padding-bottom: 5px;
+}
+
+.stats-menu-input-field input {
+    height: 20px; 
+    /* width: 220px;  */
+    /* width: 60px; */
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: rgba(231, 231, 231, 0.4);
+    color: rgb(0, 0, 0);
+}
