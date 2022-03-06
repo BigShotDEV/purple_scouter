@@ -196,7 +196,6 @@ export default class Stats extends React.Component {
      * @returns 
      */
     exportSortingKeys = (averagedTeamsData) => {
-        console.log(averagedTeamsData)
         if (averagedTeamsData === null || averagedTeamsData.length < 1) return [];
 
         let gameExample = Object.values(averagedTeamsData)[0];

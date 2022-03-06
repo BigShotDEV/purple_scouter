@@ -87,6 +87,7 @@ export default class TeamStatsPage extends React.Component {
                     max = game.stats[index].value
                 }
             })
+
             return max
         } else if(type == "min"){
             let min = 1000
@@ -98,13 +99,32 @@ export default class TeamStatsPage extends React.Component {
             })
             return min
         } else if(type == "total"){
-            let total = 0;
+            let average = 0;
 
             this.state.mongoData.forEach(game => {
-                total += game.stats[index].value;
+                average += game.stats[index].value;
             });
 
-            return total;
+            average /= this.state.amountOfGames;
+
+            let min = 1000
+
+            this.state.mongoData.forEach(game => {
+                if(game.stats[index].value < min){
+                    min = game.stats[index].value
+                }
+            })
+
+            let max = 0;
+
+            this.state.mongoData.forEach(game => {
+                if(game.stats[index].value > max){
+                    max = game.stats[index].value
+                }
+            })
+            
+
+            return `avg - ${average}, min - ${min}, max - ${max}`;
         }
     }
 
@@ -147,15 +167,67 @@ export default class TeamStatsPage extends React.Component {
                 if (game.stats[index].value) sum++;
             });
 
+            let min = 1000
+
+            this.state.mongoData.forEach(game => {
+                if(game.stats[index].value < min){
+                    min = game.stats[index].value
+                } 
+            })
+
+            let max = 0
+            
+            this.state.mongoData.forEach(game => {
+                if(game.stats[index].value > max){
+                    max = game.stats[index].value
+                }
+            })
+
             let outOf = 'out of';
             if (this.state.language === 'hebrew') outOf = 'מתוך';
-
-            return `(${sum} ${outOf} ${this.state.amountOfGames})`;
+            
+            return `avg - ${round(sum / this.state.amountOfGames * 100)}% (${sum} ${outOf} ${this.state.amountOfGames}), max - ${max}, min - ${min}`;
         }
     }
 
     summerizeString(index, type) {
+        console.log(index)
         if(type == "avg"){
+            var no = 0, low = 0, meduim = 0, high = 0, veryHigh = 0, ano = 0, alow = 0, ameduim = 0, ahigh = 0, averyHigh = 0, fell = 0;
+            var text = ``;
+            if(index == 15){
+
+            
+            this.state.mongoData.forEach(game => {
+                if(game.stats[15].value[this.state.language] === "No"){
+                    ano++
+                } else if(game.stats[15].value[this.state.language] === "(1) Low"){
+                    alow++
+                }  else if(game.stats[15].value[this.state.language] === "(2) Medium"){
+                    ameduim++
+                } else if(game.stats[15].value[this.state.language] === "(3) High"){
+                    ahigh++
+                } else if(game.stats[15].value[this.state.language] === "(4) Highest"){
+                    averyHigh++
+                } 
+            })
+            this.state.mongoData.forEach(game => {
+                if(game.stats[14].value[this.state.language] === "No"){
+                    no++
+                } else if(game.stats[14].value[this.state.language] === "(1) Low"){
+                    low++
+                }  else if(game.stats[14].value[this.state.language] === "(2) Medium"){
+                    meduim++
+                } else if(game.stats[14].value[this.state.language] === "(3) High"){
+                    high++
+                } else if(game.stats[14].value[this.state.language] === "(4) Highest"){
+                    veryHigh++
+                } 
+            })
+            console.log(meduim)
+            text += `No: ${ano} - out of - ${no} | Low: ${alow} - out of- ${low} | Meduim: ${ameduim} - out of - ${meduim} | High: ${ahigh} - out of - ${high} | Highest: ${averyHigh} - out of - ${veryHigh}`
+            return text
+        } else {
             let data = []
 
             this.state.mongoData.forEach(game => {
@@ -184,7 +256,43 @@ export default class TeamStatsPage extends React.Component {
             })
 
             return text
+        }
         } else if(type == "max"){
+            var no = 0, low = 0, meduim = 0, high = 0, veryHigh = 0, ano = 0, alow = 0, ameduim = 0, ahigh = 0, averyHigh = 0, fell = 0;
+            var text = ``;
+            if(index == 15){
+
+            
+            this.state.mongoData.forEach(game => {
+                if(game.stats[15].value[this.state.language] === "No"){
+                    ano++
+                } else if(game.stats[15].value[this.state.language] === "(1) Low"){
+                    alow++
+                }  else if(game.stats[15].value[this.state.language] === "(2) Medium"){
+                    ameduim++
+                } else if(game.stats[15].value[this.state.language] === "(3) High"){
+                    ahigh++
+                } else if(game.stats[15].value[this.state.language] === "(4) Highest"){
+                    averyHigh++
+                } 
+            })
+            this.state.mongoData.forEach(game => {
+                if(game.stats[14].value[this.state.language] === "No"){
+                    no++
+                } else if(game.stats[14].value[this.state.language] === "(1) Low"){
+                    low++
+                }  else if(game.stats[14].value[this.state.language] === "(2) Medium"){
+                    meduim++
+                } else if(game.stats[14].value[this.state.language] === "(3) High"){
+                    high++
+                } else if(game.stats[14].value[this.state.language] === "(4) Highest"){
+                    veryHigh++
+                } 
+            })
+            console.log(meduim)
+            text += `No: ${ano} - out of - ${no} | Low: ${alow} - out of- ${low} | Meduim: ${ameduim} - out of - ${meduim} | High: ${ahigh} - out of - ${high} | Highest: ${averyHigh} - out of - ${veryHigh}`
+            return text
+        } else {
             let values = [{label: "Low", value: 0}, {label: "High", value: 1}, {label: "No", value: 0}, {label: "Doesn't position good", value: 1}, {label: "Position good", value: 2}, {label: "A bit", value: 1}, {label: "The entire game", value: 2}, {label: "(1) Low", value: 1}, {label: "(2) Meduim", value: 2}, {label: "(3) High", value: 3}, {label: "(4) Highest", value: 4}, {label: "He fell", value: 0.5}, {label: "Slow", value: 0}, {label: "Fast", value: 1}, {label: "Very fast", value: 2}]
             let max = -1;
             let answer = [{label: "", value: 0}];
@@ -199,7 +307,43 @@ export default class TeamStatsPage extends React.Component {
             })
         })
             return answer[0].label
+    }
         } else if(type == "min"){
+            var no = 0, low = 0, meduim = 0, high = 0, veryHigh = 0, ano = 0, alow = 0, ameduim = 0, ahigh = 0, averyHigh = 0, fell = 0;
+            var text = ``;
+            if(index == 15){
+
+            
+            this.state.mongoData.forEach(game => {
+                if(game.stats[15].value[this.state.language] === "No"){
+                    ano++
+                } else if(game.stats[15].value[this.state.language] === "(1) Low"){
+                    alow++
+                }  else if(game.stats[15].value[this.state.language] === "(2) Medium"){
+                    ameduim++
+                } else if(game.stats[15].value[this.state.language] === "(3) High"){
+                    ahigh++
+                } else if(game.stats[15].value[this.state.language] === "(4) Highest"){
+                    averyHigh++
+                } 
+            })
+            this.state.mongoData.forEach(game => {
+                if(game.stats[14].value[this.state.language] === "No"){
+                    no++
+                } else if(game.stats[14].value[this.state.language] === "(1) Low"){
+                    low++
+                }  else if(game.stats[14].value[this.state.language] === "(2) Medium"){
+                    meduim++
+                } else if(game.stats[14].value[this.state.language] === "(3) High"){
+                    high++
+                } else if(game.stats[14].value[this.state.language] === "(4) Highest"){
+                    veryHigh++
+                } 
+            })
+            console.log(meduim)
+            text += `No: ${ano} - out of - ${no} | Low: ${alow} - out of- ${low} | Meduim: ${ameduim} - out of - ${meduim} | High: ${ahigh} - out of - ${high} | Highest: ${averyHigh} - out of - ${veryHigh}`
+            return text
+        } else {
             let values = [{label: "Low", value: 0}, {label: "High", value: 1}, {label: "No", value: 0}, {label: "Doesn't position good", value: 1}, {label: "Position good", value: 2}, {label: "A bit", value: 1}, {label: "The entire game", value: 2}, {label: "(1) Low", value: 1}, {label: "(2) Meduim", value: 2}, {label: "(3) High", value: 3}, {label: "(4) Highest", value: 4}, {label: "He fell", value: 0.5}, {label: "Slow", value: 0}, {label: "Fast", value: 1}, {label: "Very fast", value: 2}]
             let min = 1000;
             let answer = [{label: "", value: 0}];
@@ -214,36 +358,74 @@ export default class TeamStatsPage extends React.Component {
             })
         })
             return answer[0].label
+    }
         } else if(type == "total"){
-            let data = []
+            var no = 0, low = 0, meduim = 0, high = 0, veryHigh = 0, ano = 0, alow = 0, ameduim = 0, ahigh = 0, averyHigh = 0, fell = 0;
+            var text = ``;
+            if(index == 15){
+
+            
+            this.state.mongoData.forEach(game => {
+                if(game.stats[15].value[this.state.language] === "No"){
+                    ano++
+                } else if(game.stats[15].value[this.state.language] === "(1) Low"){
+                    alow++
+                }  else if(game.stats[15].value[this.state.language] === "(2) Medium"){
+                    ameduim++
+                } else if(game.stats[15].value[this.state.language] === "(3) High"){
+                    ahigh++
+                } else if(game.stats[15].value[this.state.language] === "(4) Highest"){
+                    averyHigh++
+                } 
+            })
+            this.state.mongoData.forEach(game => {
+                if(game.stats[14].value[this.state.language] === "No"){
+                    no++
+                } else if(game.stats[14].value[this.state.language] === "(1) Low"){
+                    low++
+                }  else if(game.stats[14].value[this.state.language] === "(2) Medium"){
+                    meduim++
+                } else if(game.stats[14].value[this.state.language] === "(3) High"){
+                    high++
+                } else if(game.stats[14].value[this.state.language] === "(4) Highest"){
+                    veryHigh++
+                } 
+            })
+            console.log(meduim)
+            text += `No: ${ano} - out of - ${no} | Low: ${alow} - out of- ${low} | Meduim: ${ameduim} - out of - ${meduim} | High: ${ahigh} - out of - ${high} | Highest: ${averyHigh} - out of - ${veryHigh}`
+            return text
+        } else {
+            
+            let values = [{label: "Low", value: 0}, {label: "High", value: 1}, {label: "No", value: 0}, {label: "Doesn't position good", value: 1}, {label: "Position good", value: 2}, {label: "A bit", value: 1}, {label: "The entire game", value: 2}, {label: "(1) Low", value: 1}, {label: "(2) Meduim", value: 2}, {label: "(3) High", value: 3}, {label: "(4) Highest", value: 4}, {label: "He fell", value: 0.5}, {label: "Slow", value: 0}, {label: "Fast", value: 1}, {label: "Very fast", value: 2}]
+            let min = 1000;
+            let answer = [{label: "", value: 0}];
 
             this.state.mongoData.forEach(game => {
-                let wasAdded = false;
-
-                for (const dataPiece of data) {
-                    if (dataPiece.value === game.stats[index].value[this.state.language]) {
-                        wasAdded = true;
-                        dataPiece.count++;
-                        break;
-                    }
+            values.forEach(value => {
+                if(value.label === game.stats[index].value[this.state.language] && value.value < min){
+                    answer[0].label = game.stats[index].value[this.state.language]
+                    answer[0].value = value.value
+                    min = value.value
                 }
-
-                if (!wasAdded) {
-                    data.push({ value: game.stats[index].value[this.state.language], count: 1 });
-                }
-            });
-
-            let text = '';
-
-            let outOf = 'out of';
-            if (this.state.language === 'hebrew') outOf = 'מתוך';
-
-            data.forEach(dataPiece => {
-                text += `${dataPiece.value} - (${dataPiece.count}), `
             })
+        })
 
-            return text
+        let max = -1;
+        let answerm = [{label: "", value: 0}];
+
+        this.state.mongoData.forEach(game => {
+        values.forEach(value => {
+            if(value.label === game.stats[index].value[this.state.language] && value.value > max){
+                answerm[0].label = game.stats[index].value[this.state.language]
+                answerm[0].value = value.value
+                max = value.value
+            }
+        })
+    })
+
+            return `min - ${answer[0].label}, max - ${answerm[0].label}`
         }
+    }
     }
 
     summerizeArray(index) {
@@ -365,10 +547,33 @@ export default class TeamStatsPage extends React.Component {
                 graphValuesIndexes.push(i);
                 continue;
             }
-
-            renderedData.push(
-                <p className={this.state.language + "-paragraph"}>{this.state.mongoData[0].stats[i].title[this.state.language]}: {this.summerize(i, this.state.sortingKey)}</p>
-            );
+            if(i == 0){
+                if(this.state.language === 'english') renderedData.push(<h3 className='english-paragraph'>Autonomous</h3>)
+                if(this.state.language === 'Hebrew') renderedData.push(<h3 className='english-paragraph'>אוטונומי</h3>)
+            }else if(i == 3){
+                if(this.state.language === 'english') renderedData.push(<h3 className='english-paragraph'>Taleop</h3>)
+                if(this.state.language === 'Hebrew') renderedData.push(<h3 className='english-paragraph'>טאלופ</h3>)
+            }else if(i == 8){
+                if(this.state.language === 'english') renderedData.push(<h3 className='english-paragraph'>Assist</h3>)
+                if(this.state.language === 'Hebrew') renderedData.push(<h3 className='english-paragraph'>אסיסט</h3>)
+            }else if(i == 12){
+                if(this.state.language === 'english') renderedData.push(<h3 className='english-paragraph'>Defense</h3>)
+                if(this.state.language === 'Hebrew') renderedData.push(<h3 className='english-paragraph'>הגנה</h3>)
+            }else if(i == 14){
+                if(this.state.language === 'english') renderedData.push(<h3 className='english-paragraph'>Climb</h3>)
+                if(this.state.language === 'Hebrew') renderedData.push(<h3 className='english-paragraph'>טיפוס</h3>)
+            }
+            console.log(i)
+            if(i == 15){
+                console.log("DSDSD")
+                renderedData.push(
+                    <p className={this.state.language + "-paragraph"}>{this.summerize(i, this.state.sortingKey)}</p>
+                );    
+            } else if(i != 14){
+                renderedData.push(
+                    <p className={this.state.language + "-paragraph"}>{this.state.mongoData[0].stats[i].title[this.state.language]}: {this.summerize(i, this.state.sortingKey)}</p>
+                );
+            }
         }
 
         renderedData.push(this.renderGraph(graphValuesIndexes));
